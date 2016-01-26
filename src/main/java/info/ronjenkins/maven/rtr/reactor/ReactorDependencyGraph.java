@@ -68,6 +68,7 @@ public final class ReactorDependencyGraph {
      */
     public ReactorDependencyGraph(final MavenSession session) {
         Validate.notNull(session, "session is null");
+        this.session = session;
         this.root = new Node(null, session.getTopLevelProject());
     }
 

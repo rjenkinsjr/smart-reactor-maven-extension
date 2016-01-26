@@ -17,12 +17,32 @@
 <!-- Derived from components-fragment.xml in maven-release-manager, see THIRDPARTY file for further legal information. -->
 <component-set>
 	<components>
-		<!-- The entry point for the release process. -->
+		<!-- Smart Reactor release steps. -->
 		<component>
 			<role>org.apache.maven.AbstractMavenLifecycleParticipant
 			</role>
 			<role-hint>rtr</role-hint>
 			<implementation>info.ronjenkins.maven.rtr.RTR
+			</implementation>
+			<configuration>
+				<startSteps>
+					<startStep>validate</startStep>
+          <startStep>build</startStep>
+          <startStep>sanity-checks</startStep>
+          <startStep>transform-poms</startStep>
+          <startStep>rebuild-reactor</startStep>
+          <startStep>rebuild-graph</startStep>
+				</startSteps>
+        <endSteps>
+          <endStep>post-release</endStep>
+        </endSteps>
+			</configuration>
+		</component>
+		<component>
+			<role>info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep
+			</role>
+			<role-hint>transform-poms</role-hint>
+			<implementation>info.ronjenkins.maven.rtr.steps.release.TransformProjectsIntoReleases
 			</implementation>
 			<configuration>
 				<releasePhases>
@@ -38,9 +58,22 @@
 					<phase>restore-backup-poms</phase>
 					<phase>remove-backup-poms</phase><!-- custom -->
 				</rollbackPhases>
+			</configuration>
+		</component>
+		<component>
+			<role>info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep
+			</role>
+			<role-hint>post-release</role-hint>
+			<implementation>info.ronjenkins.maven.rtr.steps.release.DoPostRelease
+			</implementation>
+			<configuration>
         <postReleasePhases>
           <phase>remove-backup-poms</phase><!-- custom -->
         </postReleasePhases>
+				<rollbackPhases>
+					<phase>restore-backup-poms</phase>
+					<phase>remove-backup-poms</phase><!-- custom -->
+				</rollbackPhases>
 			</configuration>
 		</component>
 		<!-- Release phases used by the release process. -->
@@ -125,6 +158,30 @@
 			<role-hint>rtr-pt</role-hint>
 			<implementation>org.apache.maven.project.path.DefaultPathTranslator
 			</implementation>
+		</component>
+		<component>
+			<role>org.apache.maven.shared.release.config.ReleaseDescriptor
+			</role>
+			<role-hint>rtr-rd</role-hint>
+			<implementation>org.apache.maven.shared.release.config.ReleaseDescriptor
+			</implementation>
+      <configuration>
+        <interactive>${session.settings.interactive}</interactive>
+        <workingDirectory>${session.request.baseDirectory}</workingDirectory>
+      </configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.shared.release.env.ReleaseEnvironment
+			</role>
+			<role-hint>rtr-re</role-hint>
+			<implementation>org.apache.maven.shared.release.env.DefaultReleaseEnvironment
+			</implementation>
+      <configuration>
+        <settings>${session.settings}</settings>
+        <javaHome>${session.systemProperties.getProperty("user.home")}</javaHome>
+        <mavenHome>${session.systemProperties.getProperty("maven.home")}</mavenHome>
+        <localRepositoryDirectory>${session.request.localRepositoryPath}</localRepositoryDirectory>
+      </configuration>
 		</component>
 	</components>
 </component-set>
