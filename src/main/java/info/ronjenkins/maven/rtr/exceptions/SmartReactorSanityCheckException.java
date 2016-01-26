@@ -15,12 +15,14 @@
  */
 package info.ronjenkins.maven.rtr.exceptions;
 
+import org.apache.maven.MavenExecutionException;
+
 /**
  * Thrown when the smart reactor fails one of its sanity checks.
  * 
  * @author Ronald Jack Jenkins Jr.
  */
-public class SmartReactorSanityCheckException extends RuntimeException {
+public class SmartReactorSanityCheckException extends MavenExecutionException {
 
     private static final long serialVersionUID = -3239867428541322183L;
 
@@ -31,7 +33,7 @@ public class SmartReactorSanityCheckException extends RuntimeException {
      *            description of sanity check failure.
      */
     public SmartReactorSanityCheckException(final String message) {
-        super(message);
+        super(message, new RuntimeException());
     }
 
 }

@@ -56,7 +56,7 @@ public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
     public ReleaseResult simulate(final ReleaseDescriptor rd,
             final ReleaseEnvironment re, final List<MavenProject> projects)
             throws ReleaseExecutionException, ReleaseFailureException {
-        return execute(rd, re, projects);
+        return this.execute(rd, re, projects);
     }
 
     /**
@@ -79,7 +79,7 @@ public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
             throws ReleaseExecutionException, ReleaseFailureException {
         final ReleaseResult result = new ReleaseResult();
         for (MavenProject project : projects) {
-            deletePomBackup(project);
+            this.deletePomBackup(project);
         }
         result.setResultCode(ReleaseResult.SUCCESS);
         return result;

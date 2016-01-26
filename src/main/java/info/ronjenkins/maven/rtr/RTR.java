@@ -16,6 +16,7 @@
 package info.ronjenkins.maven.rtr;
 
 import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
+import info.ronjenkins.maven.rtr.reactor.ReactorDependencyGraph;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import org.apache.maven.project.DuplicateProjectException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.shared.release.ReleaseExecutionException;
 import org.apache.maven.shared.release.ReleaseFailureException;
 import org.apache.maven.shared.release.ReleaseResult;
@@ -53,13 +53,6 @@ import org.codehaus.plexus.util.dag.CycleDetectedException;
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
 public class RTR extends AbstractMavenLifecycleParticipant {
 
-    private static final String PROP_DISABLED = "rtr.disabled";
-    private static final boolean PROPDEFAULT_DISABLED = false;
-    private static final String PROP_SINGLE_POM_ONLY_REACTOR_ALLOWED = "rtr.allowSinglePomOnlyReactor";
-    private static final boolean PROPDEFAULT_SINGLE_POM_ONLY_REACTOR_ALLOWED = false;
-    private static final String PROP_RELEASE = "rtr.release";
-    private static final boolean PROPDEFAULT_RELEASE = false;
-
     @Requirement
     private Logger logger;
 
@@ -68,9 +61,14 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 
     private List<String> releasePhases;
     private List<String> rollbackPhases;
+    private List<String> postReleasePhases;
 
     @Requirement(role = ReleasePhase.class)
     private Map<String, ReleasePhase> availablePhases;
+
+    private boolean release;
+    private ReleaseDescriptor releaseDescriptor;
+    private ReleaseEnvironment releaseEnvironment;
 
     /**
      * RTR entry point.
@@ -81,19 +79,74 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     @Override
     public void afterProjectsRead(final MavenSession session)
             throws MavenExecutionException {
-        // Was RTR requested?
-        final boolean disabled = Util.getBooleanProperty(PROP_DISABLED,
-                PROPDEFAULT_DISABLED, session, null);
-        if (disabled) {
+        // Don't do anything if the Smart Reactor is disabled.
+        final MavenProject executionRoot = session.getTopLevelProject();
+        if (RTRConfig.isDisabled(session, executionRoot)) {
             return;
         }
-        // Announce RTR.
-        logger.info("Assembling smart reactor...");
-        // Identify the execution root.
+        this.logger.info("Assembling smart reactor...");
+        // If the current reactor is not compatible with Smart Reactor
+        // requirements, fail now.
+        this.validateSmartReactorEligibility(session);
+        // At this point, we know that all inter-dependent projects in the
+        // reactor meet the Smart Reactor's requirements. We can now safely drop
+        // all non-SNAPSHOT projects from the reactor. Do this now.
+        this.buildSmartReactor(session);
+        // Sanity checks.
+        this.performSmartReactorSanityChecks(session);
+        // Do a release, if it was requested.
+        this.release = RTRConfig.isRelease(session, executionRoot);
+        if (this.release) {
+            this.releaseDescriptor = this.createReleaseDescriptor(session);
+            this.releaseEnvironment = this.createReleaseEnvironment(session);
+            this.transformProjectsIntoReleases(session);
+            this.rebuildReleaseReactor(session);
+        }
+        // Recalculate the reactor dependency graph.
+        this.rebuildProjectDependencyGraph(session);
+        // Done. Maven build will proceed from here, none the wiser. ;)
+    }
+
+    @Override
+    public void afterSessionEnd(final MavenSession session)
+            throws MavenExecutionException {
+        // Don't do anything if the Smart Reactor is disabled.
         final MavenProject executionRoot = session.getTopLevelProject();
-        // Remove from the reactor all non-SNAPSHOT projects.
-        final List<MavenProject> projects = session.getProjects();
-        final Iterator<MavenProject> iterator = projects.iterator();
+        if (RTRConfig.isDisabled(session, executionRoot)) {
+            return;
+        }
+        // Finish or rollback the release, if it was performed.
+        if (this.release) {
+            final boolean successfulBuild = session.getResult().hasExceptions();
+            if (successfulBuild) {
+                this.logger.info("Cleaning up after release...");
+                this.doPostRelease(session);
+            } else {
+                this.logger.info("Rolling back after failed release...");
+                this.doRollback(session.getProjects());
+            }
+        }
+    }
+
+    private void validateSmartReactorEligibility(final MavenSession session)
+            throws SmartReactorSanityCheckException {
+        final ReactorDependencyGraph reactorGraph = new ReactorDependencyGraph(
+                session);
+        if (!reactorGraph.isSmartReactorCompatible()) {
+            reactorGraph.error(logger);
+            this.logger.error("");
+            new SmartReactorSanityCheckException(
+                    "One or more inter-dependency requirements were not met. See the above graph.");
+        }
+        reactorGraph.destroy();
+    }
+
+    private void buildSmartReactor(final MavenSession session) {
+        // The reactor is a mutable list whose type is unknown, so rather than
+        // reassign it via sessions.setProjects(), we will manipulate the live
+        // list instead.
+        final Iterator<MavenProject> iterator = session.getProjects()
+                .iterator();
         MavenProject project;
         while (iterator.hasNext()) {
             project = iterator.next();
@@ -101,123 +154,39 @@ public class RTR extends AbstractMavenLifecycleParticipant {
                 iterator.remove();
             }
         }
-        // Sanity checks.
-        if (projects.isEmpty()) {
-            throw new MavenExecutionException(
-                    "Smart reactor sanity check failed:",
-                    new SmartReactorSanityCheckException(
-                            "Reactor is empty. Did you forget to bump one of your projects to a SNAPSHOT version?"));
+    }
+
+    private void performSmartReactorSanityChecks(final MavenSession session) {
+        final List<MavenProject> reactor = session.getProjects();
+        final MavenProject executionRoot = session.getTopLevelProject();
+        // Check for an empty reactor.
+        if (reactor.isEmpty()) {
+            this.logger.error("");
+            new SmartReactorSanityCheckException(
+                    "Reactor is empty. Did you forget to bump one of your projects to a SNAPSHOT version?");
         }
-        if (!projects.contains(executionRoot)) {
-            throw new MavenExecutionException(
-                    "Smart reactor sanity check failed:",
-                    new SmartReactorSanityCheckException(
-                            "Reactor does not contain execution root project. Did you forget to bump its version to a SNAPSHOT?"));
+        // Make sure the reactor contains the execution root.
+        if (!reactor.contains(executionRoot)) {
+            this.logger.error("");
+            new SmartReactorSanityCheckException(
+                    "Reactor does not contain execution root project. Did you forget to bump its version to a SNAPSHOT?");
         }
-        // If the reactor is composed of a single POM-only project, and if this
-        // type of reactor is not permitted, fail.
-        final boolean isPomOnly = projects.size() == 1
+        // Check for a single POM-only reactor, assuming this is prohibited.
+        final boolean isPomOnly = reactor.size() == 1
                 && executionRoot.getArtifact().getType().equals("pom");
         if (isPomOnly) {
-            final boolean singlePomOnlyReactorAllowed = Util
-                    .getBooleanProperty(PROP_SINGLE_POM_ONLY_REACTOR_ALLOWED,
-                            PROPDEFAULT_SINGLE_POM_ONLY_REACTOR_ALLOWED,
-                            session, executionRoot);
+            final boolean singlePomOnlyReactorAllowed = RTRConfig
+                    .isSinglePomReactorAllowed(session, executionRoot);
             if (!singlePomOnlyReactorAllowed) {
-                throw new MavenExecutionException(
-                        "Smart reactor sanity check failed:",
-                        new SmartReactorSanityCheckException(
-                                "Reactor contains a single pom-packaging project, which is not allowed. If this is intended, set property \""
-                                        + PROP_SINGLE_POM_ONLY_REACTOR_ALLOWED
-                                        + "\" to true."));
+                this.logger.error("");
+                new SmartReactorSanityCheckException(
+                        "Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \""
+                                + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED
+                                + "\" to true.");
             }
-        }
-        // Do a release, if it was requested.
-        if (Util.getBooleanProperty(PROP_RELEASE, PROPDEFAULT_RELEASE, session,
-                null)) {
-            updateReactorWithReleases(session);
-        }
-        // Recalculate the reactor dependency graph.
-        try {
-            session.setProjectDependencyGraph(new DefaultProjectDependencyGraph(
-                    projects));
-        } catch (final CycleDetectedException | DuplicateProjectException e) {
-            throw new MavenExecutionException(
-                    "Could not assemble new project dependency graph", e);
-        }
-        // Done. Maven build will proceed from here, none the wiser. ;)
-    }
-
-    /**
-     * Updates the reactor for this Maven session so that release projects are
-     * built instead of SNAPSHOT projects.
-     * 
-     * @param session
-     *            not null.
-     * @throws MavenExecutionException
-     *             if the execution of any release phase fails.
-     */
-    private void updateReactorWithReleases(final MavenSession session)
-            throws MavenExecutionException {
-        logger.info("Converting reactor projects to releases...");
-        // Extract necessary session data.
-        final ProjectBuildingRequest projectBuildingRequest = session
-                .getProjectBuildingRequest();
-        final List<MavenProject> projects = session.getProjects();
-        // Setup release objects.
-        final ReleaseDescriptor releaseDescriptor = this
-                .createReleaseDescriptor(session);
-        final ReleaseEnvironment releaseEnvironment = this
-                .getReleaseEnvironment(session);
-        // Try all of this, to enable possible rollback.
-        try {
-            // Execute the release phases.
-            try {
-                executeReleasePhases(releaseDescriptor, releaseEnvironment,
-                        projects);
-            } catch (final ReleaseExecutionException | ReleaseFailureException e) {
-                throw new MavenExecutionException(
-                        "Could not execute release phases\n"
-                                + ExceptionUtils.getFullStackTrace(e), e);
-            }
-            // Rebuild the list of projects again, so that the POM rewrites take
-            // effect.
-            final List<MavenProject> newProjects = new ArrayList<MavenProject>(
-                    projects.size());
-            File pomFile;
-            MavenProject newProject;
-            for (final MavenProject project : projects) {
-                pomFile = project.getFile();
-                try {
-                    newProject = builder.build(pomFile, projectBuildingRequest)
-                            .getProject();
-                } catch (final ProjectBuildingException e) {
-                    throw new MavenExecutionException(
-                            "Could not create release Maven project\n"
-                                    + ExceptionUtils.getFullStackTrace(e),
-                            pomFile);
-                }
-                if (project.isExecutionRoot()) {
-                    newProject.setExecutionRoot(true);
-                }
-                newProjects.add(newProject);
-            }
-            // Set the new list of projects.
-            session.setProjects(newProjects);
-        } catch (final Exception e) {
-            logger.info("Rolling back release due to error...");
-            rollbackReleaseWork(releaseDescriptor, releaseEnvironment, projects);
-            throw e;
         }
     }
 
-    /**
-     * Creates a release descriptor for the given Maven session.
-     * 
-     * @param session
-     *            not null.
-     * @return not null.
-     */
     // Derived from AbstractReleaseMojo.java in maven-release-plugin, see
     // THIRDPARTY file for further legal information.
     private ReleaseDescriptor createReleaseDescriptor(final MavenSession session) {
@@ -227,16 +196,10 @@ public class RTR extends AbstractMavenLifecycleParticipant {
         return descriptor;
     }
 
-    /**
-     * Creates a release environment for the given Maven session.
-     * 
-     * @param session
-     *            not null.
-     * @return not null.
-     */
     // Derived from AbstractReleaseMojo.java in maven-release-plugin, see
     // THIRDPARTY file for further legal information.
-    private ReleaseEnvironment getReleaseEnvironment(final MavenSession session) {
+    private ReleaseEnvironment createReleaseEnvironment(
+            final MavenSession session) {
         return new DefaultReleaseEnvironment()
                 .setSettings(session.getSettings())
                 .setJavaHome(
@@ -249,76 +212,110 @@ public class RTR extends AbstractMavenLifecycleParticipant {
                         session.getRequest().getLocalRepositoryPath());
     }
 
-    /**
-     * Executes the release phases necessary to setup the reactor projects for
-     * the upcoming release build.
-     * 
-     * @param config
-     *            the release descriptor, not null.
-     * @param env
-     *            the release environment, not null.
-     * @param reactorProjects
-     *            the projects to be release, not null and not empty.
-     */
+    private void transformProjectsIntoReleases(final MavenSession session)
+            throws MavenExecutionException {
+        this.logger.info("Converting reactor projects to releases...");
+        final List<MavenProject> reactor = session.getProjects();
+        try {
+            // Execute the release phases.
+            try {
+                executePhases(reactor, this.releasePhases);
+            } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+                this.logger.error("");
+                throw new MavenExecutionException(
+                        "Could not execute release phases\n"
+                                + ExceptionUtils.getFullStackTrace(e), e);
+            }
+        } catch (final Exception e) {
+            // Rollback and rethrow.
+            this.logger.info("Rolling back release due to error...");
+            this.doRollback(reactor);
+            throw e;
+        }
+    }
+
+    private void doRollback(final List<MavenProject> reactor) {
+        try {
+            executePhases(reactor, this.rollbackPhases);
+        } catch (final ReleaseExecutionException | ReleaseFailureException e2) {
+            this.logger.error(ExceptionUtils.getFullStackTrace(e2));
+            this.logger
+                    .error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
+        }
+    }
+
     // Derived from DefaultReleaseManager.java in maven-release-manager, see
     // THIRDPARTY file for further legal information.
-    private void executeReleasePhases(final ReleaseDescriptor config,
-            final ReleaseEnvironment env,
-            final List<MavenProject> reactorProjects)
-            throws ReleaseExecutionException, ReleaseFailureException {
-        String name;
+    private void executePhases(final List<MavenProject> reactor,
+            final List<String> phases) throws ReleaseExecutionException,
+            ReleaseFailureException {
         ReleasePhase phase;
         ReleaseResult result;
-        for (int i = 0; i < releasePhases.size(); i++) {
-            name = releasePhases.get(i);
-            phase = availablePhases.get(name);
+        for (final String name : phases) {
+            phase = this.availablePhases.get(name);
             if (phase == null) {
                 throw new ReleaseExecutionException("Unable to find phase '"
                         + name + "' to execute");
             }
-            result = phase.execute(config, env, reactorProjects);
+            result = phase.execute(this.releaseDescriptor,
+                    this.releaseEnvironment, reactor);
             if (result.getResultCode() == ReleaseResult.ERROR) {
                 throw new ReleaseFailureException("Release failed.");
             }
         }
     }
 
-    /**
-     * Rolls back a failed release. All exceptions are logged but not thrown.
-     * 
-     * @param config
-     *            the release descriptor, not null.
-     * @param env
-     *            the release environment, not null.
-     * @param reactorProjects
-     *            the projects to be release, not null and not empty.
-     */
-    // Derived from DefaultReleaseManager.java in maven-release-manager, see
-    // THIRDPARTY file for further legal information.
-    private void rollbackReleaseWork(final ReleaseDescriptor config,
-            final ReleaseEnvironment env,
-            final List<MavenProject> reactorProjects) {
-        String name;
-        ReleasePhase phase;
-        ReleaseResult result;
-        for (int i = 0; i < rollbackPhases.size(); i++) {
-            name = rollbackPhases.get(i);
-            phase = availablePhases.get(name);
-            if (phase == null) {
-                logger.error("Unable to find phase '" + name + "' to execute");
-                break;
-            }
-            result = null;
+    private void rebuildReleaseReactor(final MavenSession session)
+            throws MavenExecutionException {
+        final List<MavenProject> reactor = session.getProjects();
+        final List<MavenProject> newReactor = new ArrayList<MavenProject>(
+                reactor.size());
+        File pomFile;
+        MavenProject newProject;
+        for (final MavenProject project : reactor) {
+            pomFile = project.getFile();
             try {
-                result = phase.execute(config, env, reactorProjects);
-            } catch (final ReleaseExecutionException | ReleaseFailureException e) {
-                logger.error(ExceptionUtils.getFullStackTrace(e));
-                logger.error("Exception during rollback. Check project filesystem for POM backups and other resources that must be rolled back manually.");
+                newProject = this.builder.build(pomFile,
+                        session.getProjectBuildingRequest()).getProject();
+            } catch (final ProjectBuildingException e) {
+                this.logger.error("");
+                throw new MavenExecutionException(
+                        "Could not rebuild Maven project model\n"
+                                + ExceptionUtils.getFullStackTrace(e), pomFile);
             }
-            if (result != null && result.getResultCode() == ReleaseResult.ERROR) {
-                logger.error("Rollback failed. Check project filesystem for POM backups and other resources that must be rolled back manually.");
-                break;
+            if (project.isExecutionRoot()) {
+                newProject.setExecutionRoot(true);
             }
+            newReactor.add(newProject);
+        }
+        // Set the new list of projects, but don't replace the actual list
+        // object.
+        session.getProjects().clear();
+        session.getProjects().addAll(newReactor);
+    }
+
+    private void rebuildProjectDependencyGraph(final MavenSession session)
+            throws MavenExecutionException {
+        try {
+            session.setProjectDependencyGraph(new DefaultProjectDependencyGraph(
+                    session.getProjects()));
+        } catch (final CycleDetectedException | DuplicateProjectException e) {
+            this.logger.error("");
+            throw new MavenExecutionException(
+                    "Could not assemble new project dependency graph", e);
+        }
+    }
+
+    private void doPostRelease(final MavenSession session)
+            throws MavenExecutionException {
+        // Execute the release phases.
+        try {
+            executePhases(session.getProjects(), this.postReleasePhases);
+        } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+            this.logger.error("");
+            throw new MavenExecutionException(
+                    "Could not execute post-release phases\n"
+                            + ExceptionUtils.getFullStackTrace(e), e);
         }
     }
 
