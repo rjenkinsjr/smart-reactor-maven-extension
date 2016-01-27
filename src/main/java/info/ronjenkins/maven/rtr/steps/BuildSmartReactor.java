@@ -15,6 +15,8 @@
  */
 package info.ronjenkins.maven.rtr.steps;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
+
 import java.util.Iterator;
 
 import org.apache.maven.MavenExecutionException;
@@ -27,12 +29,12 @@ import org.codehaus.plexus.component.annotations.Component;
  * 
  * @author Ronald Jack Jenkins Jr.
  */
-@Component(role = SmartReactorStep.class, hint = "build")
+@Component(role = SmartReactorStep.class, hint = "build-smart-reactor")
 public class BuildSmartReactor extends AbstractSmartReactorStep {
 
     @Override
-    public void execute(final MavenSession session)
-            throws MavenExecutionException {
+    public void execute(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         // The reactor is a mutable list whose type is unknown, so rather than
         // reassign it via sessions.setProjects(), we will manipulate the live
         // list instead.

@@ -15,6 +15,8 @@
  */
 package info.ronjenkins.maven.rtr.steps;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
+
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 
@@ -31,10 +33,12 @@ public interface SmartReactorStep {
      * 
      * @param session
      *            the session to which this step applies. Not null.
+     * @param components
+     *            that this step may need. May be null.
      * @throws MavenExecutionException
      *             if any unrecoverable error occurs.
      */
-    public void execute(final MavenSession session)
-            throws MavenExecutionException;
+    public void execute(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException;
 
 }

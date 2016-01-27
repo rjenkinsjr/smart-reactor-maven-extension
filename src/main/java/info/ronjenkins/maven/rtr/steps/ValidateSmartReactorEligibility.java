@@ -15,6 +15,7 @@
  */
 package info.ronjenkins.maven.rtr.steps;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
 import info.ronjenkins.maven.rtr.reactor.ReactorDependencyGraph;
 
@@ -28,18 +29,18 @@ import org.codehaus.plexus.component.annotations.Component;
  * 
  * @author Ronald Jack Jenkins Jr.
  */
-@Component(role = SmartReactorStep.class, hint = "validate")
+@Component(role = SmartReactorStep.class, hint = "validate-eligibility")
 public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
 
     @Override
-    public void execute(final MavenSession session)
-            throws MavenExecutionException {
+    public void execute(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         final ReactorDependencyGraph reactorGraph = new ReactorDependencyGraph(
                 session);
         if (!reactorGraph.isSmartReactorCompatible()) {
             reactorGraph.error(logger);
             this.logger.error("");
-            new SmartReactorSanityCheckException(
+            throw new SmartReactorSanityCheckException(
                     "One or more inter-dependency requirements were not met. See the above graph.");
         }
         reactorGraph.destroy();

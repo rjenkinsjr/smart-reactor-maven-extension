@@ -15,6 +15,8 @@
  */
 package info.ronjenkins.maven.rtr.steps;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
+
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.graph.DefaultProjectDependencyGraph;
@@ -32,8 +34,8 @@ import org.codehaus.plexus.util.dag.CycleDetectedException;
 public class RebuildProjectDependencyGraph extends AbstractSmartReactorStep {
 
     @Override
-    public void execute(final MavenSession session)
-            throws MavenExecutionException {
+    public void execute(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         try {
             session.setProjectDependencyGraph(new DefaultProjectDependencyGraph(
                     session.getProjects()));

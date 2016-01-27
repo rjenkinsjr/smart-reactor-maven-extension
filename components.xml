@@ -17,7 +17,7 @@
 <!-- Derived from components-fragment.xml in maven-release-manager, see THIRDPARTY file for further legal information. -->
 <component-set>
 	<components>
-		<!-- Smart Reactor release steps. -->
+		<!-- Smart Reactor. -->
 		<component>
 			<role>org.apache.maven.AbstractMavenLifecycleParticipant
 			</role>
@@ -26,11 +26,11 @@
 			</implementation>
 			<configuration>
 				<startSteps>
-					<startStep>validate</startStep>
-          <startStep>build</startStep>
+					<startStep>validate-eligibility</startStep>
+          <startStep>build-smart-reactor</startStep>
           <startStep>sanity-checks</startStep>
           <startStep>transform-poms</startStep>
-          <startStep>rebuild-reactor</startStep>
+          <startStep>rebuild-release-reactor</startStep>
           <startStep>rebuild-graph</startStep>
 				</startSteps>
         <endSteps>
@@ -38,6 +38,7 @@
         </endSteps>
 			</configuration>
 		</component>
+    <!-- Smart Reactor release steps. -->
 		<component>
 			<role>info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep
 			</role>
@@ -76,7 +77,7 @@
 				</rollbackPhases>
 			</configuration>
 		</component>
-		<!-- Release phases used by the release process. -->
+		<!-- Phases used by the maven-release-manager. -->
 		<component>
 			<role>org.apache.maven.shared.release.phase.ReleasePhase
 			</role>
@@ -177,7 +178,7 @@
 			<implementation>org.apache.maven.shared.release.env.DefaultReleaseEnvironment
 			</implementation>
       <configuration>
-        <settings>${session.settings}</settings>
+        <!-- settings are injected from the session object at runtime -->
         <javaHome>${session.systemProperties.getProperty("user.home")}</javaHome>
         <mavenHome>${session.systemProperties.getProperty("maven.home")}</mavenHome>
         <localRepositoryDirectory>${session.request.localRepositoryPath}</localRepositoryDirectory>

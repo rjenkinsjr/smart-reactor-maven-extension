@@ -15,6 +15,7 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
 import java.util.List;
@@ -37,8 +38,8 @@ public class DoPostRelease extends AbstractSmartReactorReleaseStep {
     private List<String> postReleasePhases;
 
     @Override
-    public void doReleaseStep(final MavenSession session)
-            throws MavenExecutionException {
+    public void doReleaseStep(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         try {
             executePhases(session.getProjects(), this.postReleasePhases);
         } catch (final ReleaseExecutionException | ReleaseFailureException e) {

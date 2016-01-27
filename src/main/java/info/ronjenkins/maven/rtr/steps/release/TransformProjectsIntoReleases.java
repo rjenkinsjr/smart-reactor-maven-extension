@@ -15,6 +15,7 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public class TransformProjectsIntoReleases extends
     private List<String> releasePhases;
 
     @Override
-    public void doReleaseStep(final MavenSession session)
-            throws MavenExecutionException {
+    public void doReleaseStep(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         this.logger.info("Converting reactor projects to releases...");
         final List<MavenProject> reactor = session.getProjects();
         try {

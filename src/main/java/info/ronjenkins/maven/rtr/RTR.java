@@ -24,6 +24,7 @@ import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
@@ -38,6 +39,8 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 
     @Requirement
     private Logger logger;
+    @Requirement
+    private ProjectBuilder builder;
 
     protected List<String> startSteps;
     protected List<String> endSteps;
@@ -45,6 +48,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     @Requirement(role = SmartReactorStep.class)
     protected Map<String, SmartReactorStep> availableSteps;
 
+    private RTRComponents components;
     private boolean release;
 
     /**
@@ -62,7 +66,8 @@ public class RTR extends AbstractMavenLifecycleParticipant {
             return;
         }
         this.logger.info("Assembling smart reactor...");
-        this.executeSteps(this.startSteps, session);
+        this.components = new RTRComponents(this.builder);
+        this.executeSteps(this.startSteps, session, this.components);
         // Done. Maven build will proceed from here, none the wiser. ;)
     }
 
@@ -74,11 +79,12 @@ public class RTR extends AbstractMavenLifecycleParticipant {
         if (RTRConfig.isDisabled(session, executionRoot)) {
             return;
         }
-        this.executeSteps(this.endSteps, session);
+        this.executeSteps(this.endSteps, session, this.components);
     }
 
     private void executeSteps(final List<String> steps,
-            final MavenSession session) throws MavenExecutionException {
+            final MavenSession session, final RTRComponents components)
+            throws MavenExecutionException {
         SmartReactorStep step;
         for (final String name : steps) {
             step = this.availableSteps.get(name);
@@ -86,7 +92,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
                 throw new MavenExecutionException("Unable to find step '"
                         + name + "' to execute", new IllegalStateException());
             }
-            step.execute(session);
+            step.execute(session, components);
         }
     }
 

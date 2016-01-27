@@ -15,6 +15,7 @@
  */
 package info.ronjenkins.maven.rtr.steps;
 
+import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.RTRConfig;
 import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
 
@@ -34,20 +35,20 @@ import org.codehaus.plexus.component.annotations.Component;
 public class PerformSmartReactorSanityChecks extends AbstractSmartReactorStep {
 
     @Override
-    public void execute(final MavenSession session)
-            throws MavenExecutionException {
+    public void execute(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         final List<MavenProject> reactor = session.getProjects();
         final MavenProject executionRoot = session.getTopLevelProject();
         // Check for an empty reactor.
         if (reactor.isEmpty()) {
             this.logger.error("");
-            new SmartReactorSanityCheckException(
+            throw new SmartReactorSanityCheckException(
                     "Reactor is empty. Did you forget to bump one of your projects to a SNAPSHOT version?");
         }
         // Make sure the reactor contains the execution root.
         if (!reactor.contains(executionRoot)) {
             this.logger.error("");
-            new SmartReactorSanityCheckException(
+            throw new SmartReactorSanityCheckException(
                     "Reactor does not contain execution root project. Did you forget to bump its version to a SNAPSHOT?");
         }
         // Check for a single POM-only reactor, assuming this is prohibited.
@@ -58,7 +59,7 @@ public class PerformSmartReactorSanityChecks extends AbstractSmartReactorStep {
                     .isSinglePomReactorAllowed(session, executionRoot);
             if (!singlePomOnlyReactorAllowed) {
                 this.logger.error("");
-                new SmartReactorSanityCheckException(
+                throw new SmartReactorSanityCheckException(
                         "Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \""
                                 + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED
                                 + "\" to true.");

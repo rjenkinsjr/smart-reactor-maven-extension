@@ -16,6 +16,7 @@
 package info.ronjenkins.maven.rtr.steps.release;
 
 import info.ronjenkins.maven.rtr.RTR;
+import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.steps.AbstractSmartReactorStep;
 
 import java.util.List;
@@ -58,10 +59,11 @@ public abstract class AbstractSmartReactorReleaseStep extends
     protected ReleaseEnvironment releaseEnvironment;
 
     @Override
-    public void execute(final MavenSession session)
-            throws MavenExecutionException {
+    public void execute(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException {
         if (this.rtr.isRelease()) {
-            this.doReleaseStep(session);
+            this.releaseEnvironment.setSettings(session.getSettings());
+            this.doReleaseStep(session, components);
         }
     }
 
@@ -70,11 +72,13 @@ public abstract class AbstractSmartReactorReleaseStep extends
      * 
      * @param session
      *            the session to which this step applies. Not null.
+     * @param components
+     *            that this step may need. May be null.
      * @throws MavenExecutionException
      *             if any unrecoverable error occurs.
      */
-    protected abstract void doReleaseStep(final MavenSession session)
-            throws MavenExecutionException;
+    protected abstract void doReleaseStep(final MavenSession session,
+            final RTRComponents components) throws MavenExecutionException;
 
     protected final void doRollback(final List<MavenProject> reactor) {
         try {
