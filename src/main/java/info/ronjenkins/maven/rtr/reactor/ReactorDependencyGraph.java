@@ -65,11 +65,18 @@ public final class ReactorDependencyGraph {
      * 
      * @param session
      *            not null.
+     * @throws NullPointerException
+     *             if the session is null.
+     * @throws IllegalArgumentException
+     *             if the session has an empty list of projects.
      */
     public ReactorDependencyGraph(final MavenSession session) {
-        Validate.notNull(session, "session is null");
-        this.session = session;
-        this.root = new Node(null, session.getTopLevelProject());
+	Validate.notNull(session, "session is null");
+	this.session = session;
+	if (session.getProjects().isEmpty()) {
+	    throw new IllegalArgumentException("Session has no projects");
+	}
+	this.root = new Node(null, session.getTopLevelProject());
     }
 
     /**
@@ -78,10 +85,10 @@ public final class ReactorDependencyGraph {
      * @return never null.
      */
     public Node getRoot() {
-        synchronized (this.lock) {
-            this.checkForDestruction();
-            return this.root;
-        }
+	synchronized (this.lock) {
+	    this.checkForDestruction();
+	    return this.root;
+	}
     }
 
     /**
@@ -105,10 +112,10 @@ public final class ReactorDependencyGraph {
      * @return true if the graph is compatible, false otherwise.
      */
     public boolean isSmartReactorCompatible() {
-        synchronized (this.lock) {
-            this.checkForDestruction();
-            return this.root.isGraphSmartReactorCompatible();
-        }
+	synchronized (this.lock) {
+	    this.checkForDestruction();
+	    return this.root.isGraphSmartReactorCompatible();
+	}
     }
 
     /**
@@ -118,13 +125,13 @@ public final class ReactorDependencyGraph {
      *            not null.
      */
     public void error(final Logger logger) {
-        synchronized (this.lock) {
-            this.checkForDestruction();
-            Validate.notNull(logger, "logger is null");
-            for (final String line : this.root.asString(0)) {
-                logger.error(line);
-            }
-        }
+	synchronized (this.lock) {
+	    this.checkForDestruction();
+	    Validate.notNull(logger, "logger is null");
+	    for (final String line : this.root.asString(0)) {
+		logger.error(line);
+	    }
+	}
     }
 
     /**
@@ -138,19 +145,19 @@ public final class ReactorDependencyGraph {
      * IllegalStateException.
      */
     public void destroy() {
-        synchronized (this.lock) {
-            this.checkForDestruction();
-            this.session = null;
-            this.root.destroy();
-            this.root = null;
-            this.destroyed = true;
-        }
+	synchronized (this.lock) {
+	    this.checkForDestruction();
+	    this.session = null;
+	    this.root.destroy();
+	    this.root = null;
+	    this.destroyed = true;
+	}
     }
 
     private void checkForDestruction() {
-        if (this.destroyed) {
-            throw new IllegalStateException(DESTROYED_ERROR);
-        }
+	if (this.destroyed) {
+	    throw new IllegalStateException(DESTROYED_ERROR);
+	}
     }
 
     /**
@@ -161,151 +168,170 @@ public final class ReactorDependencyGraph {
      */
     public final class Node extends MavenProject {
 
-        private ReactorDependencyGraph graph;
-        private Node parent;
-        private List<Node> children = new ArrayList<Node>();
-        private boolean destroyed = false;
+	private ReactorDependencyGraph graph;
+	private Node parent;
+	private List<Node> children = new ArrayList<Node>();
+	private boolean destroyed = false;
 
-        /**
-         * Constructor.
-         * 
-         * @param parent
-         *            the node that is the parent of this node. Null means no
-         *            parent (root node).
-         * @param self
-         *            the project that this node represents. Not null.
-         */
-        private Node(final Node parent, final MavenProject self) {
-            super(self);
-            this.graph = ReactorDependencyGraph.this;
-            this.parent = parent;
-            final ProjectDependencyGraph pdg = graph.session
-                    .getProjectDependencyGraph();
-            final List<MavenProject> childProjects = pdg.getDownstreamProjects(
-                    self, false);
-            for (final MavenProject child : childProjects) {
-                this.children.add(new Node(this, child));
-            }
-        }
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            the node that is the parent of this node. Null means no
+	 *            parent (root node).
+	 * @param self
+	 *            the project that this node represents. Not null.
+	 */
+	private Node(final Node parent, final MavenProject self) {
+	    super(self);
+	    System.out.println("-----");
+	    System.out.println(parent);
+	    System.out.println(self.getArtifactId());
+	    this.graph = ReactorDependencyGraph.this;
+	    this.parent = parent;
+	    final ProjectDependencyGraph pdg = graph.session
+		    .getProjectDependencyGraph();
+	    final List<MavenProject> childProjects = pdg.getDownstreamProjects(
+		    self, false);
+	    for (final MavenProject child : childProjects) {
+		this.children.add(new Node(this, child));
+	    }
+	}
 
-        /**
-         * Returns the graph to which this node belongs.
-         * 
-         * @return never null.
-         */
-        public ReactorDependencyGraph getGraph() {
-            synchronized (ReactorDependencyGraph.this.lock) {
-                this.checkForDestruction();
-                return this.graph;
-            }
-        }
+	@Override
+	public boolean equals(final Object obj) {
+	    // Overridden solely to prevent future confusion...
+	    // Nodes do not have any significant fields, so always treat them
+	    // like MavenProjects.
+	    return super.equals(obj);
+	}
 
-        /**
-         * Returns the parent of this node.
-         * 
-         * @return null iff this is the root node.
-         */
-        public Node getParent() {
-            synchronized (ReactorDependencyGraph.this.lock) {
-                this.checkForDestruction();
-                return this.parent;
-            }
-        }
+	@Override
+	public int hashCode() {
+	    // Overridden solely to prevent future confusion...
+	    // Nodes do not have any significant fields, so always treat them
+	    // like MavenProjects.
+	    return super.hashCode();
+	}
 
-        /**
-         * Returns the children of this node.
-         * 
-         * @return never null but may be empty. Unmodifiable.
-         */
-        public List<Node> getChildren() {
-            synchronized (ReactorDependencyGraph.this.lock) {
-                this.checkForDestruction();
-                return Collections.unmodifiableList(this.children);
-            }
-        }
+	/**
+	 * Returns the graph to which this node belongs.
+	 * 
+	 * @return never null.
+	 */
+	public ReactorDependencyGraph getGraph() {
+	    synchronized (ReactorDependencyGraph.this.lock) {
+		this.checkForDestruction();
+		return this.graph;
+	    }
+	}
 
-        private void checkForDestruction() {
-            if (this.destroyed) {
-                throw new IllegalStateException(DESTROYED_ERROR);
-            }
-        }
+	/**
+	 * Returns the parent of this node.
+	 * 
+	 * @return null iff this is the root node.
+	 */
+	public Node getParent() {
+	    synchronized (ReactorDependencyGraph.this.lock) {
+		this.checkForDestruction();
+		return this.parent;
+	    }
+	}
 
-        private boolean isGraphSmartReactorCompatible() {
-            if (!this.isSmartReactorCompatible()) {
-                return false;
-            }
-            // Only check this node's children if this node is compatible.
-            for (final Node child : this.children) {
-                if (!child.isGraphSmartReactorCompatible()) {
-                    return false;
-                }
-            }
-            // This portion of the graph is compatible.
-            return true;
-        }
+	/**
+	 * Returns the children of this node.
+	 * 
+	 * @return never null but may be empty. Unmodifiable.
+	 */
+	public List<Node> getChildren() {
+	    synchronized (ReactorDependencyGraph.this.lock) {
+		this.checkForDestruction();
+		return Collections.unmodifiableList(this.children);
+	    }
+	}
 
-        private boolean isSmartReactorCompatible() {
-            synchronized (ReactorDependencyGraph.this.lock) {
-                this.checkForDestruction();
-                if (this.getArtifact().isSnapshot()) {
-                    // A SNAPSHOT node's ancestors must all be SNAPSHOTs.
-                    Node ancestor = this.parent;
-                    while (ancestor != null) {
-                        if (!ancestor.getArtifact().isSnapshot()) {
-                            return false;
-                        }
-                        ancestor = ancestor.parent;
-                    }
-                } else {
-                    // A non-SNAPSHOT node's descendants must all be
-                    // non-SNAPSHOTs.
-                    final ProjectDependencyGraph pdg = this.graph.session
-                            .getProjectDependencyGraph();
-                    // Use the PDG as a shortcut to get the list of descendants.
-                    for (final MavenProject descendant : pdg
-                            .getUpstreamProjects(this, true)) {
-                        if (descendant.getArtifact().isSnapshot()) {
-                            return false;
-                        }
-                    }
-                }
-                // This node is compatible.
-                return true;
-            }
-        }
+	private void checkForDestruction() {
+	    if (this.destroyed) {
+		throw new IllegalStateException(DESTROYED_ERROR);
+	    }
+	}
 
-        private List<String> asString(final int indent) {
-            synchronized (ReactorDependencyGraph.this.lock) {
-                this.checkForDestruction();
-                final List<String> graph = new ArrayList<String>();
-                final String incompatible;
-                if (this.isSmartReactorCompatible()) {
-                    incompatible = "";
-                } else {
-                    incompatible = " [ERROR]";
-                }
-                graph.add(Strings.repeat(" ", indent)
-                        + this.getArtifact().toString() + incompatible);
-                for (int n = 0; n < this.children.size(); n++) {
-                    graph.addAll(this.children.get(n).asString(indent + 2));
-                }
-                return graph;
-            }
-        }
+	private boolean isGraphSmartReactorCompatible() {
+	    if (!this.isSmartReactorCompatible()) {
+		return false;
+	    }
+	    // Only check this node's children if this node is compatible.
+	    for (final Node child : this.children) {
+		if (!child.isGraphSmartReactorCompatible()) {
+		    return false;
+		}
+	    }
+	    // This portion of the graph is compatible.
+	    return true;
+	}
 
-        private void destroy() {
-            synchronized (ReactorDependencyGraph.this.lock) {
-                this.checkForDestruction();
-                this.graph = null;
-                this.parent = null;
-                for (final Node child : this.children) {
-                    child.destroy();
-                }
-                this.children.clear();
-                this.children = null;
-                this.destroyed = true;
-            }
-        }
+	private boolean isSmartReactorCompatible() {
+	    synchronized (ReactorDependencyGraph.this.lock) {
+		this.checkForDestruction();
+		if (this.getArtifact().isSnapshot()) {
+		    // A SNAPSHOT node's ancestors must all be SNAPSHOTs.
+		    Node ancestor = this.parent;
+		    while (ancestor != null) {
+			if (!ancestor.getArtifact().isSnapshot()) {
+			    return false;
+			}
+			ancestor = ancestor.parent;
+		    }
+		} else {
+		    // A non-SNAPSHOT node's descendants must all be
+		    // non-SNAPSHOTs.
+		    final ProjectDependencyGraph pdg = this.graph.session
+			    .getProjectDependencyGraph();
+		    // Use the PDG as a shortcut to get the list of descendants.
+		    for (final MavenProject descendant : pdg
+			    .getUpstreamProjects(this, true)) {
+			if (descendant.getArtifact().isSnapshot()) {
+			    return false;
+			}
+		    }
+		}
+		// This node is compatible.
+		return true;
+	    }
+	}
+
+	private List<String> asString(final int indent) {
+	    synchronized (ReactorDependencyGraph.this.lock) {
+		this.checkForDestruction();
+		final List<String> graph = new ArrayList<String>();
+		final String incompatible;
+		if (this.isSmartReactorCompatible()) {
+		    incompatible = "";
+		} else {
+		    incompatible = " [ERROR]";
+		}
+		graph.add(Strings.repeat(" ", indent)
+			+ this.getArtifact().toString() + incompatible);
+		for (int n = 0; n < this.children.size(); n++) {
+		    graph.addAll(this.children.get(n).asString(indent + 2));
+		}
+		return graph;
+	    }
+	}
+
+	private void destroy() {
+	    synchronized (ReactorDependencyGraph.this.lock) {
+		this.checkForDestruction();
+		this.graph = null;
+		this.parent = null;
+		for (final Node child : this.children) {
+		    child.destroy();
+		}
+		this.children.clear();
+		this.children = null;
+		this.destroyed = true;
+	    }
+	}
 
     }
 

@@ -1,105 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (C) 2016 Ronald Jack Jenkins Jr.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
+<!-- Copyright (C) 2016 Ronald Jack Jenkins Jr. Licensed under the Apache 
+	License, Version 2.0 (the "License"); you may not use this file except in 
+	compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>info.ronjenkins</groupId>
-    <artifactId>smart-reactor-maven-extension</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-    <name>Smart Reactor Maven Extension</name>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <plexus.version>1.5.5</plexus.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-component-annotations</artifactId>
-            <version>${plexus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.release</groupId>
-            <artifactId>maven-release-manager</artifactId>
-            <version>2.5.3</version>
-        </dependency>
-    </dependencies>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.plexus</groupId>
-                                        <artifactId>plexus-component-metadata</artifactId>
-                                        <versionRange>*</versionRange>
-                                        <goals>
-                                            <goal>generate-metadata</goal>
-                                            <goal>merge-metadata</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-component-metadata</artifactId>
-                <version>${plexus.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-base-descriptor</id>
-                        <goals>
-                            <goal>generate-metadata</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>merge-descriptors</id>
-                        <goals>
-                            <goal>merge-metadata</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>${project.build.outputDirectory}/META-INF/plexus/components.xml</descriptor>
-                                <descriptor>${project.basedir}/components.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>info.ronjenkins</groupId>
+	<artifactId>smart-reactor-maven-extension</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>Smart Reactor Maven Extension</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<plexus.version>1.5.5</plexus.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-component-annotations</artifactId>
+			<version>${plexus.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.release</groupId>
+			<artifactId>maven-release-manager</artifactId>
+			<version>2.5.3</version>
+		</dependency>
+		<!-- Hamcrest comes before JMockit -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- JMockit comes before JUnit -->
+		<dependency>
+			<groupId>org.jmockit</groupId>
+			<artifactId>jmockit</artifactId>
+			<version>1.21</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.plexus</groupId>
+										<artifactId>plexus-component-metadata</artifactId>
+										<versionRange>*</versionRange>
+										<goals>
+											<goal>generate-metadata</goal>
+											<goal>merge-metadata</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-component-metadata</artifactId>
+				<version>${plexus.version}</version>
+				<executions>
+					<execution>
+						<id>generate-base-descriptor</id>
+						<goals>
+							<goal>generate-metadata</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>merge-descriptors</id>
+						<goals>
+							<goal>merge-metadata</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>${project.build.outputDirectory}/META-INF/plexus/components.xml</descriptor>
+								<descriptor>${project.basedir}/components.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
