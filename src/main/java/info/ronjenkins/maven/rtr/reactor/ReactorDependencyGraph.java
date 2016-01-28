@@ -183,15 +183,15 @@ public final class ReactorDependencyGraph {
 	 *            the project that this node represents. Not null.
 	 */
 	private Node(final Node parent, final MavenProject self) {
-	    super(self);
-	    System.out.println("-----");
-	    System.out.println(parent);
-	    System.out.println(self.getArtifactId());
+	    // super(self) invokes a deep copy operation on the MavenProject,
+	    // which makes mocking very difficult. Using the model instead makes
+	    // testing much easier.
+	    super(self.getModel());
 	    this.graph = ReactorDependencyGraph.this;
 	    this.parent = parent;
 	    final ProjectDependencyGraph pdg = graph.session
 		    .getProjectDependencyGraph();
-	    final List<MavenProject> childProjects = pdg.getDownstreamProjects(
+	    final List<MavenProject> childProjects = pdg.getUpstreamProjects(
 		    self, false);
 	    for (final MavenProject child : childProjects) {
 		this.children.add(new Node(this, child));
