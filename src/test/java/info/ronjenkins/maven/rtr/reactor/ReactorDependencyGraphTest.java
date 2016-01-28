@@ -45,7 +45,7 @@ public class ReactorDependencyGraphTest {
 	new Verifications() {{
 	    session.getProjects();
 	    session.getTopLevelProject();
-	    pdg.getUpstreamProjects(node, false);
+	    pdg.getDownstreamProjects(node, false);
 	}};
 	final Node actualRoot = rdg.getRoot();
 	assertEquals(node, actualRoot);
@@ -61,15 +61,15 @@ public class ReactorDependencyGraphTest {
 	new Expectations() {{
             session.getProjects(); result = Arrays.asList(parent, child);
             session.getTopLevelProject(); result = parent;
-            pdg.getUpstreamProjects(parent, false); result = child;
-            pdg.getUpstreamProjects(child, false); result = Arrays.asList();
+            pdg.getDownstreamProjects(parent, false); result = child;
+            pdg.getDownstreamProjects(child, false); result = Arrays.asList();
         }};
 	final ReactorDependencyGraph rdg = new ReactorDependencyGraph(session);
 	new Verifications() {{
 	    session.getProjects();
 	    session.getTopLevelProject();
-	    pdg.getUpstreamProjects(parent, false);
-	    pdg.getUpstreamProjects(child, false);
+	    pdg.getDownstreamProjects(parent, false);
+	    pdg.getDownstreamProjects(child, false);
 	}};
 	final Node actualParent = rdg.getRoot();
 	assertEquals(parent, actualParent);
@@ -91,17 +91,17 @@ public class ReactorDependencyGraphTest {
 	new Expectations() {{
             session.getProjects(); result = Arrays.asList(parent, childA, childB);
             session.getTopLevelProject(); result = parent;
-            pdg.getUpstreamProjects(parent, false); result = Arrays.asList(childA, childB);
-            pdg.getUpstreamProjects(childA, false); result = Arrays.asList();
-            pdg.getUpstreamProjects(childB, false); result = Arrays.asList();
+            pdg.getDownstreamProjects(parent, false); result = Arrays.asList(childA, childB);
+            pdg.getDownstreamProjects(childA, false); result = Arrays.asList();
+            pdg.getDownstreamProjects(childB, false); result = Arrays.asList();
         }};
 	final ReactorDependencyGraph rdg = new ReactorDependencyGraph(session);
 	new Verifications() {{
 	    session.getProjects();
 	    session.getTopLevelProject();
-	    pdg.getUpstreamProjects(parent, false);
-	    pdg.getUpstreamProjects(childA, false);
-	    pdg.getUpstreamProjects(childB, false);
+	    pdg.getDownstreamProjects(parent, false);
+	    pdg.getDownstreamProjects(childA, false);
+	    pdg.getDownstreamProjects(childB, false);
 	}};
 	final Node actualParent = rdg.getRoot();
 	assertEquals(parent, actualParent);
@@ -128,17 +128,17 @@ public class ReactorDependencyGraphTest {
 	new Expectations() {{
             session.getProjects(); result = Arrays.asList(parent, child, grandchild);
             session.getTopLevelProject(); result = parent;
-            pdg.getUpstreamProjects(parent, false); result = Arrays.asList(child);
-            pdg.getUpstreamProjects(child, false); result = Arrays.asList(grandchild);
-            pdg.getUpstreamProjects(grandchild, false); result = Arrays.asList();
+            pdg.getDownstreamProjects(parent, false); result = Arrays.asList(child);
+            pdg.getDownstreamProjects(child, false); result = Arrays.asList(grandchild);
+            pdg.getDownstreamProjects(grandchild, false); result = Arrays.asList();
         }};
 	final ReactorDependencyGraph rdg = new ReactorDependencyGraph(session);
 	new Verifications() {{
 	    session.getProjects();
 	    session.getTopLevelProject();
-	    pdg.getUpstreamProjects(parent, false);
-	    pdg.getUpstreamProjects(child, false);
-	    pdg.getUpstreamProjects(grandchild, false);
+	    pdg.getDownstreamProjects(parent, false);
+	    pdg.getDownstreamProjects(child, false);
+	    pdg.getDownstreamProjects(grandchild, false);
 	}};
 	final Node actualParent = rdg.getRoot();
 	assertEquals(parent, actualParent);

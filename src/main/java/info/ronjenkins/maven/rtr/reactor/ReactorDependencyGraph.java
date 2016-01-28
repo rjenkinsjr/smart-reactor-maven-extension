@@ -188,7 +188,7 @@ public final class ReactorDependencyGraph {
 	    this.parent = parent;
 	    final ProjectDependencyGraph pdg = graph.session
 		    .getProjectDependencyGraph();
-	    final List<MavenProject> childProjects = pdg.getUpstreamProjects(
+	    final List<MavenProject> childProjects = pdg.getDownstreamProjects(
 		    self, false);
 	    for (final MavenProject child : childProjects) {
 		this.children.add(new Node(this, child));
