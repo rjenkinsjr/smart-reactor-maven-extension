@@ -183,10 +183,7 @@ public final class ReactorDependencyGraph {
 	 *            the project that this node represents. Not null.
 	 */
 	private Node(final Node parent, final MavenProject self) {
-	    // super(self) invokes a deep copy operation on the MavenProject,
-	    // which makes mocking very difficult. Using the model instead makes
-	    // testing much easier.
-	    super(self.getModel());
+	    super(self);
 	    this.graph = ReactorDependencyGraph.this;
 	    this.parent = parent;
 	    final ProjectDependencyGraph pdg = graph.session
