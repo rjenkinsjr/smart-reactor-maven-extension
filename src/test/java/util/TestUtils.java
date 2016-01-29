@@ -1,3 +1,4 @@
+package util;
 
 import mockit.Mock;
 import mockit.MockUp;

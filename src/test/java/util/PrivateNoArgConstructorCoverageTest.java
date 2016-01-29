@@ -1,3 +1,4 @@
+package util;
 
 import info.ronjenkins.maven.rtr.RTRConfig;
 import mockit.Deencapsulation;
