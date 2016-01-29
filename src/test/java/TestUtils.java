@@ -1,4 +1,3 @@
-package info.ronjenkins.maven.rtr;
 
 import mockit.Mock;
 import mockit.MockUp;

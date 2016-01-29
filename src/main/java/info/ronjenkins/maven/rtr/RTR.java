@@ -59,41 +59,42 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      */
     @Override
     public void afterProjectsRead(final MavenSession session)
-            throws MavenExecutionException {
-        // Don't do anything if the Smart Reactor is disabled.
-        final MavenProject executionRoot = session.getTopLevelProject();
-        if (RTRConfig.isDisabled(session, executionRoot)) {
-            return;
-        }
-        this.logger.info("Assembling smart reactor...");
-        this.components = new RTRComponents(this.builder);
-        this.executeSteps(this.startSteps, session, this.components);
-        // Done. Maven build will proceed from here, none the wiser. ;)
+	    throws MavenExecutionException {
+	// Don't do anything if the Smart Reactor is disabled.
+	final MavenProject executionRoot = session.getTopLevelProject();
+	if (RTRConfig.isDisabled(session, executionRoot)) {
+	    return;
+	}
+	this.release = RTRConfig.isRelease(session, executionRoot);
+	this.logger.info("Assembling smart reactor...");
+	this.components = new RTRComponents(this.builder);
+	this.executeSteps(this.startSteps, session, this.components);
+	// Done. Maven build will proceed from here, none the wiser. ;)
     }
 
     @Override
     public void afterSessionEnd(final MavenSession session)
-            throws MavenExecutionException {
-        // Don't do anything if the Smart Reactor is disabled.
-        final MavenProject executionRoot = session.getTopLevelProject();
-        if (RTRConfig.isDisabled(session, executionRoot)) {
-            return;
-        }
-        this.executeSteps(this.endSteps, session, this.components);
+	    throws MavenExecutionException {
+	// Don't do anything if the Smart Reactor is disabled.
+	final MavenProject executionRoot = session.getTopLevelProject();
+	if (RTRConfig.isDisabled(session, executionRoot)) {
+	    return;
+	}
+	this.executeSteps(this.endSteps, session, this.components);
     }
 
     private void executeSteps(final List<String> steps,
-            final MavenSession session, final RTRComponents components)
-            throws MavenExecutionException {
-        SmartReactorStep step;
-        for (final String name : steps) {
-            step = this.availableSteps.get(name);
-            if (step == null) {
-                throw new MavenExecutionException("Unable to find step '"
-                        + name + "' to execute", new IllegalStateException());
-            }
-            step.execute(session, components);
-        }
+	    final MavenSession session, final RTRComponents components)
+	    throws MavenExecutionException {
+	SmartReactorStep step;
+	for (final String name : steps) {
+	    step = this.availableSteps.get(name);
+	    if (step == null) {
+		throw new MavenExecutionException("Unable to find step '"
+			+ name + "' to execute", new IllegalStateException());
+	    }
+	    step.execute(session, components);
+	}
     }
 
     /**
@@ -102,7 +103,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      * @return true if a release was requested, false otherwise.
      */
     public boolean isRelease() {
-        return this.release;
+	return this.release;
     }
 
 }

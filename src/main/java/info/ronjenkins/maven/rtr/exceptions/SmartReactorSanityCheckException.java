@@ -33,7 +33,8 @@ public class SmartReactorSanityCheckException extends MavenExecutionException {
      *            description of sanity check failure.
      */
     public SmartReactorSanityCheckException(final String message) {
-        super(message, new RuntimeException());
+	super("Smart Reactor sanity check failure:", new IllegalStateException(
+		message));
     }
 
 }
