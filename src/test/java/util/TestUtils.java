@@ -1,5 +1,7 @@
 package util;
 
+import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
+import mockit.Deencapsulation;
 import mockit.Mock;
 import mockit.MockUp;
 
@@ -16,6 +18,20 @@ import org.apache.maven.project.MavenProject;
  * @author Ronald Jack Jenkins Jr.
  */
 public final class TestUtils {
+
+    /**
+     * Adds a test logger to a smart reactor step for testing.
+     * 
+     * @param step
+     *            not null.
+     * @return never null.
+     */
+    public static TestLogger addLogger(final SmartReactorStep step) {
+	Validate.notNull(step, "step is null");
+	final TestLogger logger = new TestLogger();
+	Deencapsulation.setField(step, logger);
+	return logger;
+    }
 
     /**
      * Returns a new MavenProject object whose GAV matches the given parameters.

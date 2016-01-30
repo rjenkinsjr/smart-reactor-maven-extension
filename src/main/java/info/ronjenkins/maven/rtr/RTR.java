@@ -49,6 +49,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     protected Map<String, SmartReactorStep> availableSteps;
 
     private RTRComponents components;
+    private boolean disabled;
     private boolean release;
 
     /**
@@ -62,7 +63,8 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 	    throws MavenExecutionException {
 	// Don't do anything if the Smart Reactor is disabled.
 	final MavenProject executionRoot = session.getTopLevelProject();
-	if (RTRConfig.isDisabled(session, executionRoot)) {
+	this.disabled = RTRConfig.isDisabled(session, executionRoot);
+	if (this.disabled) {
 	    return;
 	}
 	this.release = RTRConfig.isRelease(session, executionRoot);
@@ -75,9 +77,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     @Override
     public void afterSessionEnd(final MavenSession session)
 	    throws MavenExecutionException {
-	// Don't do anything if the Smart Reactor is disabled.
-	final MavenProject executionRoot = session.getTopLevelProject();
-	if (RTRConfig.isDisabled(session, executionRoot)) {
+	if (this.disabled) {
 	    return;
 	}
 	this.executeSteps(this.endSteps, session, this.components);
