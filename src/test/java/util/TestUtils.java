@@ -1,6 +1,12 @@
 package util;
 
+import info.ronjenkins.maven.rtr.RTR;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
+import info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep;
+
+import java.util.List;
+import java.util.Map;
+
 import mockit.Deencapsulation;
 import mockit.Mock;
 import mockit.MockUp;
@@ -11,6 +17,9 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.release.config.ReleaseDescriptor;
+import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.apache.maven.shared.release.phase.ReleasePhase;
 
 /**
  * Utility functions to facilitate testing.
@@ -29,7 +38,43 @@ public final class TestUtils {
     public static TestLogger addLogger(final SmartReactorStep step) {
 	Validate.notNull(step, "step is null");
 	final TestLogger logger = new TestLogger();
-	Deencapsulation.setField(step, logger);
+	Deencapsulation.setField(step, "logger", logger);
+	return logger;
+    }
+
+    /**
+     * Adds a test logger and other dependencies to a smart reactor release step
+     * for testing.
+     * 
+     * @param step
+     *            not null.
+     * @param rtr
+     *            not null.
+     * @param rollbackPhases
+     *            can be null.
+     * @param availablePhases
+     *            can be null.
+     * @param releaseDescriptor
+     *            can be null.
+     * @param releaseEnvironment
+     *            can be null.
+     * @return never null.
+     */
+    public static TestLogger addLoggerAndReleaseDependencies(
+	    final AbstractSmartReactorReleaseStep step, final RTR rtr,
+	    final List<String> rollbackPhases,
+	    final Map<String, ReleasePhase> availablePhases,
+	    final ReleaseDescriptor releaseDescriptor,
+	    final ReleaseEnvironment releaseEnvironment) {
+	Validate.notNull(step, "step is null");
+	Validate.notNull(rtr, "rtr is null");
+	final TestLogger logger = addLogger(step);
+	Deencapsulation.setField(step, "rtr", rtr);
+	Deencapsulation.setField(step, "rollbackPhases", rollbackPhases);
+	Deencapsulation.setField(step, "availablePhases", availablePhases);
+	Deencapsulation.setField(step, "releaseDescriptor", releaseDescriptor);
+	Deencapsulation
+		.setField(step, "releaseEnvironment", releaseEnvironment);
 	return logger;
     }
 

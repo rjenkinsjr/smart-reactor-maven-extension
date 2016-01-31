@@ -42,7 +42,7 @@ import org.codehaus.plexus.util.ExceptionUtils;
  * @author Ronald Jack Jenkins Jr.
  */
 public abstract class AbstractSmartReactorReleaseStep extends
-        AbstractSmartReactorStep {
+	AbstractSmartReactorStep {
 
     @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
     protected RTR rtr;
@@ -60,11 +60,11 @@ public abstract class AbstractSmartReactorReleaseStep extends
 
     @Override
     public void execute(final MavenSession session,
-            final RTRComponents components) throws MavenExecutionException {
-        if (this.rtr.isRelease()) {
-            this.releaseEnvironment.setSettings(session.getSettings());
-            this.doReleaseStep(session, components);
-        }
+	    final RTRComponents components) throws MavenExecutionException {
+	if (this.rtr.isRelease()) {
+	    this.releaseEnvironment.setSettings(session.getSettings());
+	    this.doReleaseStep(session, components);
+	}
     }
 
     /**
@@ -78,37 +78,37 @@ public abstract class AbstractSmartReactorReleaseStep extends
      *             if any unrecoverable error occurs.
      */
     protected abstract void doReleaseStep(final MavenSession session,
-            final RTRComponents components) throws MavenExecutionException;
+	    final RTRComponents components) throws MavenExecutionException;
 
     protected final void doRollback(final List<MavenProject> reactor) {
-        try {
-            executePhases(reactor, this.rollbackPhases);
-        } catch (final ReleaseExecutionException | ReleaseFailureException e2) {
-            this.logger.error(ExceptionUtils.getFullStackTrace(e2));
-            this.logger
-                    .error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
-        }
+	try {
+	    executePhases(reactor, this.rollbackPhases);
+	} catch (final ReleaseExecutionException | ReleaseFailureException e2) {
+	    this.logger.error(ExceptionUtils.getFullStackTrace(e2));
+	    this.logger
+		    .error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
+	}
     }
 
     // Derived from DefaultReleaseManager.java in maven-release-manager, see
     // THIRDPARTY file for further legal information.
     protected final void executePhases(final List<MavenProject> reactor,
-            final List<String> phases) throws ReleaseExecutionException,
-            ReleaseFailureException {
-        ReleasePhase phase;
-        ReleaseResult result;
-        for (final String name : phases) {
-            phase = this.availablePhases.get(name);
-            if (phase == null) {
-                throw new ReleaseExecutionException("Unable to find phase '"
-                        + name + "' to execute");
-            }
-            result = phase.execute(this.releaseDescriptor,
-                    this.releaseEnvironment, reactor);
-            if (result.getResultCode() == ReleaseResult.ERROR) {
-                throw new ReleaseFailureException("Release failed.");
-            }
-        }
+	    final List<String> phases) throws ReleaseExecutionException,
+	    ReleaseFailureException {
+	ReleasePhase phase;
+	ReleaseResult result;
+	for (final String name : phases) {
+	    phase = this.availablePhases.get(name);
+	    if (phase == null) {
+		throw new ReleaseExecutionException("Unable to find phase '"
+			+ name + "' to execute");
+	    }
+	    result = phase.execute(this.releaseDescriptor,
+		    this.releaseEnvironment, reactor);
+	    if (result.getResultCode() == ReleaseResult.ERROR) {
+		throw new ReleaseFailureException("Release failed.");
+	    }
+	}
     }
 
 }
