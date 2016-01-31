@@ -17,6 +17,7 @@ package info.ronjenkins.maven.rtr.steps.release;
 
 import info.ronjenkins.maven.rtr.RTR;
 import info.ronjenkins.maven.rtr.RTRComponents;
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorReleaseException;
 import info.ronjenkins.maven.rtr.steps.AbstractSmartReactorStep;
 
 import java.util.List;
@@ -33,7 +34,6 @@ import org.apache.maven.shared.release.config.ReleaseDescriptor;
 import org.apache.maven.shared.release.env.ReleaseEnvironment;
 import org.apache.maven.shared.release.phase.ReleasePhase;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.util.ExceptionUtils;
 
 /**
  * Base implementation of a Smart Reactor release step. No-op unless the Smart
@@ -47,6 +47,7 @@ public abstract class AbstractSmartReactorReleaseStep extends
     @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
     protected RTR rtr;
 
+    protected List<String> releasePhases;
     protected List<String> rollbackPhases;
 
     @Requirement(role = ReleasePhase.class)
@@ -59,16 +60,25 @@ public abstract class AbstractSmartReactorReleaseStep extends
     protected ReleaseEnvironment releaseEnvironment;
 
     @Override
-    public void execute(final MavenSession session,
+    public final void execute(final MavenSession session,
 	    final RTRComponents components) throws MavenExecutionException {
 	if (this.rtr.isRelease()) {
-	    this.releaseEnvironment.setSettings(session.getSettings());
-	    this.doReleaseStep(session, components);
+	    this.logger.info(this.getAnnouncement());
+	    this.releaseExecute(session, components);
 	}
     }
 
     /**
-     * Executes this step.
+     * Returns the announcement that is logged when this release step begins
+     * execution.
+     * 
+     * @return null or empty will prevent the corresponding log entry from
+     *         occurring.
+     */
+    protected abstract String getAnnouncement();
+
+    /**
+     * Step logic that is executed if a release was requested.
      * 
      * @param session
      *            the session to which this step applies. Not null.
@@ -77,36 +87,48 @@ public abstract class AbstractSmartReactorReleaseStep extends
      * @throws MavenExecutionException
      *             if any unrecoverable error occurs.
      */
-    protected abstract void doReleaseStep(final MavenSession session,
-	    final RTRComponents components) throws MavenExecutionException;
-
-    protected final void doRollback(final List<MavenProject> reactor) {
+    protected void releaseExecute(final MavenSession session,
+	    final RTRComponents components) throws MavenExecutionException {
+	this.releaseEnvironment.setSettings(session.getSettings());
+	final List<MavenProject> reactor = session.getProjects();
+	// Execute the release steps.
 	try {
-	    executePhases(reactor, this.rollbackPhases);
-	} catch (final ReleaseExecutionException | ReleaseFailureException e2) {
-	    this.logger.error(ExceptionUtils.getFullStackTrace(e2));
-	    this.logger
-		    .error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
+	    this.runPhases(reactor, this.releasePhases);
+	} catch (final MavenExecutionException | RuntimeException e) {
+	    // Rollback if ANY exception occurred, then rethrow.
+	    this.logger.error("Rolling back release due to error...");
+	    try {
+		this.runPhases(reactor, this.rollbackPhases);
+	    } catch (final MavenExecutionException | RuntimeException e2) {
+		// Suppress this exception.
+		e.addSuppressed(e2);
+		this.logger
+			.error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
+	    }
+	    throw e;
 	}
     }
 
     // Derived from DefaultReleaseManager.java in maven-release-manager, see
     // THIRDPARTY file for further legal information.
-    protected final void executePhases(final List<MavenProject> reactor,
-	    final List<String> phases) throws ReleaseExecutionException,
-	    ReleaseFailureException {
+    private final void runPhases(final List<MavenProject> reactor,
+	    final List<String> phases) throws MavenExecutionException {
 	ReleasePhase phase;
 	ReleaseResult result;
 	for (final String name : phases) {
 	    phase = this.availablePhases.get(name);
 	    if (phase == null) {
-		throw new ReleaseExecutionException("Unable to find phase '"
+		throw new SmartReactorReleaseException("Unable to find phase '"
 			+ name + "' to execute");
 	    }
-	    result = phase.execute(this.releaseDescriptor,
-		    this.releaseEnvironment, reactor);
+	    try {
+		result = phase.execute(this.releaseDescriptor,
+			this.releaseEnvironment, reactor);
+	    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+		throw new SmartReactorReleaseException(e);
+	    }
 	    if (result.getResultCode() == ReleaseResult.ERROR) {
-		throw new ReleaseFailureException("Release failed.");
+		throw new SmartReactorReleaseException(result.getOutput());
 	    }
 	}
     }

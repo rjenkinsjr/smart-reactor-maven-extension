@@ -15,17 +15,9 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
-import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
-import java.util.List;
-
-import org.apache.maven.MavenExecutionException;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.shared.release.ReleaseExecutionException;
-import org.apache.maven.shared.release.ReleaseFailureException;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.ExceptionUtils;
 
 /**
  * Cleans up/rolls back a release build.
@@ -35,19 +27,9 @@ import org.codehaus.plexus.util.ExceptionUtils;
 @Component(role = SmartReactorStep.class, hint = "post-release")
 public class DoPostRelease extends AbstractSmartReactorReleaseStep {
 
-    private List<String> postReleasePhases;
-
     @Override
-    public void doReleaseStep(final MavenSession session,
-            final RTRComponents components) throws MavenExecutionException {
-        try {
-            executePhases(session.getProjects(), this.postReleasePhases);
-        } catch (final ReleaseExecutionException | ReleaseFailureException e) {
-            this.logger.error("");
-            throw new MavenExecutionException(
-                    "Could not execute post-release phases\n"
-                            + ExceptionUtils.getFullStackTrace(e), e);
-        }
+    public String getAnnouncement() {
+	return "Performing post-release cleanup...";
     }
 
 }

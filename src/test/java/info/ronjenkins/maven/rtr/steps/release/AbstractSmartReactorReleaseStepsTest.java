@@ -1,0 +1,216 @@
+package info.ronjenkins.maven.rtr.steps.release;
+
+import static org.junit.Assert.*;
+import static util.TestUtils.*;
+import info.ronjenkins.maven.rtr.RTR;
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorReleaseException;
+import info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep;
+import info.ronjenkins.maven.rtr.steps.release.DoPostRelease;
+import info.ronjenkins.maven.rtr.steps.release.TransformProjectsIntoReleases;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mocked;
+import mockit.Tested;
+
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.release.ReleaseExecutionException;
+import org.apache.maven.shared.release.ReleaseFailureException;
+import org.apache.maven.shared.release.ReleaseResult;
+import org.apache.maven.shared.release.config.ReleaseDescriptor;
+import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.apache.maven.shared.release.phase.ReleasePhase;
+import org.junit.Test;
+
+import util.TestLogger;
+
+public final class AbstractSmartReactorReleaseStepsTest {
+
+    @Tested
+    @Injectable
+    AbstractSmartReactorReleaseStep step;
+    @Injectable
+    MavenSession session;
+    @Mocked
+    RTR rtr;
+    @Mocked
+    ReleaseDescriptor releaseDescriptor;
+    @Mocked
+    ReleaseEnvironment releaseEnvironment;
+
+    @Test
+    public void coverBasicImplementations() {
+	new TransformProjectsIntoReleases().getAnnouncement();
+	new DoPostRelease().getAnnouncement();
+    }
+
+    @Test
+    public void disabledReleaseMeansNoop() {
+	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+		null, null, null, null, null);
+	new Expectations() {
+	    {
+		rtr.isRelease();
+		result = false;
+	    }
+	};
+	try {
+	    step.execute(session, null);
+	} catch (final MavenExecutionException e) {
+	    fail();
+	}
+	assertTrue(logger.getErrorLog().isEmpty());
+    }
+
+    @Test
+    public void successfulExecution(
+	    @Injectable final Map<String, ReleasePhase> availablePhases) {
+	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+		Arrays.asList("phase1"), null, availablePhases,
+		this.releaseDescriptor, this.releaseEnvironment);
+	new Expectations() {
+	    {
+		rtr.isRelease();
+		result = true;
+	    }
+	};
+	try {
+	    step.execute(session, null);
+	} catch (final MavenExecutionException e) {
+	    fail();
+	}
+	assertTrue(logger.getErrorLog().isEmpty());
+    }
+
+    @Test
+    public void nullReleasePhaseCausesException(
+	    @Injectable final Map<String, ReleasePhase> availablePhases) {
+	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+		Arrays.asList("phase1"), null, availablePhases,
+		this.releaseDescriptor, this.releaseEnvironment);
+	new Expectations() {
+	    {
+		rtr.isRelease();
+		result = true;
+		availablePhases.get("phase1");
+		result = null;
+	    }
+	};
+	try {
+	    step.execute(session, null);
+	} catch (final MavenExecutionException e) {
+	    assertTrue(e instanceof SmartReactorReleaseException);
+	    assertEquals(0, e.getSuppressed().length);
+	    assertEquals(IllegalStateException.class, e.getCause().getClass());
+	}
+	assertFalse(logger.getErrorLog().isEmpty());
+    }
+
+    @Test
+    public void releasePhaseExceptionCausesExceptionWithProperCause(
+	    @Injectable final Map<String, ReleasePhase> availablePhases,
+	    @Injectable final ReleasePhase phase1) {
+	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+		Arrays.asList("phase1"), null, availablePhases,
+		this.releaseDescriptor, this.releaseEnvironment);
+	try {
+	    new Expectations() {
+		{
+		    rtr.isRelease();
+		    result = true;
+		    availablePhases.get("phase1");
+		    result = phase1;
+		    @SuppressWarnings({ "unused", "unchecked" })
+		    ReleaseResult execute = phase1.execute(
+			    (ReleaseDescriptor) any, (ReleaseEnvironment) any,
+			    (List<MavenProject>) any);
+		    result = new ReleaseExecutionException(
+			    "test execution exception");
+		}
+	    };
+	} catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
+	    notPossibleDuringTesting.printStackTrace();
+	    fail();
+	}
+	try {
+	    step.execute(session, null);
+	} catch (final MavenExecutionException e) {
+	    assertTrue(e instanceof SmartReactorReleaseException);
+	    assertEquals(0, e.getSuppressed().length);
+	    assertEquals(ReleaseExecutionException.class, e.getCause()
+		    .getClass());
+	}
+	assertFalse(logger.getErrorLog().isEmpty());
+    }
+
+    @Test
+    public void releasePhaseErrorResultCausesExceptionWithProperCause(
+	    @Injectable final Map<String, ReleasePhase> availablePhases,
+	    @Injectable final ReleasePhase phase1,
+	    @Injectable final ReleaseResult result1) {
+	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+		Arrays.asList("phase1"), null, availablePhases,
+		this.releaseDescriptor, this.releaseEnvironment);
+	try {
+	    new Expectations() {
+		{
+		    rtr.isRelease();
+		    result = true;
+		    availablePhases.get("phase1");
+		    result = phase1;
+		    @SuppressWarnings({ "unused", "unchecked" })
+		    ReleaseResult execute = phase1.execute(
+			    (ReleaseDescriptor) any, (ReleaseEnvironment) any,
+			    (List<MavenProject>) any);
+		    result = result1;
+		    result1.getResultCode();
+		    result = ReleaseResult.ERROR;
+		}
+	    };
+	} catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
+	    notPossibleDuringTesting.printStackTrace();
+	    fail();
+	}
+	try {
+	    step.execute(session, null);
+	} catch (final MavenExecutionException e) {
+	    assertTrue(e instanceof SmartReactorReleaseException);
+	    assertEquals(0, e.getSuppressed().length);
+	    assertEquals(IllegalStateException.class, e.getCause().getClass());
+	}
+	assertFalse(logger.getErrorLog().isEmpty());
+    }
+
+    @Test
+    public void rollbackFailureOfAnyKindCausesExceptionSuppression(
+	    @Injectable final Map<String, ReleasePhase> availablePhases) {
+	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+		Arrays.asList("phase1"), Arrays.asList("phase2"),
+		availablePhases, this.releaseDescriptor,
+		this.releaseEnvironment);
+	new Expectations() {
+	    {
+		rtr.isRelease();
+		result = true;
+		availablePhases.get("phase1");
+		result = null;
+		availablePhases.get("phase2");
+		result = null;
+	    }
+	};
+	try {
+	    step.execute(session, null);
+	} catch (final MavenExecutionException e) {
+	    assertTrue(e instanceof SmartReactorReleaseException);
+	    assertEquals(1, e.getSuppressed().length);
+	}
+	assertFalse(logger.getErrorLog().isEmpty());
+    }
+
+}
