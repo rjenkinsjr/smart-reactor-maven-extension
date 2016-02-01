@@ -41,7 +41,7 @@
 		<plexus.version>1.5.5</plexus.version>
 		<maven.testing.version>2.19.1</maven.testing.version>
 		<jacoco.ut.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.file>
-		<jacoco.it.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.it.file>
+		<jacoco.it.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.file>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -81,6 +81,19 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>${project.basedir}</directory>
+				<includes>
+					<include>LICENSE</include>
+					<include>THIRDPARTY</include>
+				</includes>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
