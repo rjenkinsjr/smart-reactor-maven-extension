@@ -27,15 +27,15 @@
 			<configuration>
 				<startSteps>
 					<startStep>validate-eligibility</startStep>
-          <startStep>build-smart-reactor</startStep>
-          <startStep>sanity-checks</startStep>
-          <startStep>transform-poms</startStep>
-          <startStep>rebuild-release-reactor</startStep>
-          <startStep>rebuild-graph</startStep>
+					<startStep>build-smart-reactor</startStep>
+					<startStep>sanity-checks</startStep>
+					<startStep>transform-poms</startStep>
+					<startStep>rebuild-release-reactor</startStep>
+					<startStep>rebuild-graph</startStep>
 				</startSteps>
-        <endSteps>
-          <endStep>post-release</endStep>
-        </endSteps>
+				<endSteps>
+					<endStep>post-release</endStep>
+				</endSteps>
 			</configuration>
 		</component>
     <!-- Smart Reactor release steps. -->
@@ -68,9 +68,9 @@
 			<implementation>info.ronjenkins.maven.rtr.steps.release.DoPostRelease
 			</implementation>
 			<configuration>
-        <releasePhases>
-          <phase>remove-backup-poms</phase><!-- custom -->
-        </releasePhases>
+				<releasePhases>
+					<phase>remove-backup-poms</phase><!-- custom -->
+				</releasePhases>
 				<rollbackPhases>
 					<phase>restore-backup-poms</phase>
 					<phase>remove-backup-poms</phase><!-- custom -->
@@ -166,10 +166,11 @@
 			<role-hint>rtr-rd</role-hint>
 			<implementation>org.apache.maven.shared.release.config.ReleaseDescriptor
 			</implementation>
-      <configuration>
-        <interactive>${session.settings.interactive}</interactive>
-        <workingDirectory>${session.request.baseDirectory}</workingDirectory>
-      </configuration>
+			<configuration>
+				<interactive>${session.settings.interactive}</interactive>
+				<workingDirectory>${session.request.baseDirectory}
+				</workingDirectory>
+			</configuration>
 		</component>
 		<component>
 			<role>org.apache.maven.shared.release.env.ReleaseEnvironment
@@ -177,12 +178,15 @@
 			<role-hint>rtr-re</role-hint>
 			<implementation>org.apache.maven.shared.release.env.DefaultReleaseEnvironment
 			</implementation>
-      <configuration>
+			<configuration>
         <!-- settings are injected from the session object at runtime -->
-        <javaHome>${session.systemProperties.getProperty("user.home")}</javaHome>
-        <mavenHome>${session.systemProperties.getProperty("maven.home")}</mavenHome>
-        <localRepositoryDirectory>${session.request.localRepositoryPath}</localRepositoryDirectory>
-      </configuration>
+				<javaHome>${session.systemProperties.getProperty("user.home")}
+				</javaHome>
+				<mavenHome>${session.systemProperties.getProperty("maven.home")}
+				</mavenHome>
+				<localRepositoryDirectory>${session.request.localRepositoryPath}
+				</localRepositoryDirectory>
+			</configuration>
 		</component>
 	</components>
 </component-set>
