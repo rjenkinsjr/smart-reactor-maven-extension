@@ -24,6 +24,20 @@ import org.apache.maven.shared.release.phase.ReleasePhase;
 public final class TestUtils {
 
     /**
+     * Adds a test logger to an RTR for testing.
+     * 
+     * @param step
+     *            not null.
+     * @return never null.
+     */
+    public static TestLogger addLogger(final RTR rtr) {
+	Validate.notNull(rtr, "rtr is null");
+	final TestLogger logger = new TestLogger();
+	Deencapsulation.setField(rtr, "logger", logger);
+	return logger;
+    }
+
+    /**
      * Adds a test logger to a smart reactor step for testing.
      * 
      * @param step

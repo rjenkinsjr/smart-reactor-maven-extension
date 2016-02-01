@@ -117,12 +117,12 @@ public final class TestLogger implements Logger {
 
     @SuppressWarnings("unchecked")
     public List<Entry> getInfoLog() {
-	return Collections.unmodifiableList(this.warnLog);
+	return Collections.unmodifiableList(this.infoLog);
     }
 
     @SuppressWarnings("unchecked")
     public List<Entry> getWarnLog() {
-	return Collections.unmodifiableList(this.infoLog);
+	return Collections.unmodifiableList(this.warnLog);
     }
 
     @SuppressWarnings("unchecked")
