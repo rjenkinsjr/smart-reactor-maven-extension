@@ -42,13 +42,11 @@
     <maven.surefire.version>2.19.1</maven.surefire.version>
     <maven.invoker.version>2.0.0</maven.invoker.version>
     <maven.javadoc.version>2.10.3</maven.javadoc.version>
-    <ant.version>1.9.4</ant.version>
     <jacoco.version>0.7.5.201505241946</jacoco.version>
     <jacoco.ut.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.file>
     <jacoco.it.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.file>
-    <it.src>${project.basedir}/src/it</it.src>
     <it.dest>${project.build.directory}/it</it.dest>
-    <it.resources.src>${it.src}/resources</it.resources.src>
+    <it.resources.src>${project.basedir}/src/it/resources</it.resources.src>
     <it.resources.dest>${project.build.directory}/it-resources</it.resources.dest>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -188,7 +186,7 @@
           <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>${ant.version}</version>
+            <version>1.9.6</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -216,6 +214,7 @@
               </goals>
               <scriptVariables>
                 <itResourcesDir>${it.resources.dest}</itResourcesDir>
+                <itCommonPrebuild>${it.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
               </scriptVariables>
             </configuration>
           </execution>
