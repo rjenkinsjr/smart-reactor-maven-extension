@@ -52,10 +52,31 @@ public final class RebuildReleaseReactorTest {
     RTR rtr;
 
     @Test
+    public void assertUOEs() {
+	final RebuildReleaseReactor step = new RebuildReleaseReactor();
+	try {
+	    step.getReleasePhases();
+	    fail();
+	} catch (final UnsupportedOperationException expected) {
+	    // expected
+	} catch (final Exception notExpected) {
+	    fail();
+	}
+	try {
+	    step.getRollbackPhases();
+	    fail();
+	} catch (final UnsupportedOperationException expected) {
+	    // expected
+	} catch (final Exception notExpected) {
+	    fail();
+	}
+    }
+
+    @Test
     public void disabledReleaseMeansNoop() {
 	final RebuildReleaseReactor step = new RebuildReleaseReactor();
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null, null, null);
+		null, null, null);
 	new Expectations() {
 	    {
 		rtr.isRelease();
@@ -77,7 +98,7 @@ public final class RebuildReleaseReactorTest {
 	    @Injectable final ProjectBuildingResult childResult) {
 	final RebuildReleaseReactor step = new RebuildReleaseReactor();
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null, null, null);
+		null, null, null);
 	final List<MavenProject> reactor = new ArrayList<MavenProject>();
 	reactor.add(root);
 	reactor.add(child);
@@ -143,7 +164,7 @@ public final class RebuildReleaseReactorTest {
     public void exceptionsArePropagated(@Injectable final MavenProject root) {
 	final RebuildReleaseReactor step = new RebuildReleaseReactor();
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null, null, null);
+		null, null, null);
 	final ProjectBuildingException pbe = new ProjectBuildingException("id",
 		"error", root.getFile());
 	try {

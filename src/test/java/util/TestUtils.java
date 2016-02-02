@@ -74,10 +74,6 @@ public final class TestUtils {
      *            not null.
      * @param rtr
      *            not null.
-     * @param releasePhases
-     *            can be null, which is coerced to an empty list.
-     * @param rollbackPhases
-     *            can be null, which is coerced to an empty list.
      * @param availablePhases
      *            can be null.
      * @param releaseDescriptor
@@ -88,8 +84,6 @@ public final class TestUtils {
      */
     public static TestLogger addLoggerAndReleaseDependencies(
 	    final AbstractSmartReactorReleaseStep step, final RTR rtr,
-	    final List<String> releasePhases,
-	    final List<String> rollbackPhases,
 	    final Map<String, ReleasePhase> availablePhases,
 	    final ReleaseDescriptor releaseDescriptor,
 	    final ReleaseEnvironment releaseEnvironment) {
@@ -97,16 +91,6 @@ public final class TestUtils {
 	Validate.notNull(rtr, "rtr is null");
 	final TestLogger logger = addLogger(step);
 	Deencapsulation.setField(step, "rtr", rtr);
-	Deencapsulation.setField(
-		step,
-		"releasePhases",
-		ObjectUtils.defaultIfNull(releasePhases,
-			Collections.emptyList()));
-	Deencapsulation.setField(
-		step,
-		"rollbackPhases",
-		ObjectUtils.defaultIfNull(rollbackPhases,
-			Collections.emptyList()));
 	Deencapsulation.setField(step, "availablePhases", availablePhases);
 	Deencapsulation.setField(step, "releaseDescriptor", releaseDescriptor);
 	Deencapsulation

@@ -120,22 +120,10 @@
         <version>${plexus.version}</version>
         <executions>
           <execution>
-            <id>generate-base-descriptor</id>
+            <id>generate-descriptor</id>
             <goals>
               <goal>generate-metadata</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>merge-descriptors</id>
-            <goals>
-              <goal>merge-metadata</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>${project.build.outputDirectory}/META-INF/plexus/components.xml</descriptor>
-                <descriptor>${project.basedir}/components.xml</descriptor>
-              </descriptors>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -151,7 +139,6 @@
               <value>org.sonar.java.jacoco.JUnitListener</value>
             </property>
           </properties>
-          <testFailureIgnore>true</testFailureIgnore>
         </configuration>
       </plugin>
       <!-- Prepares the IT environment for test execution. -->

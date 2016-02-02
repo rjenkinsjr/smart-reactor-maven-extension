@@ -75,4 +75,14 @@ public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
 	session.getProjects().addAll(newReactor);
     }
 
+    @Override
+    protected List<String> getReleasePhases() {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected List<String> getRollbackPhases() {
+	throw new UnsupportedOperationException();
+    }
+
 }

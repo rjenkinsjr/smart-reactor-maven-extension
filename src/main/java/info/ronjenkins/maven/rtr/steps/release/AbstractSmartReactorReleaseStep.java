@@ -47,9 +47,6 @@ public abstract class AbstractSmartReactorReleaseStep extends
     @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
     protected RTR rtr;
 
-    protected List<String> releasePhases;
-    protected List<String> rollbackPhases;
-
     @Requirement(role = ReleasePhase.class)
     protected Map<String, ReleasePhase> availablePhases;
 
@@ -78,6 +75,25 @@ public abstract class AbstractSmartReactorReleaseStep extends
     protected abstract String getAnnouncement();
 
     /**
+     * Returns the list of phases that should be executed by this release step.
+     * 
+     * @return never null or empty.
+     * @throws UnsupportedOperationException
+     *             if this step does not execute any release phases.
+     */
+    protected abstract List<String> getReleasePhases();
+
+    /**
+     * Returns the list of phases that should be executed by this release step
+     * when rollback is required.
+     * 
+     * @return never null or empty.
+     * @throws UnsupportedOperationException
+     *             if this step does not execute any release phases.
+     */
+    protected abstract List<String> getRollbackPhases();
+
+    /**
      * Step logic that is executed if a release was requested.
      * 
      * @param session
@@ -93,12 +109,12 @@ public abstract class AbstractSmartReactorReleaseStep extends
 	final List<MavenProject> reactor = session.getProjects();
 	// Execute the release steps.
 	try {
-	    this.runPhases(reactor, this.releasePhases);
+	    this.runPhases(reactor, this.getReleasePhases());
 	} catch (final MavenExecutionException | RuntimeException e) {
 	    // Rollback if ANY exception occurred, then rethrow.
 	    this.logger.error("Rolling back release due to error...");
 	    try {
-		this.runPhases(reactor, this.rollbackPhases);
+		this.runPhases(reactor, this.getRollbackPhases());
 	    } catch (final MavenExecutionException | RuntimeException e2) {
 		// Suppress this exception.
 		e.addSuppressed(e2);

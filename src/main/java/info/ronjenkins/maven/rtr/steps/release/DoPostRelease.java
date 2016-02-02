@@ -15,6 +15,8 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
+import java.util.List;
+
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -27,9 +29,22 @@ import org.codehaus.plexus.component.annotations.Component;
 @Component(role = SmartReactorStep.class, hint = "post-release")
 public class DoPostRelease extends AbstractSmartReactorReleaseStep {
 
+    private List<String> releasePhases;
+    private List<String> rollbackPhases;
+
     @Override
     public String getAnnouncement() {
 	return "Performing post-release cleanup...";
+    }
+
+    @Override
+    protected List<String> getReleasePhases() {
+	return this.releasePhases;
+    }
+
+    @Override
+    protected List<String> getRollbackPhases() {
+	return this.rollbackPhases;
     }
 
 }

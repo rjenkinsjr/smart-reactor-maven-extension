@@ -15,6 +15,8 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
+import java.util.List;
+
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -28,9 +30,22 @@ import org.codehaus.plexus.component.annotations.Component;
 public class TransformProjectsIntoReleases extends
 	AbstractSmartReactorReleaseStep {
 
+    private List<String> releasePhases;
+    private List<String> rollbackPhases;
+
     @Override
     public String getAnnouncement() {
 	return "Converting reactor projects to releases...";
+    }
+
+    @Override
+    protected List<String> getReleasePhases() {
+	return this.releasePhases;
+    }
+
+    @Override
+    protected List<String> getRollbackPhases() {
+	return this.rollbackPhases;
     }
 
 }

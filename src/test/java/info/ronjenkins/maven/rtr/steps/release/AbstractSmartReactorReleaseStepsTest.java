@@ -19,11 +19,7 @@ import static org.junit.Assert.*;
 import static util.TestUtils.*;
 import info.ronjenkins.maven.rtr.RTR;
 import info.ronjenkins.maven.rtr.exceptions.SmartReactorReleaseException;
-import info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep;
-import info.ronjenkins.maven.rtr.steps.release.DoPostRelease;
-import info.ronjenkins.maven.rtr.steps.release.TransformProjectsIntoReleases;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -61,14 +57,20 @@ public final class AbstractSmartReactorReleaseStepsTest {
 
     @Test
     public void coverBasicImplementations() {
-	new TransformProjectsIntoReleases().getAnnouncement();
-	new DoPostRelease().getAnnouncement();
+	final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
+	tpir.getAnnouncement();
+	tpir.getReleasePhases();
+	tpir.getRollbackPhases();
+	final DoPostRelease dpr = new DoPostRelease();
+	dpr.getAnnouncement();
+	dpr.getReleasePhases();
+	dpr.getRollbackPhases();
     }
 
     @Test
     public void disabledReleaseMeansNoop() {
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null, null, null);
+		null, null, null);
 	new Expectations() {
 	    {
 		rtr.isRelease();
@@ -87,12 +89,14 @@ public final class AbstractSmartReactorReleaseStepsTest {
     public void successfulExecution(
 	    @Injectable final Map<String, ReleasePhase> availablePhases) {
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		Arrays.asList("phase1"), null, availablePhases,
-		this.releaseDescriptor, this.releaseEnvironment);
+		availablePhases, this.releaseDescriptor,
+		this.releaseEnvironment);
 	new Expectations() {
 	    {
 		rtr.isRelease();
 		result = true;
+		step.getReleasePhases();
+		result = "phase1";
 	    }
 	};
 	try {
@@ -107,12 +111,16 @@ public final class AbstractSmartReactorReleaseStepsTest {
     public void nullReleasePhaseCausesException(
 	    @Injectable final Map<String, ReleasePhase> availablePhases) {
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		Arrays.asList("phase1"), null, availablePhases,
-		this.releaseDescriptor, this.releaseEnvironment);
+		availablePhases, this.releaseDescriptor,
+		this.releaseEnvironment);
 	new Expectations() {
 	    {
 		rtr.isRelease();
 		result = true;
+		step.getReleasePhases();
+		result = "phase1";
+		step.getRollbackPhases();
+		result = "phase2";
 		availablePhases.get("phase1");
 		result = null;
 	    }
@@ -132,13 +140,15 @@ public final class AbstractSmartReactorReleaseStepsTest {
 	    @Injectable final Map<String, ReleasePhase> availablePhases,
 	    @Injectable final ReleasePhase phase1) {
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		Arrays.asList("phase1"), null, availablePhases,
-		this.releaseDescriptor, this.releaseEnvironment);
+		availablePhases, this.releaseDescriptor,
+		this.releaseEnvironment);
 	try {
 	    new Expectations() {
 		{
 		    rtr.isRelease();
 		    result = true;
+		    step.getReleasePhases();
+		    result = "phase1";
 		    availablePhases.get("phase1");
 		    result = phase1;
 		    @SuppressWarnings({ "unused", "unchecked" })
@@ -170,13 +180,15 @@ public final class AbstractSmartReactorReleaseStepsTest {
 	    @Injectable final ReleasePhase phase1,
 	    @Injectable final ReleaseResult result1) {
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		Arrays.asList("phase1"), null, availablePhases,
-		this.releaseDescriptor, this.releaseEnvironment);
+		availablePhases, this.releaseDescriptor,
+		this.releaseEnvironment);
 	try {
 	    new Expectations() {
 		{
 		    rtr.isRelease();
 		    result = true;
+		    step.getReleasePhases();
+		    result = "phase1";
 		    availablePhases.get("phase1");
 		    result = phase1;
 		    @SuppressWarnings({ "unused", "unchecked" })
@@ -206,13 +218,16 @@ public final class AbstractSmartReactorReleaseStepsTest {
     public void rollbackFailureOfAnyKindCausesExceptionSuppression(
 	    @Injectable final Map<String, ReleasePhase> availablePhases) {
 	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		Arrays.asList("phase1"), Arrays.asList("phase2"),
 		availablePhases, this.releaseDescriptor,
 		this.releaseEnvironment);
 	new Expectations() {
 	    {
 		rtr.isRelease();
 		result = true;
+		step.getReleasePhases();
+		result = "phase1";
+		step.getRollbackPhases();
+		result = "phase2";
 		availablePhases.get("phase1");
 		result = null;
 		availablePhases.get("phase2");
