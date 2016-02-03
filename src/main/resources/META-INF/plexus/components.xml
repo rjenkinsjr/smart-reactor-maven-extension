@@ -71,10 +71,6 @@
         <releasePhases>
           <releasePhase>remove-backup-poms</releasePhase><!-- custom -->
         </releasePhases>
-        <rollbackPhases>
-          <rollbackPhase>restore-backup-poms</rollbackPhase>
-          <rollbackPhase>remove-backup-poms</rollbackPhase><!-- custom -->
-        </rollbackPhases>
       </configuration>
     </component>
     <!-- Phases used by the maven-release-manager. -->
