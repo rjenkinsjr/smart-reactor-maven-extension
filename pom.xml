@@ -184,6 +184,7 @@
         </dependencies>
         <configuration>
           <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+          <settingsFile>${it.resources.dest}/settings.xml</settingsFile>
         </configuration>
         <executions>
           <!-- Installs this Maven extension into the IT local Maven repo. -->
