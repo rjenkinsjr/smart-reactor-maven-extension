@@ -49,10 +49,11 @@ public final class PerformSmartReactorSanityChecksTest {
 	final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
 	final TestLogger logger = addLogger(step);
 	final List<MavenProject> projects = new MockUp<List<MavenProject>>() {
-	    // TODO
-	    // I tried session.getProjects().size(); result = 2; in the
-	    // expectations block but it kept returning 1. Investigate further
-	    // and file a bug with JMockit if necessary.
+	    /*
+	     * TODO I tried session.getProjects().size(); result = 2; in the
+	     * expectations block but it kept returning 1. Investigate further
+	     * and file a bug with JMockit if necessary.
+	     */
 	    @Mock
 	    int size() {
 		return 2;
