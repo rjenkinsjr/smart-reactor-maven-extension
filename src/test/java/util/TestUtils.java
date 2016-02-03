@@ -19,13 +19,10 @@ import info.ronjenkins.maven.rtr.RTR;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 import info.ronjenkins.maven.rtr.steps.release.AbstractSmartReactorReleaseStep;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import mockit.Deencapsulation;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.shared.release.config.ReleaseDescriptor;
 import org.apache.maven.shared.release.env.ReleaseEnvironment;
