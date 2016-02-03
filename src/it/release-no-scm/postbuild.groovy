@@ -25,5 +25,8 @@ if (buildLog.contains('[ERROR] Rollback unsuccessful. Check project filesystem f
 if (!buildLog.contains('[ERROR] Smart Reactor release failure: Missing required setting: scm connection or developerConnection must be specified. -> [Help 1]')) {
   throw new IllegalStateException('Build failed, but lack of <scm> data was permitted.')
 }
+if (new java.io.File(basedir, 'pom.xml.releaseBackup').exists()) {
+  throw new IllegalStateException('POM backup was created, but should not have been created.')
+}
 
 return true

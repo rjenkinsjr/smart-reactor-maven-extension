@@ -25,5 +25,8 @@ if (!buildLog.contains('[INFO] Building release 0.1.0')) {
 if (!(new java.io.File(localRepositoryPath, 'test/release/0.1.0/release-0.1.0.jar').exists())) {
   throw new IllegalStateException('Release artifact was not created or installed.')
 }
+if (new java.io.File(basedir, 'pom.xml.releaseBackup').exists()) {
+  throw new IllegalStateException('POM backup still exists on disk.')
+}
 
 return true
