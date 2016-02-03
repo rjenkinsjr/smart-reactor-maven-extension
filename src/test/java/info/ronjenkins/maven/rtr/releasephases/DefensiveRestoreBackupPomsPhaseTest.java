@@ -24,8 +24,10 @@ import java.util.List;
 import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Invocation;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Mocked;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.release.ReleaseExecutionException;
@@ -33,9 +35,10 @@ import org.apache.maven.shared.release.ReleaseFailureException;
 import org.apache.maven.shared.release.ReleaseResult;
 import org.apache.maven.shared.release.config.ReleaseDescriptor;
 import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.apache.maven.shared.release.phase.RestoreBackupPomsPhase;
 import org.junit.Test;
 
-public final class RemoveBackupPomsPhaseTest {
+public final class DefensiveRestoreBackupPomsPhaseTest {
 
     @Injectable
     MavenProject root;
@@ -44,7 +47,7 @@ public final class RemoveBackupPomsPhaseTest {
 
     @Test
     public void backupPomsNotCreatedMeansNoop() {
-	final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
+	final DefensiveRestoreBackupPomsPhase phase = new DefensiveRestoreBackupPomsPhase();
 	Deencapsulation.setField(phase, "rtr", this.rtr);
 	new Expectations() {
 	    {
@@ -63,8 +66,16 @@ public final class RemoveBackupPomsPhaseTest {
     }
 
     @Test
-    public void backupPomsCreatedMeansSuccessfulExecution() {
-	final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
+    public void backupPomsCreatedMeansSuccessfulExecution(
+	    @Mocked final RestoreBackupPomsPhase superMock) {
+	final DefensiveRestoreBackupPomsPhase phase = new MockUp<DefensiveRestoreBackupPomsPhase>() {
+	    @Mock
+	    ReleaseResult execute(final Invocation inv,
+		    final ReleaseDescriptor rd, final ReleaseEnvironment re,
+		    final List<MavenProject> projects) throws Throwable {
+		return (ReleaseResult) inv.proceed();
+	    }
+	}.getMockInstance();
 	Deencapsulation.setField(phase, "rtr", this.rtr);
 	new Expectations() {
 	    {
@@ -78,13 +89,14 @@ public final class RemoveBackupPomsPhaseTest {
 		    Arrays.asList(root));
 	    assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
 	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
+	    e.printStackTrace();
 	    fail();
 	}
     }
 
     @Test
     public void simulateEqualsExecute() {
-	final RemoveBackupPomsPhase phase = new MockUp<RemoveBackupPomsPhase>() {
+	final DefensiveRestoreBackupPomsPhase phase = new MockUp<DefensiveRestoreBackupPomsPhase>() {
 	    @Mock
 	    ReleaseResult execute(final ReleaseDescriptor rd,
 		    final ReleaseEnvironment re,

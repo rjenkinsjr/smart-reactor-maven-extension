@@ -18,12 +18,9 @@ package info.ronjenkins.maven.rtr.releasephases;
 import static org.junit.Assert.*;
 import info.ronjenkins.maven.rtr.RTR;
 
-import java.util.Arrays;
 import java.util.List;
 
 import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 
@@ -35,23 +32,13 @@ import org.apache.maven.shared.release.config.ReleaseDescriptor;
 import org.apache.maven.shared.release.env.ReleaseEnvironment;
 import org.junit.Test;
 
-public final class RemoveBackupPomsPhaseTest {
-
-    @Injectable
-    MavenProject root;
-    @Injectable
-    RTR rtr;
+public final class IndicatePresenceOfBackupPomsPhaseTest {
 
     @Test
-    public void backupPomsNotCreatedMeansNoop() {
-	final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
-	Deencapsulation.setField(phase, "rtr", this.rtr);
-	new Expectations() {
-	    {
-		rtr.isBackupPomsCreated();
-		result = false;
-	    }
-	};
+    public void successfulExecution() {
+	final IndicatePresenceOfBackupPomsPhase phase = new IndicatePresenceOfBackupPomsPhase();
+	final RTR rtr = new RTR();
+	Deencapsulation.setField(phase, "rtr", rtr);
 	try {
 	    final ReleaseResult result = phase.execute(
 		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
@@ -60,31 +47,12 @@ public final class RemoveBackupPomsPhaseTest {
 	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
 	    fail();
 	}
-    }
-
-    @Test
-    public void backupPomsCreatedMeansSuccessfulExecution() {
-	final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
-	Deencapsulation.setField(phase, "rtr", this.rtr);
-	new Expectations() {
-	    {
-		rtr.isBackupPomsCreated();
-		result = true;
-	    }
-	};
-	try {
-	    final ReleaseResult result = phase.execute(
-		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-		    Arrays.asList(root));
-	    assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
-	    fail();
-	}
+	assertTrue(rtr.isBackupPomsCreated());
     }
 
     @Test
     public void simulateEqualsExecute() {
-	final RemoveBackupPomsPhase phase = new MockUp<RemoveBackupPomsPhase>() {
+	final IndicatePresenceOfBackupPomsPhase phase = new MockUp<IndicatePresenceOfBackupPomsPhase>() {
 	    @Mock
 	    ReleaseResult execute(final ReleaseDescriptor rd,
 		    final ReleaseEnvironment re,

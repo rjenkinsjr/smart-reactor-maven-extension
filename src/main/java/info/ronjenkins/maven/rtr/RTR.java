@@ -51,6 +51,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     private RTRComponents components;
     private boolean disabled;
     private boolean release;
+    private boolean backupPomsCreated;
 
     /**
      * RTR entry point.
@@ -104,6 +105,27 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      */
     public boolean isRelease() {
 	return this.release;
+    }
+
+    /**
+     * Sets the flag that indicates whether or not backup POMs were created by
+     * the release process.
+     * 
+     * @param backupPomsCreated
+     *            true if backup POMs have been created, false otherwise.
+     */
+    public void setBackupPomsCreated(final boolean backupPomsCreated) {
+	this.backupPomsCreated = backupPomsCreated;
+    }
+
+    /**
+     * Indicates whether or not backup POMs were created by the release process.
+     * 
+     * @return backupPomsCreated true if backup POMs have been created, false
+     *         otherwise.
+     */
+    public boolean isBackupPomsCreated() {
+	return this.backupPomsCreated;
     }
 
 }

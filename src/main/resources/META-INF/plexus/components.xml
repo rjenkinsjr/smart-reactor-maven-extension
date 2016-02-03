@@ -50,13 +50,14 @@
           <releasePhase>check-poms</releasePhase>
           <releasePhase>check-dependency-snapshots</releasePhase>
           <releasePhase>create-backup-poms</releasePhase>
+          <releasePhase>indicate-presence-of-backup-poms</releasePhase><!-- custom -->
           <releasePhase>map-release-versions</releasePhase>
           <releasePhase>input-variables</releasePhase>
           <releasePhase>rewrite-poms-for-release</releasePhase>
           <releasePhase>end-release</releasePhase>
         </releasePhases>
         <rollbackPhases>
-          <rollbackPhase>restore-backup-poms</rollbackPhase>
+          <rollbackPhase>defensive-restore-backup-poms</rollbackPhase><!-- custom -->
           <rollbackPhase>remove-backup-poms</rollbackPhase><!-- custom -->
         </rollbackPhases>
       </configuration>
@@ -71,6 +72,10 @@
         <releasePhases>
           <releasePhase>remove-backup-poms</releasePhase><!-- custom -->
         </releasePhases>
+        <rollbackPhases>
+          <rollbackPhase>defensive-restore-backup-poms</rollbackPhase><!-- custom -->
+          <rollbackPhase>remove-backup-poms</rollbackPhase><!-- custom -->
+        </rollbackPhases>
       </configuration>
     </component>
     <!-- Phases used by the maven-release-manager. -->
