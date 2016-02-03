@@ -21,6 +21,7 @@
   <artifactId>smart-reactor-maven-extension</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <name>Smart Reactor Maven Extension</name>
+  <description>Didn't change it? Don't build it!</description>
   <licenses>
     <license>
       <name>The Apache License, Version 2.0</name>
