@@ -15,26 +15,26 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
-import java.util.List;
-
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
+
+import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 
 /**
- * Cleans up/rolls back a release build.
+ * Cleans up a failed release build.
  * 
  * @author Ronald Jack Jenkins Jr.
  */
-@Component(role = SmartReactorStep.class, hint = "post-release")
-public class DoPostRelease extends AbstractSmartReactorReleaseStep {
+@Component(role = SmartReactorStep.class, hint = "post-release-failure")
+public class DoPostReleaseFailure extends AbstractSmartReactorReleaseStep {
 
     private List<String> releasePhases;
     private List<String> rollbackPhases;
 
     @Override
     public String getAnnouncement() {
-	return "Performing post-release cleanup...";
+	return "Performing cleanup of failed release...";
     }
 
     @Override

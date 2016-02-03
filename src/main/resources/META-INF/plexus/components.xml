@@ -33,9 +33,12 @@
           <startStep>rebuild-release-reactor</startStep>
           <startStep>rebuild-graph</startStep>
         </startSteps>
-        <endSteps>
-          <endStep>post-release</endStep>
-        </endSteps>
+        <endSuccessSteps>
+          <endSuccessStep>post-release-success</endSuccessStep>
+        </endSuccessSteps>
+        <endFailureSteps>
+          <endFailureStep>post-release-failure</endFailureStep>
+        </endFailureSteps>
       </configuration>
     </component>
     <!-- Smart Reactor release steps. -->
@@ -65,17 +68,26 @@
     <component>
       <role>info.ronjenkins.maven.rtr.steps.SmartReactorStep
       </role>
-      <role-hint>post-release</role-hint>
-      <implementation>info.ronjenkins.maven.rtr.steps.release.DoPostRelease
+      <role-hint>post-release-success</role-hint>
+      <implementation>info.ronjenkins.maven.rtr.steps.release.DoPostReleaseSuccess
       </implementation>
       <configuration>
         <releasePhases>
           <releasePhase>remove-backup-poms</releasePhase><!-- custom -->
         </releasePhases>
-        <rollbackPhases>
-          <rollbackPhase>defensive-restore-backup-poms</rollbackPhase><!-- custom -->
-          <rollbackPhase>remove-backup-poms</rollbackPhase><!-- custom -->
-        </rollbackPhases>
+      </configuration>
+    </component>
+    <component>
+      <role>info.ronjenkins.maven.rtr.steps.SmartReactorStep
+      </role>
+      <role-hint>post-release-failure</role-hint>
+      <implementation>info.ronjenkins.maven.rtr.steps.release.DoPostReleaseFailure
+      </implementation>
+      <configuration>
+        <releasePhases>
+          <releasePhase>defensive-restore-backup-poms</releasePhase><!-- custom -->
+          <releasePhase>remove-backup-poms</releasePhase><!-- custom -->
+        </releasePhases>
       </configuration>
     </component>
     <!-- Phases used by the maven-release-manager. -->
@@ -136,6 +148,19 @@
           <role>org.apache.maven.shared.release.scm.ScmTranslator
           </role>
           <field-name>scmTranslators</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.shared.release.phase.ReleasePhase
+      </role>
+      <role-hint>defensive-restore-backup-poms</role-hint>
+      <implementation>info.ronjenkins.maven.rtr.releasephases.DefensiveRestoreBackupPomsPhase
+      </implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.shared.release.scm.ScmRepositoryConfigurator
+          </role>
         </requirement>
       </requirements>
     </component>

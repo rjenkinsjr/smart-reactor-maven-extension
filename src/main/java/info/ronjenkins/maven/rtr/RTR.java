@@ -43,7 +43,8 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     private ProjectBuilder builder;
 
     protected List<String> startSteps;
-    protected List<String> endSteps;
+    protected List<String> endSuccessSteps;
+    protected List<String> endFailureSteps;
 
     @Requirement(role = SmartReactorStep.class)
     protected Map<String, SmartReactorStep> availableSteps;
@@ -81,7 +82,11 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 	if (this.disabled) {
 	    return;
 	}
-	this.executeSteps(this.endSteps, session, this.components);
+	if (session.getResult().hasExceptions()) {
+	    this.executeSteps(this.endFailureSteps, session, this.components);
+	} else {
+	    this.executeSteps(this.endSuccessSteps, session, this.components);
+	}
     }
 
     private void executeSteps(final List<String> steps,

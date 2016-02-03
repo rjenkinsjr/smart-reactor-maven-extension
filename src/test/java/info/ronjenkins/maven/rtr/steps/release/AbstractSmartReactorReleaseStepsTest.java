@@ -61,10 +61,14 @@ public final class AbstractSmartReactorReleaseStepsTest {
 	tpir.getAnnouncement();
 	tpir.getReleasePhases();
 	tpir.getRollbackPhases();
-	final DoPostRelease dpr = new DoPostRelease();
-	dpr.getAnnouncement();
-	dpr.getReleasePhases();
-	dpr.getRollbackPhases();
+	final DoPostReleaseSuccess dprs = new DoPostReleaseSuccess();
+	dprs.getAnnouncement();
+	dprs.getReleasePhases();
+	dprs.getRollbackPhases();
+	final DoPostReleaseFailure dprf = new DoPostReleaseFailure();
+	dprf.getAnnouncement();
+	dprf.getReleasePhases();
+	dprf.getRollbackPhases();
     }
 
     @Test
