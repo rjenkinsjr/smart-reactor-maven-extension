@@ -295,6 +295,7 @@
           <reportSet>
             <reports>
               <report>jxr</report>
+              <report>test-jxr</report>
             </reports>
           </reportSet>
         </reportSets>
