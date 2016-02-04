@@ -54,6 +54,8 @@
     <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
     <sonar.jacoco.itReportPath>${jacoco.it.file}</sonar.jacoco.itReportPath>
     <sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero>
+    <site.src>${project.basedir}/src/site</site.src>
+    <site.dest>${project.basedir}/target/site-src</site.dest>
   </properties>
   <dependencies>
     <dependency>
@@ -142,11 +144,11 @@
           </properties>
         </configuration>
       </plugin>
-      <!-- Prepares the IT environment for test execution. -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.7</version>
         <executions>
+          <!-- Prepares the IT environment for test execution. -->
           <execution>
             <id>copy-it-resources</id>
             <phase>pre-integration-test</phase>
@@ -248,9 +250,38 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Rename site files to Velocity templates. -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>preprocess-site-pages</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="${site.dest}">
+                  <fileset dir="${site.src}" excludes="**/*.md" />
+                </copy>
+                <copy todir="${site.dest}">
+                  <fileset dir="${site.src}" includes="**/*.md" />
+                  <globmapper from="*.md" to="*.md.vm" />
+                </copy>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Use renamed site files. -->
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.4</version>
+        <configuration>
+          <siteDirectory>${site.dest}</siteDirectory>
+        </configuration>
       </plugin>
     </plugins>
   </build>
