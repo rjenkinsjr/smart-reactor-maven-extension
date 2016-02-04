@@ -20,7 +20,7 @@
 ${project.description}
 ---
 
-Ever wonder why Maven releases and module version management are so challenging and fraught with potential for human error? It doesn't have to be that way! The **Smart Reactor Maven Extension** addresses common Maven frustrations by focusing on three key concepts:
+Ever wonder why releases and version management in Maven projects are so challenging and fraught with potential for human error? It doesn't have to be that way! The **Smart Reactor Maven Extension** addresses common Maven frustrations by focusing on three key concepts:
 
 $h3 Didn't change it? *Don't build it!*
 
@@ -71,4 +71,6 @@ To install the extension, do one or both of the following:
 License
 ---
 
-The extension is licensed under the Apache License, Version 2.0. The extension integrates source code fragments from the Maven Release Manager and the Maven Release Plugin, both of which are also released under the Apache License, Version 2.0. See the `LICENSE` and `THIRDPARTY` files in the JAR file or source repository for more information.
+The extension is licensed under the Apache License, Version 2.0.
+
+The extension integrates source code fragments from the Maven Release Manager and the Maven Release Plugin, both of which are also released under the Apache License, Version 2.0. See the `LICENSE` and `THIRDPARTY` files in the JAR file or source repository for more information.
