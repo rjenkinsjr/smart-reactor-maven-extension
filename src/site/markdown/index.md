@@ -67,3 +67,8 @@ To install the extension, do one or both of the following:
 1. Once installed, the Smart Reactor is enabled by default. To disable it, set the property `rtr.disabled` to `false` in the top-level project or at the command line.
 1. To perform a release, set the property `rtr.release` to `true` in the top-level project or at the command line.
 1. By default, the Smart Reactor will fail if it contains exactly one SNAPSHOT project whose packaging is `pom`. This check exists to prevent pointless builds of aggregator POMs, usually caused by forgetting to version one or more modules. You may be developing a commonly-shared parent POM file, however, in which case this scenario will be the norm and this check would make the extension useless. To disable this check, set the property `rtr.allowSinglePomReactor` to `true` in the top-level project or at the command line. 
+
+License
+---
+
+The extension is licensed under the Apache License, Version 2.0. The extension integrates source code fragments from the Maven Release Manager and the Maven Release Plugin, both of which are also released under the Apache License, Version 2.0. See the `LICENSE` and `THIRDPARTY` files in the JAR file or source repository for more information.
