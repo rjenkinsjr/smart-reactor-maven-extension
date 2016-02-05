@@ -20,7 +20,22 @@
 ${project.description}
 ---
 
-Ever wonder why releases and version management in Maven projects are so challenging and fraught with potential for human error? It doesn't have to be that way! The **Smart Reactor Maven Extension** addresses common Maven frustrations by focusing on three key concepts:
+Want better Maven builds and releases? Just do one of the following:
+
++ Download the extension into your `$M2_HOME/lib/ext` directory.
++ Create the file `.mvn/extensions.xml` parallel to your project's top-level POM, with the following content.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<extensions>
+  <extension>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>${project.artifactId}</artifactId>
+    <version>${project.version}</version>
+  </extension>
+</extensions>
+```
+Why bother? Because you can probably identify with one or more of these Maven issues...
 
 $h3 Didn't change it? *Don't build it!*
 
@@ -47,22 +62,7 @@ The extension requires Maven 3.3.1 or higher; any Maven project compatible with 
 Installation and Usage
 ---
 
-To install the extension, do one or both of the following:
-
-+ Place the extension JAR file into the `$M2_HOME/lib/ext` directory.
-+ Create the file `.mvn/extensions.xml` parallel to your project's top-level POM, with the following content.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<extensions>
-  <extension>
-    <groupId>${project.groupId}</groupId>
-    <artifactId>${project.artifactId}</artifactId>
-    <version>${project.version}</version>
-  </extension>
-</extensions>
-```
-**Do not declare the extension in your POM; it won't work correctly.**
+Either drop the extension JAR file into your Maven installation's `lib/ext` directory, or declare it in your project's `.mvn/extensions.xml` file. **Do not declare the extension in your POM; it won't work correctly.**
 
 1. Once installed, the Smart Reactor is enabled by default. To disable it, set the property `rtr.disabled` to `false` in the top-level project or at the command line.
 1. To perform a release, set the property `rtr.release` to `true` in the top-level project or at the command line.
