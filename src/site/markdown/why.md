@@ -38,7 +38,7 @@ $h3 Maven Releases Have an Unhealthy Obsession With SCM
 
 When using Jenkins CI, SCM credentials are managed by the Jenkins Credentials Plugin. When performing a Maven release using the Maven Release Plugin, however, the command-line SCM client also needs credentials for authentication. There are several ways to do this:
 
-1. Use the [Jenkins Credentials Binding Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Binding+Plugin).
+1. Use the [Jenkins Credentials Binding Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Binding+Plugin) to pass the credentials to the command line.
 1. Cache the credentials with the SCM client before attempting any releases.
 1. [Modify settings.xml and pom.xml to hardcode credentials inside settings.xml.](http://maven.apache.org/maven-release/maven-release-plugin/faq.html#credentials)
 
