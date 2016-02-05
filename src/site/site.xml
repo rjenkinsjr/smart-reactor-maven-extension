@@ -40,6 +40,7 @@
     <menu name="User Guide">
         <item name="Home" href="index.html" />
         <item name="Why Use The Smart Reactor?" href="why.html" />
+        <item name="Parameters" href="param.html" />
     </menu>
     <menu ref="reports" />
   </body>
