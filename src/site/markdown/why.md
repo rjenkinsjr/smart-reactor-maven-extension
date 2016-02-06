@@ -79,7 +79,7 @@ These two simple changes have multiple benefits:
 1. Only code that is being changed gets built, which reduces build/test times and prevents unnecessary version churn.
 1. Previously-released modules that are not being changed are sourced from the remote repository, reducing variability in the build process.
 1. Releases no longer attempt to interact with SCM, leaving that responsibility to CI or other better-suited tools in the pipeline.
-1. Because the extension is *not* a plugin, there are no special goals to invoke. The command line used for SNAPSHOT builds can now be identical to the command line used for release builds.
+1. Because the extension is *not* a plugin, there are no special goals to invoke. The command line used for SNAPSHOT builds can now be identical to the command line used for release builds (except the necessary `rtr.release` parameter).
 1. The release build is the same Maven execution as any non-release build, making integrations between Maven and other tools easier.
 1. Release failures no longer have any side effects, except the creation of backup POMs during transformation.
     + When using a CI engine to perform releases, the backup POMs likely do not need to be restored because the code will be checked out again from SCM. Regardless, as a matter of completeness, the backup POMs are restored on disk if the release fails.
