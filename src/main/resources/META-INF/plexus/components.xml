@@ -51,7 +51,8 @@
       <configuration>
         <releasePhases>
           <releasePhase>check-poms</releasePhase>
-          <releasePhase>check-dependency-snapshots</releasePhase>
+          <releasePhase>conditional-check-dependency-snapshots
+          </releasePhase><!-- custom -->
           <releasePhase>create-backup-poms</releasePhase>
           <releasePhase>indicate-presence-of-backup-poms</releasePhase><!-- custom -->
           <releasePhase>map-release-versions</releasePhase>
@@ -105,6 +106,20 @@
         <requirement>
           <role>org.apache.maven.shared.release.scm.ScmRepositoryConfigurator
           </role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.shared.release.phase.ReleasePhase
+      </role>
+      <role-hint>conditional-check-dependency-snapshots</role-hint>
+      <implementation>info.ronjenkins.maven.rtr.releasephases.ConditionalCheckDependencySnapshotsPhase
+      </implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.factory.ArtifactFactory
+          </role>
+          <role-hint>rtr-af</role-hint>
         </requirement>
       </requirements>
     </component>

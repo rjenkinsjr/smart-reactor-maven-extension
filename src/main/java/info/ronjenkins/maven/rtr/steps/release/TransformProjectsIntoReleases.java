@@ -15,10 +15,14 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
-import java.util.List;
-
+import info.ronjenkins.maven.rtr.RTRComponents;
+import info.ronjenkins.maven.rtr.RTRConfig;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
+import java.util.List;
+
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 
 /**
@@ -36,6 +40,38 @@ public class TransformProjectsIntoReleases extends
     @Override
     public String getAnnouncement() {
 	return "Converting reactor projects to releases...";
+    }
+
+    @Override
+    protected void configureReleaseDescriptor(final MavenSession session,
+	    final RTRComponents components) {
+	final MavenProject executionRoot = session.getTopLevelProject();
+	this.releaseDescriptor.setAddSchema(RTRConfig.isAddSchema(session,
+		executionRoot));
+	this.releaseDescriptor.setAllowTimestampedSnapshots(RTRConfig
+		.isAllowTimestampedSnapshots(session, executionRoot));
+	this.releaseDescriptor.setAutoVersionSubmodules(RTRConfig
+		.isAutoVersionSubmodules(session, executionRoot));
+	this.releaseDescriptor.setProjectVersionPolicyId(RTRConfig
+		.getProjectVersionPolicyId(session, executionRoot));
+	final String releaseVersion = RTRConfig.getReleaseVersion(session,
+		executionRoot);
+	if (releaseVersion != null) {
+	    this.releaseDescriptor.setDefaultReleaseVersion(releaseVersion);
+	}
+	final String tag = RTRConfig.getTag(session, executionRoot);
+	if (tag != null) {
+	    this.releaseDescriptor.setScmReleaseLabel(tag);
+	}
+	final String tagBase = RTRConfig.getTagBase(session, executionRoot);
+	if (tagBase != null) {
+	    this.releaseDescriptor.setScmTagBase(tagBase);
+	}
+	final String tagNameFormat = RTRConfig.getTagNameFormat(session,
+		executionRoot);
+	if (tagNameFormat != null) {
+	    this.releaseDescriptor.setScmTagNameFormat(tagNameFormat);
+	}
     }
 
     @Override

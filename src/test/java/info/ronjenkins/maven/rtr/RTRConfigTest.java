@@ -237,6 +237,23 @@ public final class RTRConfigTest {
     }
 
     @Test
+    public void isExternalSnapshotsAllowed() {
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isExternalSnapshotsAllowed", session, project);
+	assertEquals(propValue, value);
+    }
+
+    @Test
     public void isRelease() {
 	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
 		"DEFAULT_RELEASE");
@@ -251,6 +268,130 @@ public final class RTRConfigTest {
 	final boolean value = Deencapsulation.invoke(RTRConfig.class,
 		"isRelease", session, project);
 	assertEquals(propValue, value);
+    }
+
+    @Test
+    public void isAddSchema() {
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_ADDSCHEMA");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isAddSchema", session, project);
+	assertEquals(propValue, value);
+    }
+
+    @Test
+    public void isAllowTimestampedSnapshots() {
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isAllowTimestampedSnapshots", session, project);
+	assertEquals(propValue, value);
+    }
+
+    @Test
+    public void isAutoVersionSubmodules() {
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_AUTOVERSIONSUBMODULES");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isAutoVersionSubmodules", session, project);
+	assertEquals(propValue, value);
+    }
+
+    @Test
+    public void getProjectVersionPolicyId() {
+	final String propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_PROJECTVERSIONPOLICYID");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProjectVersionPolicyId", session, project);
+	assertEquals(propValue, value);
+    }
+
+    @Test
+    public void getReleaseVersion() {
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getReleaseVersion",
+		session, project));
+    }
+
+    @Test
+    public void getTag() {
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getTag", session,
+		project));
+    }
+
+    @Test
+    public void getTagBase() {
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagBase",
+		session, project));
+    }
+
+    @Test
+    public void getTagNameFormat() {
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagNameFormat",
+		session, project));
     }
 
 }

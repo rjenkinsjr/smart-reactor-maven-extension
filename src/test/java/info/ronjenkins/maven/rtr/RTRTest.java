@@ -79,7 +79,7 @@ public final class RTRTest {
     }
 
     @Test
-    public void isReleaseMethodTest() {
+    public void booleanMethodTests() {
 	final RTR rtr = new MockUp<RTR>() {
 	    @Mock
 	    boolean isRelease(final Invocation inv) throws Throwable {
@@ -95,6 +95,8 @@ public final class RTRTest {
 		result = root;
 		RTRConfig.isRelease(session, root);
 		result = true;
+		RTRConfig.isExternalSnapshotsAllowed(session, root);
+		result = true;
 	    }
 	};
 	try {
@@ -103,6 +105,7 @@ public final class RTRTest {
 	    fail();
 	}
 	assertTrue(rtr.isRelease());
+	assertTrue(rtr.isExternalSnapshotsAllowed());
     }
 
     @Test

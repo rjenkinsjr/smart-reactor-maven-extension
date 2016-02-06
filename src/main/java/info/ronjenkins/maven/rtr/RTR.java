@@ -53,6 +53,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     private boolean disabled;
     private boolean release;
     private boolean backupPomsCreated;
+    private boolean externalSnapshotsAllowed;
 
     /**
      * RTR entry point.
@@ -70,6 +71,8 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 	    return;
 	}
 	this.release = RTRConfig.isRelease(session, executionRoot);
+	this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(
+		session, executionRoot);
 	this.logger.info("Assembling smart reactor...");
 	this.components = new RTRComponents(this.builder);
 	this.executeSteps(this.startSteps, session, this.components);
@@ -101,6 +104,16 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 	    }
 	    step.execute(session, components);
 	}
+    }
+
+    /**
+     * Indicates whether or not the Smart Reactor should allow a release reactor
+     * containing references to any non-reactor SNAPSHOT artifacts.
+     * 
+     * @return true if allowed, false if prohibited.
+     */
+    public boolean isExternalSnapshotsAllowed() {
+	return this.externalSnapshotsAllowed;
     }
 
     /**

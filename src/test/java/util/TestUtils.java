@@ -64,6 +64,20 @@ public final class TestUtils {
     }
 
     /**
+     * Adds a test logger to a release phase for testing.
+     * 
+     * @param phase
+     *            not null.
+     * @return never null.
+     */
+    public static TestLogger addLogger(final ReleasePhase phase) {
+	Validate.notNull(phase, "phase is null");
+	final TestLogger logger = new TestLogger();
+	Deencapsulation.setField(phase, "logger", logger);
+	return logger;
+    }
+
+    /**
      * Adds a test logger and other dependencies to a smart reactor release step
      * for testing.
      * 

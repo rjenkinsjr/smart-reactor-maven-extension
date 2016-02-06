@@ -24,11 +24,12 @@ Parameters for the Smart Reactor can be defined as project `<properties>` or as 
 
 $h3 Core Parameters
 
-| Name | Type | Since |
-| :--- | :--- | :---- |
-| [rtr.disabled](#rtr.disabled) | `boolean` | `0.1.0` |
-| [rtr.allowSinglePomReactor](#rtr.allowSinglePomReactor) | `boolean` | `0.1.0` |
-| [rtr.release](#rtr.release) | `boolean` | `0.1.0` |
+| Name | Type | Default | Since |
+| :--- | :--- | :---- | :---- |
+| [rtr.disabled](#rtr.disabled) | `boolean` | `false` | `0.1.0` |
+| [rtr.allowSinglePomReactor](#rtr.allowSinglePomReactor) | `boolean` | `false`  | `0.1.0` |
+| [rtr.allowExternalSnapshots](#rtr.allowExternalSnapshots) | `boolean` | `false`  | `0.1.0` |
+| [rtr.release](#rtr.release) | `boolean` | `false`  | `0.1.0` |
 
 $h4 Parameter Details
 
@@ -50,6 +51,15 @@ Whether or not to allow a build consisting of exactly one reactor project whose 
 + **User Property**: `rtr.allowSinglePomReactor`
 + **Default**: `false`
 
+$h5 rtr.allowExternalSnapshots
+Whether or not to allow a release build when the reactor contains any modules that declare any SNAPSHOT dependencies, plugins, parents or reports that are not also in the reactor. Irrelevant if `rtr.release` is `false`.
+
++ **Type**: `boolean`
++ **Since**: `0.1.0`
++ **Required**: `no`
++ **User Property**: `rtr.allowExternalSnapshots`
++ **Default**: `false`
+
 $h5 rtr.release
 Transforms the POMs of SNAPSHOT modules to non-SNAPSHOT versions, then rebuilds the reactor with the release POMs.
 
@@ -65,13 +75,10 @@ When release POM transformation is enabled, the following parameters from the `r
 
 + [addSchema](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#addSchema)
 + [allowTimestampedSnapshots](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#allowTimestampedSnapshots)
+    + According to the source code of the Maven Release Manager, setting `allowTimestampedSnapshots` to `true` actually allows *all* SNAPSHOT artifacts rather than all *timestamped* SNAPSHOT artifacts. This mismatch between documentation and behavior is likely a bug, hence why the `rtr.allowSnapshotDependencies` parameter exists. You should use the `rtr.allowSnapshotDependencies` parameter instead of the `allowTimestampedSnapshots` parameter.
 + [autoVersionSubmodules](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#autoVersionSubmodules)
-+ developmentVersion
-+ dryRun
 + [projectVersionPolicyId](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#projectVersionPolicyId)
-+ providerImplementations???
-+ releaseVersion
-+ tag
-+ tagBase
-+ tagNameFormat
-+ [updateDependencies](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#updateDependencies)
++ [releaseVersion](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#releaseVersion)
++ [tag](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#tag)
++ [tagBase](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#tagBase)
++ [tagNameFormat](http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#tagNameFormat)

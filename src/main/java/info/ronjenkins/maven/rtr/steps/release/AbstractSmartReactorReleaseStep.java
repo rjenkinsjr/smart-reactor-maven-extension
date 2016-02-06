@@ -61,6 +61,7 @@ public abstract class AbstractSmartReactorReleaseStep extends
 	    final RTRComponents components) throws MavenExecutionException {
 	if (this.rtr.isRelease()) {
 	    this.logger.info(this.getAnnouncement());
+	    this.configureReleaseDescriptor(session, components);
 	    this.releaseExecute(session, components);
 	}
     }
@@ -73,6 +74,19 @@ public abstract class AbstractSmartReactorReleaseStep extends
      *         occurring.
      */
     protected abstract String getAnnouncement();
+
+    /**
+     * Subclasses can override this method to configure the release descriptor
+     * injected by Plexus. The default implementation does nothing.
+     * 
+     * @param session
+     *            the session to which this step applies. Not null.
+     * @param components
+     *            that this step may need. May be null.
+     */
+    protected void configureReleaseDescriptor(final MavenSession session,
+	    final RTRComponents components) {
+    }
 
     /**
      * Returns the list of phases that should be executed by this release step.
