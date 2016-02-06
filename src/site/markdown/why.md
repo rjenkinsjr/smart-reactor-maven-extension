@@ -42,7 +42,7 @@ When using Jenkins CI, SCM credentials are managed by the Jenkins Credentials Pl
 1. Cache the credentials with the SCM client before attempting any releases.
 1. [Modify settings.xml and pom.xml to hardcode credentials inside settings.xml.](http://maven.apache.org/maven-release/maven-release-plugin/faq.html#credentials)
 
-These solutions are either [not DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), not secure or unacceptably brittle. These challenges regardless of which CI engine is used, because the demands of the Maven Release Plugin do not change.
+These solutions are either [not DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), not secure or unacceptably brittle. These challenges exist regardless of which CI engine is used, because the demands of the Maven Release Plugin do not change.
 
 The real issue is that *it doesn't make sense for a build tool to be performing SCM activity when CI engines are already performing SCM activity*. If any commits need to be pushed back to SCM, the CI engine should be responsible for that. Adopting this approach simplifies the management of SCM credentials, as well as the architecture of the software development pipeline.
 
