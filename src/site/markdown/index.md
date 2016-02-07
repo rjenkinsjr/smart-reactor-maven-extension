@@ -64,9 +64,7 @@ Installation and Usage
 
 Either drop the extension JAR file into your Maven installation's `lib/ext` directory, or declare it in your project's `.mvn/extensions.xml` file. **Do not declare the extension in your POM; it won't work correctly.**
 
-1. Once installed, the Smart Reactor is enabled by default. To disable it, set the property `rtr.disabled` to `false` in the top-level project or at the command line.
-1. To perform a release, set the property `rtr.release` to `true` in the top-level project or at the command line.
-1. By default, the Smart Reactor will fail if it contains exactly one SNAPSHOT project whose packaging is `pom`. This check exists to prevent pointless builds of aggregator POMs, usually caused by forgetting to version one or more modules. You may be developing a commonly-shared parent POM file, however, in which case this scenario will be the norm and this check would make the extension useless. To disable this check, set the property `rtr.allowSinglePomReactor` to `true` in the top-level project or at the command line. 
+The Smart Reactor is enabled by default. To disable it, enable the property [rtr.disabled](param.html#rtr.disabled). 
 
 License
 ---

@@ -41,6 +41,7 @@
         <item name="Home" href="index.html" />
         <item name="Why Use The Smart Reactor?" href="why.html" />
         <item name="Parameters" href="param.html" />
+        <item name="FAQ" href="faq.html" />
     </menu>
     <menu ref="reports" />
   </body>
