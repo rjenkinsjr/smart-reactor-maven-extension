@@ -22,6 +22,7 @@
   <version>0.1.0-SNAPSHOT</version>
   <name>Smart Reactor Maven Extension</name>
   <description>The Maven reactor, reimagined!</description>
+  <url>http://rjenkinsjr.github.io/smart-reactor-maven-extension</url>
   <licenses>
     <license>
       <name>The Apache License, Version 2.0</name>
@@ -30,10 +31,17 @@
   </licenses>
   <developers>
     <developer>
+      <id>rjenkinsjr</id>
       <name>Ronald Jack Jenkins Jr.</name>
       <email>me@ronjenkins.info</email>
+      <timezone>America/Detroit</timezone>
     </developer>
   </developers>
+  <scm>
+    <connection>scm:git:git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</connection>
+    <developerConnection>scm:git:git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</developerConnection>
+    <url>git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</url>
+  </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
