@@ -132,6 +132,7 @@
         <executions>
           <execution>
             <id>generate-descriptor</id>
+            <!-- phase process-classes -->
             <goals>
               <goal>generate-metadata</goal>
             </goals>
@@ -201,6 +202,7 @@
           <!-- Installs this Maven extension into the IT local Maven repo. -->
           <execution>
             <id>install-this-extension</id>
+            <!-- phase pre-integration-test -->
             <goals>
               <goal>install</goal>
             </goals>
@@ -208,6 +210,7 @@
           <!-- Executes the tests. -->
           <execution>
             <id>integration-test</id>
+            <!-- phase integration-test -->
             <goals>
               <goal>run</goal>
             </goals>
@@ -441,6 +444,7 @@
             <executions>
               <execution>
                 <id>attach-sources</id>
+                <!-- phase package -->
                 <goals>
                   <goal>jar</goal>
                 </goals>
@@ -454,6 +458,7 @@
             <executions>
               <execution>
                 <id>attach-javadocs</id>
+                <!-- phase package -->
                 <goals>
                   <goal>jar</goal>
                 </goals>
