@@ -286,12 +286,15 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Use renamed site files. -->
+      <!-- Site plugin configuration. -->
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.4</version>
         <configuration>
+          <!-- Use renamed site files. -->
           <siteDirectory>${site.dest}</siteDirectory>
+          <!-- Don't use this plugin to deploy anything. -->
+          <skipDeploy>true</skipDeploy>
         </configuration>
       </plugin>
     </plugins>
@@ -464,6 +467,41 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <!-- Sign all artifacts. -->
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <!-- phase verify -->
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <!-- Requires CLI property "gpg.passphrase". -->
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Push Maven site to GitHub. -->
+          <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>0.12</version>
+              <executions>
+                <execution>
+                  <id>push-site-to-github</id>
+                  <phase>site-deploy</phase>
+                  <goals>
+                    <goal>site</goal>
+                  </goals>
+                  <!-- Requires CLI property "github.site.oauth2Token". -->
+                  <configuration>
+                    <message>Publishing site for version ${project.version}</message>
+                    <merge>true</merge>
+                  </configuration>
+                </execution>
+              </executions>
           </plugin>
         </plugins>
       </build>
