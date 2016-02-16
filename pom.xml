@@ -438,6 +438,33 @@
     </plugins>
   </reporting>
   <profiles>
+    <!-- SonarQube analysis. -->
+    <profile>
+      <id>sonarqube</id>
+      <activation>
+        <property>
+          <name>sonar.host.url</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+              <execution>
+                <id>sonarqube-analysis</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sonar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Things to do only for releases. -->
     <profile>
       <id>release</id>
