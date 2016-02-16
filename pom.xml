@@ -491,6 +491,7 @@
                 <configuration>
                   <!-- settings.xml -->
                   <executable>gpg2</executable>
+                  <defaultKeyring>false</defaultKeyring>
                 </configuration>
               </execution>
             </executions>
