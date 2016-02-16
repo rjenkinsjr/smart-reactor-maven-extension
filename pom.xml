@@ -441,9 +441,12 @@
     <!-- Things to do only for releases. -->
     <profile>
       <id>release</id>
-      <properties>
-        <rtr.release>true</rtr.release>
-      </properties>
+      <activation>
+        <property>
+          <name>rtr.release</name>
+          <value>true</value>
+        </property>
+      </activation>
       <build>
         <plugins>
           <!-- Generate source JAR. -->
