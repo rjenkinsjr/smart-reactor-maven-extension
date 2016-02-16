@@ -486,6 +486,9 @@
                   <goal>sign</goal>
                 </goals>
                 <!-- Requires CLI property "gpg.passphrase". -->
+                <configuration>
+                  <executable>gpg2</executable>
+                </configuration>
               </execution>
             </executions>
           </plugin>
