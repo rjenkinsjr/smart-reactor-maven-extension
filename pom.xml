@@ -492,6 +492,8 @@
                   <!-- settings.xml -->
                   <executable>gpg2</executable>
                   <defaultKeyring>false</defaultKeyring>
+                  <publicKeyring>${project.basedir}/pubring.gpg</publicKeyring>
+                  <secretKeyring>${project.basedir}/secring.gpg</secretKeyring>
                 </configuration>
               </execution>
             </executions>
