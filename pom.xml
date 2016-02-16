@@ -220,6 +220,7 @@
               <goals>
                 <goal>clean</goal>
               </goals>
+              <mavenOpts>${invokerArgLine}</mavenOpts>
               <scriptVariables>
                 <itResourcesDir>${it.resources.dest}</itResourcesDir>
                 <itCommonPrebuild>${it.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
@@ -255,8 +256,7 @@
             </goals>
             <configuration>
               <destFile>${jacoco.it.file}</destFile>
-              <!-- This property is read by the Maven Invoker Plugin by default. -->
-              <propertyName>invoker.mavenOpts</propertyName>
+              <propertyName>invokerArgLine</propertyName>
             </configuration>
           </execution>
         </executions>
