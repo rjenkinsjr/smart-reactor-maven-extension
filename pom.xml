@@ -236,7 +236,7 @@
         <executions>
           <!-- Generates command-line args for Maven Surefire. -->
           <execution>
-            <id>pre-unit-test</id>
+            <id>assemble-unit-test-args</id>
             <phase>test-compile</phase><!-- Prevent re-execution during site generation. -->
             <goals>
               <goal>prepare-agent</goal>
@@ -248,7 +248,7 @@
           </execution>
           <!-- Generates command-line args for Maven Failsafe. -->
           <execution>
-            <id>pre-integration-test</id>
+            <id>assemble-integration-test-args</id>
             <phase>pre-integration-test</phase>
             <goals>
               <goal>prepare-agent</goal>
