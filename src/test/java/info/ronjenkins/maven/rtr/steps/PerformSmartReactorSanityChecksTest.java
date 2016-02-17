@@ -15,8 +15,6 @@
  */
 package info.ronjenkins.maven.rtr.steps;
 
-import static org.junit.Assert.*;
-import static util.TestUtils.*;
 import info.ronjenkins.maven.rtr.RTRConfig;
 import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
 
@@ -31,117 +29,123 @@ import mockit.Mocked;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
+import org.junit.Assert;
 import org.junit.Test;
 
 import util.TestLogger;
+import util.TestUtils;
 
 public final class PerformSmartReactorSanityChecksTest {
 
-    @Injectable
-    MavenSession session;
-    @Mocked
-    MavenProject root;
-    @Mocked
-    RTRConfig config;
+  @Injectable
+  MavenSession session;
+  @Mocked
+  MavenProject root;
+  @Mocked
+  RTRConfig config;
 
-    @Test
-    public void twoProjectReactorAlwaysWorks() {
-	final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
-	final TestLogger logger = addLogger(step);
-	final List<MavenProject> projects = new MockUp<List<MavenProject>>() {
-	    /*
-	     * TODO I tried session.getProjects().size(); result = 2; in the
-	     * expectations block but it kept returning 1. Investigate further
-	     * and file a bug with JMockit if necessary.
-	     */
-	    @Mock
-	    int size() {
-		return 2;
-	    }
-	}.getMockInstance();
-	new Expectations() {
-	    {
-		session.getProjects();
-		result = projects;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
+  @Test
+  public void singleProjectNonPomReactorAlwaysWorks() {
+    final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        PerformSmartReactorSanityChecksTest.this.session.getProjects().size();
+        this.result = 1;
+        PerformSmartReactorSanityChecksTest.this.session.getTopLevelProject();
+        this.result = PerformSmartReactorSanityChecksTest.this.root;
+        PerformSmartReactorSanityChecksTest.this.root.getArtifact().getType();
+        this.result = "jar";
+
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    } catch (final MavenExecutionException e) {
+      Assert.fail();
     }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
 
-    @Test
-    public void singleProjectNonPomReactorAlwaysWorks() {
-	final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
-	final TestLogger logger = addLogger(step);
-	new Expectations() {
-	    {
-		session.getProjects().size();
-		result = 1;
-		session.getTopLevelProject();
-		result = root;
-		root.getArtifact().getType();
-		result = "jar";
-
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
+  @Test
+  public void singleProjectPomReactorFailsIfNotAllowed() {
+    final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        PerformSmartReactorSanityChecksTest.this.session.getProjects().size();
+        this.result = 1;
+        PerformSmartReactorSanityChecksTest.this.session.getTopLevelProject();
+        this.result = PerformSmartReactorSanityChecksTest.this.root;
+        PerformSmartReactorSanityChecksTest.this.root.getArtifact().getType();
+        this.result = "pom";
+        RTRConfig.isSinglePomReactorAllowed(
+            PerformSmartReactorSanityChecksTest.this.session,
+            PerformSmartReactorSanityChecksTest.this.root);
+        this.result = false;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    } catch (final MavenExecutionException e) {
+      Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
     }
+    Assert.assertFalse(logger.getErrorLog().isEmpty());
+  }
 
-    @Test
-    public void singleProjectPomReactorWorksIfAllowed() {
-	final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
-	final TestLogger logger = addLogger(step);
-	new Expectations() {
-	    {
-		session.getProjects().size();
-		result = 1;
-		session.getTopLevelProject();
-		result = root;
-		root.getArtifact().getType();
-		result = "pom";
-		RTRConfig.isSinglePomReactorAllowed(session, root);
-		result = true;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
+  @Test
+  public void singleProjectPomReactorWorksIfAllowed() {
+    final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        PerformSmartReactorSanityChecksTest.this.session.getProjects().size();
+        this.result = 1;
+        PerformSmartReactorSanityChecksTest.this.session.getTopLevelProject();
+        this.result = PerformSmartReactorSanityChecksTest.this.root;
+        PerformSmartReactorSanityChecksTest.this.root.getArtifact().getType();
+        this.result = "pom";
+        RTRConfig.isSinglePomReactorAllowed(
+            PerformSmartReactorSanityChecksTest.this.session,
+            PerformSmartReactorSanityChecksTest.this.root);
+        this.result = true;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    } catch (final MavenExecutionException e) {
+      Assert.fail();
     }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
 
-    @Test
-    public void singleProjectPomReactorFailsIfNotAllowed() {
-	final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
-	final TestLogger logger = addLogger(step);
-	new Expectations() {
-	    {
-		session.getProjects().size();
-		result = 1;
-		session.getTopLevelProject();
-		result = root;
-		root.getArtifact().getType();
-		result = "pom";
-		RTRConfig.isSinglePomReactorAllowed(session, root);
-		result = false;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    assertTrue(e instanceof SmartReactorSanityCheckException);
-	}
-	assertFalse(logger.getErrorLog().isEmpty());
+  @Test
+  public void twoProjectReactorAlwaysWorks() {
+    final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
+    final TestLogger logger = TestUtils.addLogger(step);
+    final List<MavenProject> projects = new MockUp<List<MavenProject>>() {
+      /*
+       * TODO I tried session.getProjects().size(); result = 2; in the
+       * expectations block but it kept returning 1. Investigate further and
+       * file a bug with JMockit if necessary.
+       */
+      @Mock
+      int size() {
+        return 2;
+      }
+    }.getMockInstance();
+    new Expectations() {
+      {
+        PerformSmartReactorSanityChecksTest.this.session.getProjects();
+        this.result = projects;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    } catch (final MavenExecutionException e) {
+      Assert.fail();
     }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
 
 }

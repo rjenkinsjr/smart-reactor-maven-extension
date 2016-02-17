@@ -19,22 +19,22 @@ import org.apache.maven.MavenExecutionException;
 
 /**
  * Thrown when the smart reactor fails one of its sanity checks.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 public class SmartReactorSanityCheckException extends MavenExecutionException {
 
-    private static final long serialVersionUID = -3239867428541322183L;
+  private static final long serialVersionUID = -3239867428541322183L;
 
-    /**
-     * Super constructor.
-     * 
-     * @param message
-     *            description of sanity check failure.
-     */
-    public SmartReactorSanityCheckException(final String message) {
-	super("Smart Reactor sanity check failure:", new IllegalStateException(
-		message));
-    }
+  /**
+   * Super constructor.
+   *
+   * @param message
+   *          description of sanity check failure.
+   */
+  public SmartReactorSanityCheckException(final String message) {
+    super("Smart Reactor sanity check failure:", new IllegalStateException(
+        message));
+  }
 
 }

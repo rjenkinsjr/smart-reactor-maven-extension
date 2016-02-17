@@ -15,8 +15,6 @@
  */
 package info.ronjenkins.maven.rtr.steps.release;
 
-import static org.junit.Assert.*;
-import static util.TestUtils.*;
 import info.ronjenkins.maven.rtr.RTR;
 import info.ronjenkins.maven.rtr.RTRComponents;
 import info.ronjenkins.maven.rtr.exceptions.SmartReactorReleaseException;
@@ -36,161 +34,165 @@ import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.ProjectBuildingResult;
+import org.junit.Assert;
 import org.junit.Test;
 
 import util.TestLogger;
+import util.TestUtils;
 
 public final class RebuildReleaseReactorTest {
 
-    @Injectable
-    MavenSession session;
-    @Injectable
-    RTRComponents components;
-    @Mocked
-    ProjectBuilder projectBuilder;
-    @Mocked
-    RTR rtr;
+  @Injectable
+  MavenSession session;
+  @Injectable
+  RTRComponents components;
+  @Mocked
+  ProjectBuilder projectBuilder;
+  @Mocked
+  RTR rtr;
 
-    @Test
-    public void assertUOEs() {
-	final RebuildReleaseReactor step = new RebuildReleaseReactor();
-	try {
-	    step.getReleasePhases();
-	    fail();
-	} catch (final UnsupportedOperationException expected) {
-	    // expected
-	} catch (final Exception notExpected) {
-	    fail();
-	}
-	try {
-	    step.getRollbackPhases();
-	    fail();
-	} catch (final UnsupportedOperationException expected) {
-	    // expected
-	} catch (final Exception notExpected) {
-	    fail();
-	}
+  @Test
+  public void assertUOEs() {
+    final RebuildReleaseReactor step = new RebuildReleaseReactor();
+    try {
+      step.getReleasePhases();
+      Assert.fail();
+    } catch (final UnsupportedOperationException expected) {
+      // expected
+    } catch (final Exception notExpected) {
+      Assert.fail();
     }
+    try {
+      step.getRollbackPhases();
+      Assert.fail();
+    } catch (final UnsupportedOperationException expected) {
+      // expected
+    } catch (final Exception notExpected) {
+      Assert.fail();
+    }
+  }
 
-    @Test
-    public void disabledReleaseMeansNoop() {
-	final RebuildReleaseReactor step = new RebuildReleaseReactor();
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null);
-	new Expectations() {
-	    {
-		rtr.isRelease();
-		result = false;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
+  @Test
+  public void disabledReleaseMeansNoop() {
+    final RebuildReleaseReactor step = new RebuildReleaseReactor();
+    final TestLogger logger = TestUtils.addLoggerAndReleaseDependencies(step,
+        this.rtr, null, null, null);
+    new Expectations() {
+      {
+        RebuildReleaseReactorTest.this.rtr.isRelease();
+        this.result = false;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    } catch (final MavenExecutionException e) {
+      Assert.fail();
     }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
 
-    @Test
-    public void successfulExecution(@Injectable final MavenProject root,
-	    @Injectable final MavenProject child,
-	    @Injectable final ProjectBuildingResult rootResult,
-	    @Injectable final ProjectBuildingResult childResult) {
-	final RebuildReleaseReactor step = new RebuildReleaseReactor();
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null);
-	final List<MavenProject> reactor = new ArrayList<MavenProject>();
-	reactor.add(root);
-	reactor.add(child);
-	final File rootFile = new File("rootFile");
-	final File childFile = new File("childFile");
-	final MavenProject newRoot = new MavenProject();
-	final MavenProject newChild = new MavenProject();
-	try {
-	    new Expectations(rootFile, childFile, newRoot, newChild) {
-		{
-		    rtr.isRelease();
-		    result = true;
-		    session.getProjects();
-		    result = reactor;
-		    root.getFile();
-		    result = rootFile;
-		    child.getFile();
-		    result = childFile;
-		    rootFile.equals(any);
-		    result = false;
-		    childFile.equals(any);
-		    result = false;
-		    components.getProjectBuilder();
-		    result = projectBuilder;
-		    projectBuilder.build(rootFile,
-			    session.getProjectBuildingRequest());
-		    result = rootResult;
-		    projectBuilder.build(childFile,
-			    session.getProjectBuildingRequest());
-		    result = childResult;
-		    rootResult.getProject();
-		    result = newRoot;
-		    childResult.getProject();
-		    result = newChild;
-		    root.isExecutionRoot();
-		    result = true;
-		    child.isExecutionRoot();
-		    result = false;
-		}
-	    };
-	} catch (final ProjectBuildingException notPossibleDuringTesting) {
-	    notPossibleDuringTesting.printStackTrace();
-	    fail();
-	}
-	try {
-	    step.execute(session, components);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
-	// Do object identity comparisons.
-	assertTrue(session.getProjects() == reactor);
-	assertFalse(session.getProjects().get(0) == root);
-	assertFalse(session.getProjects().get(1) == child);
-	assertTrue(session.getProjects().get(0) == newRoot);
-	assertTrue(session.getProjects().get(1) == newChild);
-	// Do project checks.
-	assertTrue(newRoot.isExecutionRoot());
-	assertFalse(newChild.isExecutionRoot());
+  @Test
+  public void exceptionsArePropagated(@Injectable final MavenProject root) {
+    final RebuildReleaseReactor step = new RebuildReleaseReactor();
+    final TestLogger logger = TestUtils.addLoggerAndReleaseDependencies(step,
+        this.rtr, null, null, null);
+    final ProjectBuildingException pbe = new ProjectBuildingException("id",
+        "error", root.getFile());
+    try {
+      new Expectations() {
+        {
+          RebuildReleaseReactorTest.this.rtr.isRelease();
+          this.result = true;
+          RebuildReleaseReactorTest.this.session.getProjects();
+          this.result = root;
+          RebuildReleaseReactorTest.this.components.getProjectBuilder();
+          this.result = RebuildReleaseReactorTest.this.projectBuilder;
+          RebuildReleaseReactorTest.this.projectBuilder.build((File) this.any,
+              (ProjectBuildingRequest) this.any);
+          this.result = pbe;
+        }
+      };
+    } catch (final ProjectBuildingException notPossibleDuringTesting) {
+      notPossibleDuringTesting.printStackTrace();
+      Assert.fail();
     }
+    try {
+      step.execute(this.session, this.components);
+    } catch (final MavenExecutionException e) {
+      Assert.assertTrue(e instanceof SmartReactorReleaseException);
+      Assert.assertEquals(pbe, e.getCause());
+    }
+    Assert.assertFalse(logger.getErrorLog().isEmpty());
+  }
 
-    @Test
-    public void exceptionsArePropagated(@Injectable final MavenProject root) {
-	final RebuildReleaseReactor step = new RebuildReleaseReactor();
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null);
-	final ProjectBuildingException pbe = new ProjectBuildingException("id",
-		"error", root.getFile());
-	try {
-	    new Expectations() {
-		{
-		    rtr.isRelease();
-		    result = true;
-		    session.getProjects();
-		    result = root;
-		    components.getProjectBuilder();
-		    result = projectBuilder;
-		    projectBuilder.build((File) any,
-			    (ProjectBuildingRequest) any);
-		    result = pbe;
-		}
-	    };
-	} catch (final ProjectBuildingException notPossibleDuringTesting) {
-	    notPossibleDuringTesting.printStackTrace();
-	    fail();
-	}
-	try {
-	    step.execute(session, components);
-	} catch (final MavenExecutionException e) {
-	    assertTrue(e instanceof SmartReactorReleaseException);
-	    assertEquals(pbe, e.getCause());
-	}
-	assertFalse(logger.getErrorLog().isEmpty());
+  @Test
+  public void successfulExecution(@Injectable final MavenProject root,
+      @Injectable final MavenProject child,
+      @Injectable final ProjectBuildingResult rootResult,
+      @Injectable final ProjectBuildingResult childResult) {
+    final RebuildReleaseReactor step = new RebuildReleaseReactor();
+    final TestLogger logger = TestUtils.addLoggerAndReleaseDependencies(step,
+        this.rtr, null, null, null);
+    final List<MavenProject> reactor = new ArrayList<MavenProject>();
+    reactor.add(root);
+    reactor.add(child);
+    final File rootFile = new File("rootFile");
+    final File childFile = new File("childFile");
+    final MavenProject newRoot = new MavenProject();
+    final MavenProject newChild = new MavenProject();
+    try {
+      new Expectations(rootFile, childFile, newRoot, newChild) {
+        {
+          RebuildReleaseReactorTest.this.rtr.isRelease();
+          this.result = true;
+          RebuildReleaseReactorTest.this.session.getProjects();
+          this.result = reactor;
+          root.getFile();
+          this.result = rootFile;
+          child.getFile();
+          this.result = childFile;
+          rootFile.equals(this.any);
+          this.result = false;
+          childFile.equals(this.any);
+          this.result = false;
+          RebuildReleaseReactorTest.this.components.getProjectBuilder();
+          this.result = RebuildReleaseReactorTest.this.projectBuilder;
+          RebuildReleaseReactorTest.this.projectBuilder.build(rootFile,
+              RebuildReleaseReactorTest.this.session
+                  .getProjectBuildingRequest());
+          this.result = rootResult;
+          RebuildReleaseReactorTest.this.projectBuilder.build(childFile,
+              RebuildReleaseReactorTest.this.session
+                  .getProjectBuildingRequest());
+          this.result = childResult;
+          rootResult.getProject();
+          this.result = newRoot;
+          childResult.getProject();
+          this.result = newChild;
+          root.isExecutionRoot();
+          this.result = true;
+          child.isExecutionRoot();
+          this.result = false;
+        }
+      };
+    } catch (final ProjectBuildingException notPossibleDuringTesting) {
+      notPossibleDuringTesting.printStackTrace();
+      Assert.fail();
     }
+    try {
+      step.execute(this.session, this.components);
+    } catch (final MavenExecutionException e) {
+      Assert.fail();
+    }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+    // Do object identity comparisons.
+    Assert.assertTrue(this.session.getProjects() == reactor);
+    Assert.assertFalse(this.session.getProjects().get(0) == root);
+    Assert.assertFalse(this.session.getProjects().get(1) == child);
+    Assert.assertTrue(this.session.getProjects().get(0) == newRoot);
+    Assert.assertTrue(this.session.getProjects().get(1) == newChild);
+    // Do project checks.
+    Assert.assertTrue(newRoot.isExecutionRoot());
+    Assert.assertFalse(newChild.isExecutionRoot());
+  }
 }

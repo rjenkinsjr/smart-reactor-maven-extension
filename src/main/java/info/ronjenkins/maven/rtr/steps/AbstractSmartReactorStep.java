@@ -20,12 +20,12 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * Base implementation of a Smart Reactor step.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 public abstract class AbstractSmartReactorStep implements SmartReactorStep {
 
-    @Requirement
-    protected Logger logger;
+  @Requirement
+  protected Logger logger;
 
 }

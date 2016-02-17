@@ -19,70 +19,70 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * Checks for SNAPSHOT dependencies in the reactor, but only if requested.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = ReleasePhase.class, hint = "conditional-check-dependency-snapshots")
 public class ConditionalCheckDependencySnapshotsPhase extends
-	CheckDependencySnapshotsPhase {
+CheckDependencySnapshotsPhase {
 
-    @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
-    private RTR rtr;
-    @Requirement
-    protected Logger logger;
+  @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
+  private RTR rtr;
+  @Requirement
+  protected Logger logger;
 
-    /**
-     * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
-     * execute} method.
-     * 
-     * @param rd
-     *            not null.
-     * @param re
-     *            not null.
-     * @param projects
-     *            not null.
-     * @return the result of the phase execution.
-     * @throws ReleaseExecutionException
-     *             as needed.
-     * @throws ReleaseFailureException
-     *             as needed.
-     */
-    @Override
-    public ReleaseResult simulate(final ReleaseDescriptor rd,
-	    final ReleaseEnvironment re, final List<MavenProject> projects)
-	    throws ReleaseExecutionException, ReleaseFailureException {
-	return this.execute(rd, re, projects);
+  /**
+   * Calls super, if permitted.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult execute(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List<MavenProject> projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    final ReleaseResult result;
+    if (this.rtr.isExternalSnapshotsAllowed()) {
+      this.logger
+      .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
+      result = new ReleaseResult();
+      result.setResultCode(ReleaseResult.SUCCESS);
+    } else {
+      result = super.execute(rd, re, projects);
     }
+    return result;
+  }
 
-    /**
-     * Calls super, if permitted.
-     * 
-     * @param rd
-     *            not null.
-     * @param re
-     *            not null.
-     * @param projects
-     *            not null.
-     * @return the result of the phase execution.
-     * @throws ReleaseExecutionException
-     *             as needed.
-     * @throws ReleaseFailureException
-     *             as needed.
-     */
-    @Override
-    public ReleaseResult execute(final ReleaseDescriptor rd,
-	    final ReleaseEnvironment re, final List<MavenProject> projects)
-	    throws ReleaseExecutionException, ReleaseFailureException {
-	final ReleaseResult result;
-	if (this.rtr.isExternalSnapshotsAllowed()) {
-	    this.logger
-		    .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
-	    result = new ReleaseResult();
-	    result.setResultCode(ReleaseResult.SUCCESS);
-	} else {
-	    result = super.execute(rd, re, projects);
-	}
-	return result;
-    }
+  /**
+   * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
+   * execute} method.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult simulate(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List<MavenProject> projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    return this.execute(rd, re, projects);
+  }
 
 }

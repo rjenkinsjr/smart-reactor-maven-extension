@@ -34,7 +34,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 /**
  * Indicates to the Smart Reactor that the backup POMs have been created
  * successfully.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  * @see DefensiveRestoreBackupPomsPhase
  * @see RemoveBackupPomsPhase
@@ -42,56 +42,56 @@ import org.codehaus.plexus.component.annotations.Requirement;
 @Component(role = ReleasePhase.class, hint = "indicate-presence-of-backup-poms")
 public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {
 
-    @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
-    private RTR rtr;
+  @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
+  private RTR rtr;
 
-    /**
-     * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
-     * execute} method.
-     * 
-     * @param rd
-     *            not null.
-     * @param re
-     *            not null.
-     * @param projects
-     *            not null.
-     * @return the result of the phase execution.
-     * @throws ReleaseExecutionException
-     *             as needed.
-     * @throws ReleaseFailureException
-     *             as needed.
-     */
-    @Override
-    public ReleaseResult simulate(final ReleaseDescriptor rd,
-	    final ReleaseEnvironment re, final List<MavenProject> projects)
-	    throws ReleaseExecutionException, ReleaseFailureException {
-	return this.execute(rd, re, projects);
-    }
+  /**
+   * Indicates to the Smart Reactor that the backup POMs have been created
+   * successfully.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult execute(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List<MavenProject> projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    this.rtr.setBackupPomsCreated(true);
+    final ReleaseResult result = new ReleaseResult();
+    result.setResultCode(ReleaseResult.SUCCESS);
+    return result;
+  }
 
-    /**
-     * Indicates to the Smart Reactor that the backup POMs have been created
-     * successfully.
-     * 
-     * @param rd
-     *            not null.
-     * @param re
-     *            not null.
-     * @param projects
-     *            not null.
-     * @return the result of the phase execution.
-     * @throws ReleaseExecutionException
-     *             as needed.
-     * @throws ReleaseFailureException
-     *             as needed.
-     */
-    @Override
-    public ReleaseResult execute(final ReleaseDescriptor rd,
-	    final ReleaseEnvironment re, final List<MavenProject> projects)
-	    throws ReleaseExecutionException, ReleaseFailureException {
-	this.rtr.setBackupPomsCreated(true);
-	final ReleaseResult result = new ReleaseResult();
-	result.setResultCode(ReleaseResult.SUCCESS);
-	return result;
-    }
+  /**
+   * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
+   * execute} method.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult simulate(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List<MavenProject> projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    return this.execute(rd, re, projects);
+  }
 
 }

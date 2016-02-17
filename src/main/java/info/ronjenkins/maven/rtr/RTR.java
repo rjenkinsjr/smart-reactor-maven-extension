@@ -31,119 +31,119 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * The entry point for the Smart Reactor Maven Extension.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
 public class RTR extends AbstractMavenLifecycleParticipant {
 
-    @Requirement
-    private Logger logger;
-    @Requirement
-    private ProjectBuilder builder;
+  @Requirement
+  private Logger logger;
+  @Requirement
+  private ProjectBuilder builder;
 
-    protected List<String> startSteps;
-    protected List<String> endSuccessSteps;
-    protected List<String> endFailureSteps;
+  protected List<String> startSteps;
+  protected List<String> endSuccessSteps;
+  protected List<String> endFailureSteps;
 
-    @Requirement(role = SmartReactorStep.class)
-    protected Map<String, SmartReactorStep> availableSteps;
+  @Requirement(role = SmartReactorStep.class)
+  protected Map<String, SmartReactorStep> availableSteps;
 
-    private RTRComponents components;
-    private boolean disabled;
-    private boolean release;
-    private boolean backupPomsCreated;
-    private boolean externalSnapshotsAllowed;
+  private RTRComponents components;
+  private boolean disabled;
+  private boolean release;
+  private boolean backupPomsCreated;
+  private boolean externalSnapshotsAllowed;
 
-    /**
-     * RTR entry point.
-     * 
-     * @param session
-     *            the current Maven session, never null.
-     */
-    @Override
-    public void afterProjectsRead(final MavenSession session)
-	    throws MavenExecutionException {
-	// Don't do anything if the Smart Reactor is disabled.
-	final MavenProject executionRoot = session.getTopLevelProject();
-	this.disabled = RTRConfig.isDisabled(session, executionRoot);
-	if (this.disabled) {
-	    return;
-	}
-	this.release = RTRConfig.isRelease(session, executionRoot);
-	this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(
-		session, executionRoot);
-	this.logger.info("Assembling smart reactor...");
-	this.components = new RTRComponents(this.builder);
-	this.executeSteps(this.startSteps, session, this.components);
-	// Done. Maven build will proceed from here, none the wiser. ;)
+  /**
+   * RTR entry point.
+   *
+   * @param session
+   *          the current Maven session, never null.
+   */
+  @Override
+  public void afterProjectsRead(final MavenSession session)
+      throws MavenExecutionException {
+    // Don't do anything if the Smart Reactor is disabled.
+    final MavenProject executionRoot = session.getTopLevelProject();
+    this.disabled = RTRConfig.isDisabled(session, executionRoot);
+    if (this.disabled) {
+      return;
     }
+    this.release = RTRConfig.isRelease(session, executionRoot);
+    this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(
+        session, executionRoot);
+    this.logger.info("Assembling smart reactor...");
+    this.components = new RTRComponents(this.builder);
+    this.executeSteps(this.startSteps, session, this.components);
+    // Done. Maven build will proceed from here, none the wiser. ;)
+  }
 
-    @Override
-    public void afterSessionEnd(final MavenSession session)
-	    throws MavenExecutionException {
-	if (this.disabled) {
-	    return;
-	}
-	if (session.getResult().hasExceptions()) {
-	    this.executeSteps(this.endFailureSteps, session, this.components);
-	} else {
-	    this.executeSteps(this.endSuccessSteps, session, this.components);
-	}
+  @Override
+  public void afterSessionEnd(final MavenSession session)
+      throws MavenExecutionException {
+    if (this.disabled) {
+      return;
     }
+    if (session.getResult().hasExceptions()) {
+      this.executeSteps(this.endFailureSteps, session, this.components);
+    } else {
+      this.executeSteps(this.endSuccessSteps, session, this.components);
+    }
+  }
 
-    private void executeSteps(final List<String> steps,
-	    final MavenSession session, final RTRComponents components)
-	    throws MavenExecutionException {
-	SmartReactorStep step;
-	for (final String name : steps) {
-	    step = this.availableSteps.get(name);
-	    if (step == null) {
-		throw new MavenExecutionException("Unable to find step '"
-			+ name + "' to execute", new IllegalStateException());
-	    }
-	    step.execute(session, components);
-	}
+  private void executeSteps(final List<String> steps,
+      final MavenSession session, final RTRComponents components)
+          throws MavenExecutionException {
+    SmartReactorStep step;
+    for (final String name : steps) {
+      step = this.availableSteps.get(name);
+      if (step == null) {
+        throw new MavenExecutionException("Unable to find step '" + name
+            + "' to execute", new IllegalStateException());
+      }
+      step.execute(session, components);
     }
+  }
 
-    /**
-     * Indicates whether or not the Smart Reactor should allow a release reactor
-     * containing references to any non-reactor SNAPSHOT artifacts.
-     * 
-     * @return true if allowed, false if prohibited.
-     */
-    public boolean isExternalSnapshotsAllowed() {
-	return this.externalSnapshotsAllowed;
-    }
+  /**
+   * Indicates whether or not backup POMs were created by the release process.
+   *
+   * @return backupPomsCreated true if backup POMs have been created, false
+   *         otherwise.
+   */
+  public boolean isBackupPomsCreated() {
+    return this.backupPomsCreated;
+  }
 
-    /**
-     * Indicates whether or not a release was requested.
-     * 
-     * @return true if a release was requested, false otherwise.
-     */
-    public boolean isRelease() {
-	return this.release;
-    }
+  /**
+   * Indicates whether or not the Smart Reactor should allow a release reactor
+   * containing references to any non-reactor SNAPSHOT artifacts.
+   *
+   * @return true if allowed, false if prohibited.
+   */
+  public boolean isExternalSnapshotsAllowed() {
+    return this.externalSnapshotsAllowed;
+  }
 
-    /**
-     * Sets the flag that indicates whether or not backup POMs were created by
-     * the release process.
-     * 
-     * @param backupPomsCreated
-     *            true if backup POMs have been created, false otherwise.
-     */
-    public void setBackupPomsCreated(final boolean backupPomsCreated) {
-	this.backupPomsCreated = backupPomsCreated;
-    }
+  /**
+   * Indicates whether or not a release was requested.
+   *
+   * @return true if a release was requested, false otherwise.
+   */
+  public boolean isRelease() {
+    return this.release;
+  }
 
-    /**
-     * Indicates whether or not backup POMs were created by the release process.
-     * 
-     * @return backupPomsCreated true if backup POMs have been created, false
-     *         otherwise.
-     */
-    public boolean isBackupPomsCreated() {
-	return this.backupPomsCreated;
-    }
+  /**
+   * Sets the flag that indicates whether or not backup POMs were created by the
+   * release process.
+   *
+   * @param backupPomsCreated
+   *          true if backup POMs have been created, false otherwise.
+   */
+  public void setBackupPomsCreated(final boolean backupPomsCreated) {
+    this.backupPomsCreated = backupPomsCreated;
+  }
 
 }

@@ -20,34 +20,33 @@ import org.apache.maven.MavenExecutionException;
 
 /**
  * Thrown when the smart reactor fails one of its release steps.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 public class SmartReactorReleaseException extends MavenExecutionException {
 
-    private static final long serialVersionUID = -4704891299848581663L;
+  private static final long serialVersionUID = -4704891299848581663L;
 
-    /**
-     * Super constructor with integrated {@link IllegalStateException}.
-     * 
-     * @param message
-     *            description of release failure, attached to the inner ISE
-     *            cause. Null or empty is coerced to a default message.
-     */
-    public SmartReactorReleaseException(final String message) {
-	super("Smart Reactor release failure:", new IllegalStateException(
-		StringUtils.isEmpty(message) ? "no further information."
-			: message));
-    }
+  /**
+   * Super constructor with integrated {@link IllegalStateException}.
+   *
+   * @param message
+   *          description of release failure, attached to the inner ISE cause.
+   *          Null or empty is coerced to a default message.
+   */
+  public SmartReactorReleaseException(final String message) {
+    super("Smart Reactor release failure:", new IllegalStateException(
+        StringUtils.isEmpty(message) ? "no further information." : message));
+  }
 
-    /**
-     * Super constructor with root cause.
-     * 
-     * @param cause
-     *            not null.
-     */
-    public SmartReactorReleaseException(final Throwable cause) {
-	super("Smart Reactor release failure:", cause);
-    }
+  /**
+   * Super constructor with root cause.
+   *
+   * @param cause
+   *          not null.
+   */
+  public SmartReactorReleaseException(final Throwable cause) {
+    super("Smart Reactor release failure:", cause);
+  }
 
 }

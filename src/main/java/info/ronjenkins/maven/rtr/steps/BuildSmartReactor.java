@@ -25,27 +25,25 @@ import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * Reassembles the Maven session's reactor using Smart Reactor rules.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = SmartReactorStep.class, hint = "build-smart-reactor")
 public class BuildSmartReactor extends AbstractSmartReactorStep {
 
-    @Override
-    public void execute(final MavenSession session,
-	    final RTRComponents components) {
-	// The reactor is a mutable list whose type is unknown, so rather than
-	// reassign it via sessions.setProjects(), we will manipulate the live
-	// list instead.
-	final Iterator<MavenProject> iterator = session.getProjects()
-		.iterator();
-	MavenProject project;
-	while (iterator.hasNext()) {
-	    project = iterator.next();
-	    if (!project.getArtifact().isSnapshot()) {
-		iterator.remove();
-	    }
-	}
+  @Override
+  public void execute(final MavenSession session, final RTRComponents components) {
+    // The reactor is a mutable list whose type is unknown, so rather than
+    // reassign it via sessions.setProjects(), we will manipulate the live
+    // list instead.
+    final Iterator<MavenProject> iterator = session.getProjects().iterator();
+    MavenProject project;
+    while (iterator.hasNext()) {
+      project = iterator.next();
+      if (!project.getArtifact().isSnapshot()) {
+        iterator.remove();
+      }
     }
+  }
 
 }

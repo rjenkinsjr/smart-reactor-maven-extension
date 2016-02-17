@@ -27,23 +27,23 @@ import org.codehaus.plexus.util.dag.CycleDetectedException;
 /**
  * Rebuilds the dependency graph for the session after all project changes have
  * taken effect.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = SmartReactorStep.class, hint = "rebuild-graph")
 public class RebuildProjectDependencyGraph extends AbstractSmartReactorStep {
 
-    @Override
-    public void execute(final MavenSession session,
-	    final RTRComponents components) throws MavenExecutionException {
-	try {
-	    session.setProjectDependencyGraph(new DefaultProjectDependencyGraph(
-		    session.getProjects()));
-	} catch (final CycleDetectedException | DuplicateProjectException e) {
-	    this.logger.error("");
-	    throw new MavenExecutionException(
-		    "Could not assemble new project dependency graph", e);
-	}
+  @Override
+  public void execute(final MavenSession session, final RTRComponents components)
+      throws MavenExecutionException {
+    try {
+      session.setProjectDependencyGraph(new DefaultProjectDependencyGraph(
+          session.getProjects()));
+    } catch (final CycleDetectedException | DuplicateProjectException e) {
+      this.logger.error("");
+      throw new MavenExecutionException(
+          "Could not assemble new project dependency graph", e);
     }
+  }
 
 }

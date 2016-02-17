@@ -15,7 +15,6 @@
  */
 package info.ronjenkins.maven.rtr.releasephases;
 
-import static org.junit.Assert.*;
 import info.ronjenkins.maven.rtr.RTR;
 
 import java.util.Arrays;
@@ -33,73 +32,71 @@ import org.apache.maven.shared.release.ReleaseFailureException;
 import org.apache.maven.shared.release.ReleaseResult;
 import org.apache.maven.shared.release.config.ReleaseDescriptor;
 import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.junit.Assert;
 import org.junit.Test;
 
 public final class RemoveBackupPomsPhaseTest {
 
-    @Injectable
-    MavenProject root;
-    @Injectable
-    RTR rtr;
+  @Injectable
+  MavenProject root;
+  @Injectable
+  RTR rtr;
 
-    @Test
-    public void backupPomsNotCreatedMeansNoop() {
-	final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
-	Deencapsulation.setField(phase, "rtr", this.rtr);
-	new Expectations() {
-	    {
-		rtr.isBackupPomsCreated();
-		result = false;
-	    }
-	};
-	try {
-	    final ReleaseResult result = phase.execute(
-		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-		    (List<MavenProject>) null);
-	    assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
-	    fail();
-	}
+  @Test
+  public void backupPomsCreatedMeansSuccessfulExecution() {
+    final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
+    Deencapsulation.setField(phase, "rtr", this.rtr);
+    new Expectations() {
+      {
+        RemoveBackupPomsPhaseTest.this.rtr.isBackupPomsCreated();
+        this.result = true;
+      }
+    };
+    try {
+      final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
+          (ReleaseEnvironment) null, Arrays.asList(this.root));
+      Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
+    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+      Assert.fail();
     }
+  }
 
-    @Test
-    public void backupPomsCreatedMeansSuccessfulExecution() {
-	final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
-	Deencapsulation.setField(phase, "rtr", this.rtr);
-	new Expectations() {
-	    {
-		rtr.isBackupPomsCreated();
-		result = true;
-	    }
-	};
-	try {
-	    final ReleaseResult result = phase.execute(
-		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-		    Arrays.asList(root));
-	    assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
-	    fail();
-	}
+  @Test
+  public void backupPomsNotCreatedMeansNoop() {
+    final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
+    Deencapsulation.setField(phase, "rtr", this.rtr);
+    new Expectations() {
+      {
+        RemoveBackupPomsPhaseTest.this.rtr.isBackupPomsCreated();
+        this.result = false;
+      }
+    };
+    try {
+      final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
+          (ReleaseEnvironment) null, (List<MavenProject>) null);
+      Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
+    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+      Assert.fail();
     }
+  }
 
-    @Test
-    public void simulateEqualsExecute() {
-	final RemoveBackupPomsPhase phase = new MockUp<RemoveBackupPomsPhase>() {
-	    @Mock
-	    ReleaseResult execute(final ReleaseDescriptor rd,
-		    final ReleaseEnvironment re,
-		    final List<MavenProject> projects) throws Throwable {
-		return new ReleaseResult();
-	    }
-	}.getMockInstance();
-	try {
-	    final ReleaseResult result = phase.simulate(
-		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-		    (List<MavenProject>) null);
-	    assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
-	    fail();
-	}
+  @Test
+  public void simulateEqualsExecute() {
+    final RemoveBackupPomsPhase phase = new MockUp<RemoveBackupPomsPhase>() {
+      @Mock
+      ReleaseResult execute(final ReleaseDescriptor rd,
+          final ReleaseEnvironment re, final List<MavenProject> projects)
+              throws Throwable {
+        return new ReleaseResult();
+      }
+    }.getMockInstance();
+    try {
+      final ReleaseResult result = phase.simulate((ReleaseDescriptor) null,
+          (ReleaseEnvironment) null, (List<MavenProject>) null);
+      Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
+    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+      Assert.fail();
     }
+  }
 
 }

@@ -33,7 +33,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
  * Deletes all backup POMs, but only if they were created.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  * @see IndicatePresenceOfBackupPomsPhase
  * @see DefensiveRestoreBackupPomsPhase
@@ -43,58 +43,58 @@ import org.codehaus.plexus.component.annotations.Requirement;
 @Component(role = ReleasePhase.class, hint = "remove-backup-poms")
 public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
 
-    @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
-    private RTR rtr;
+  @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
+  private RTR rtr;
 
-    /**
-     * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
-     * execute} method.
-     * 
-     * @param rd
-     *            not null.
-     * @param re
-     *            not null.
-     * @param projects
-     *            not null.
-     * @return the result of the phase execution.
-     * @throws ReleaseExecutionException
-     *             as needed.
-     * @throws ReleaseFailureException
-     *             as needed.
-     */
-    @Override
-    public ReleaseResult simulate(final ReleaseDescriptor rd,
-	    final ReleaseEnvironment re, final List<MavenProject> projects)
-	    throws ReleaseExecutionException, ReleaseFailureException {
-	return this.execute(rd, re, projects);
+  /**
+   * Deletes all backup POMs for the given projects, if they were created.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult execute(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List<MavenProject> projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    final ReleaseResult result = new ReleaseResult();
+    if (this.rtr.isBackupPomsCreated()) {
+      for (final MavenProject project : projects) {
+        this.deletePomBackup(project);
+      }
     }
+    result.setResultCode(ReleaseResult.SUCCESS);
+    return result;
+  }
 
-    /**
-     * Deletes all backup POMs for the given projects, if they were created.
-     * 
-     * @param rd
-     *            not null.
-     * @param re
-     *            not null.
-     * @param projects
-     *            not null.
-     * @return the result of the phase execution.
-     * @throws ReleaseExecutionException
-     *             as needed.
-     * @throws ReleaseFailureException
-     *             as needed.
-     */
-    @Override
-    public ReleaseResult execute(final ReleaseDescriptor rd,
-	    final ReleaseEnvironment re, final List<MavenProject> projects)
-	    throws ReleaseExecutionException, ReleaseFailureException {
-	final ReleaseResult result = new ReleaseResult();
-	if (this.rtr.isBackupPomsCreated()) {
-	    for (MavenProject project : projects) {
-		this.deletePomBackup(project);
-	    }
-	}
-	result.setResultCode(ReleaseResult.SUCCESS);
-	return result;
-    }
+  /**
+   * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
+   * execute} method.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult simulate(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List<MavenProject> projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    return this.execute(rd, re, projects);
+  }
 }

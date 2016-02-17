@@ -30,51 +30,50 @@ import org.codehaus.plexus.component.annotations.Component;
 /**
  * Validates that this Maven session is eligible to be processed by the Smart
  * Reactor.
- * 
+ *
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = SmartReactorStep.class, hint = "validate-eligibility")
 public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
 
-    @Override
-    public void execute(final MavenSession session,
-	    final RTRComponents components) throws MavenExecutionException {
-	// Ensure that the root is a SNAPSHOT.
-	final MavenProject root = session.getTopLevelProject();
-	if (!root.getArtifact().isSnapshot()) {
-	    this.logger.error("");
-	    this.logger.error("Top-level project " + root
-		    + " is not a SNAPSHOT.");
-	    this.logger.error("");
-	    throw new SmartReactorSanityCheckException(
-		    "Reactor is ineligible to become a Smart Reactor.");
-	}
-	// Ensure that the ancestors of every SNAPSHOT are also SNAPSHOTs.
-	final ProjectDependencyGraph pdg = session.getProjectDependencyGraph();
-	final List<MavenProject> badProjects = new ArrayList<MavenProject>();
-	for (final MavenProject project : session.getProjects()) {
-	    if (project.getArtifact().isSnapshot()) {
-		for (final MavenProject ancestor : pdg.getUpstreamProjects(
-			project, true)) {
-		    if (!ancestor.getArtifact().isSnapshot()) {
-			badProjects.add(ancestor);
-		    }
-		}
-	    }
-	}
-	// Fail if necessary.
-	if (!badProjects.isEmpty()) {
-	    this.logger.error("");
-	    this.logger
-		    .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
-	    for (final MavenProject badProject : badProjects) {
-		this.logger.error("  " + badProject.getArtifact().toString()
-			+ " @ " + badProject.getFile().getAbsolutePath());
-	    }
-	    this.logger.error("");
-	    throw new SmartReactorSanityCheckException(
-		    "Reactor is ineligible to become a Smart Reactor.");
-	}
+  @Override
+  public void execute(final MavenSession session, final RTRComponents components)
+      throws MavenExecutionException {
+    // Ensure that the root is a SNAPSHOT.
+    final MavenProject root = session.getTopLevelProject();
+    if (!root.getArtifact().isSnapshot()) {
+      this.logger.error("");
+      this.logger.error("Top-level project " + root + " is not a SNAPSHOT.");
+      this.logger.error("");
+      throw new SmartReactorSanityCheckException(
+          "Reactor is ineligible to become a Smart Reactor.");
     }
+    // Ensure that the ancestors of every SNAPSHOT are also SNAPSHOTs.
+    final ProjectDependencyGraph pdg = session.getProjectDependencyGraph();
+    final List<MavenProject> badProjects = new ArrayList<MavenProject>();
+    for (final MavenProject project : session.getProjects()) {
+      if (project.getArtifact().isSnapshot()) {
+        for (final MavenProject ancestor : pdg.getUpstreamProjects(project,
+            true)) {
+          if (!ancestor.getArtifact().isSnapshot()) {
+            badProjects.add(ancestor);
+          }
+        }
+      }
+    }
+    // Fail if necessary.
+    if (!badProjects.isEmpty()) {
+      this.logger.error("");
+      this.logger
+      .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
+      for (final MavenProject badProject : badProjects) {
+        this.logger.error("  " + badProject.getArtifact().toString() + " @ "
+            + badProject.getFile().getAbsolutePath());
+      }
+      this.logger.error("");
+      throw new SmartReactorSanityCheckException(
+          "Reactor is ineligible to become a Smart Reactor.");
+    }
+  }
 
 }
