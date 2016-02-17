@@ -58,7 +58,6 @@
     <it.resources.src>${project.basedir}/src/it/resources</it.resources.src>
     <it.resources.dest>${project.build.directory}/it-resources</it.resources.dest>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
     <sonar.jacoco.itReportPath>${jacoco.it.file}</sonar.jacoco.itReportPath>
     <sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero>
