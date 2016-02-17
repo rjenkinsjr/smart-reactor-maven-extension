@@ -297,6 +297,26 @@
         </configuration>
       </plugin>
     </plugins>
+    <!-- Plugins used by profiles. -->
+    <pluginManagement>
+      <plugins>
+        <!-- SonarQube analysis. -->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <id>sonarqube-analysis</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sonar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   <distributionManagement>
     <snapshotRepository>
@@ -437,7 +457,7 @@
     </plugins>
   </reporting>
   <profiles>
-    <!-- SonarQube analysis. -->
+    <!-- SonarQube analysis profile. -->
     <profile>
       <id>sonarqube</id>
       <activation>
@@ -450,16 +470,6 @@
           <plugin>
             <groupId>org.sonarsource.scanner.maven</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
-            <version>3.0.1</version>
-            <executions>
-              <execution>
-                <id>sonarqube-analysis</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sonar</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
@@ -524,6 +534,11 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <!-- SonarQube analysis. -->
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
           </plugin>
           <!-- Push artifacts to OSSRH. -->
           <plugin>
