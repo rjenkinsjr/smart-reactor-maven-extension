@@ -57,194 +57,194 @@ public final class AbstractSmartReactorReleaseStepsTest {
 
     @Test
     public void coverBasicImplementations() {
-	final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
-	tpir.getAnnouncement();
-	tpir.getReleasePhases();
-	tpir.getRollbackPhases();
-	final DoPostReleaseSuccess dprs = new DoPostReleaseSuccess();
-	dprs.getAnnouncement();
-	dprs.getReleasePhases();
-	dprs.getRollbackPhases();
-	final DoPostReleaseFailure dprf = new DoPostReleaseFailure();
-	dprf.getAnnouncement();
-	dprf.getReleasePhases();
-	dprf.getRollbackPhases();
+  final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
+  tpir.getAnnouncement();
+  tpir.getReleasePhases();
+  tpir.getRollbackPhases();
+  final DoPostReleaseSuccess dprs = new DoPostReleaseSuccess();
+  dprs.getAnnouncement();
+  dprs.getReleasePhases();
+  dprs.getRollbackPhases();
+  final DoPostReleaseFailure dprf = new DoPostReleaseFailure();
+  dprf.getAnnouncement();
+  dprf.getReleasePhases();
+  dprf.getRollbackPhases();
     }
 
     @Test
     public void disabledReleaseMeansNoop() {
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		null, null, null);
-	new Expectations() {
-	    {
-		rtr.isRelease();
-		result = false;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
+  final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+    null, null, null);
+  new Expectations() {
+      {
+    rtr.isRelease();
+    result = false;
+      }
+  };
+  try {
+      step.execute(session, null);
+  } catch (final MavenExecutionException e) {
+      fail();
+  }
+  assertTrue(logger.getErrorLog().isEmpty());
     }
 
     @Test
     public void successfulExecution(
-	    @Injectable final Map<String, ReleasePhase> availablePhases) {
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		availablePhases, this.releaseDescriptor,
-		this.releaseEnvironment);
-	new Expectations() {
-	    {
-		rtr.isRelease();
-		result = true;
-		step.getReleasePhases();
-		result = "phase1";
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    fail();
-	}
-	assertTrue(logger.getErrorLog().isEmpty());
+      @Injectable final Map<String, ReleasePhase> availablePhases) {
+  final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+    availablePhases, this.releaseDescriptor,
+    this.releaseEnvironment);
+  new Expectations() {
+      {
+    rtr.isRelease();
+    result = true;
+    step.getReleasePhases();
+    result = "phase1";
+      }
+  };
+  try {
+      step.execute(session, null);
+  } catch (final MavenExecutionException e) {
+      fail();
+  }
+  assertTrue(logger.getErrorLog().isEmpty());
     }
 
     @Test
     public void nullReleasePhaseCausesException(
-	    @Injectable final Map<String, ReleasePhase> availablePhases) {
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		availablePhases, this.releaseDescriptor,
-		this.releaseEnvironment);
-	new Expectations() {
-	    {
-		rtr.isRelease();
-		result = true;
-		step.getReleasePhases();
-		result = "phase1";
-		step.getRollbackPhases();
-		result = "phase2";
-		availablePhases.get("phase1");
-		result = null;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    assertTrue(e instanceof SmartReactorReleaseException);
-	    assertEquals(0, e.getSuppressed().length);
-	    assertEquals(IllegalStateException.class, e.getCause().getClass());
-	}
-	assertFalse(logger.getErrorLog().isEmpty());
+      @Injectable final Map<String, ReleasePhase> availablePhases) {
+  final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+    availablePhases, this.releaseDescriptor,
+    this.releaseEnvironment);
+  new Expectations() {
+      {
+    rtr.isRelease();
+    result = true;
+    step.getReleasePhases();
+    result = "phase1";
+    step.getRollbackPhases();
+    result = "phase2";
+    availablePhases.get("phase1");
+    result = null;
+      }
+  };
+  try {
+      step.execute(session, null);
+  } catch (final MavenExecutionException e) {
+      assertTrue(e instanceof SmartReactorReleaseException);
+      assertEquals(0, e.getSuppressed().length);
+      assertEquals(IllegalStateException.class, e.getCause().getClass());
+  }
+  assertFalse(logger.getErrorLog().isEmpty());
     }
 
     @Test
     public void releasePhaseExceptionCausesExceptionWithProperCause(
-	    @Injectable final Map<String, ReleasePhase> availablePhases,
-	    @Injectable final ReleasePhase phase1) {
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		availablePhases, this.releaseDescriptor,
-		this.releaseEnvironment);
-	try {
-	    new Expectations() {
-		{
-		    rtr.isRelease();
-		    result = true;
-		    step.getReleasePhases();
-		    result = "phase1";
-		    availablePhases.get("phase1");
-		    result = phase1;
-		    @SuppressWarnings({ "unused", "unchecked" })
-		    ReleaseResult execute = phase1.execute(
-			    (ReleaseDescriptor) any, (ReleaseEnvironment) any,
-			    (List<MavenProject>) any);
-		    result = new ReleaseExecutionException(
-			    "test execution exception");
-		}
-	    };
-	} catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
-	    notPossibleDuringTesting.printStackTrace();
-	    fail();
-	}
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    assertTrue(e instanceof SmartReactorReleaseException);
-	    assertEquals(0, e.getSuppressed().length);
-	    assertEquals(ReleaseExecutionException.class, e.getCause()
-		    .getClass());
-	}
-	assertFalse(logger.getErrorLog().isEmpty());
+      @Injectable final Map<String, ReleasePhase> availablePhases,
+      @Injectable final ReleasePhase phase1) {
+  final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+    availablePhases, this.releaseDescriptor,
+    this.releaseEnvironment);
+  try {
+      new Expectations() {
+    {
+        rtr.isRelease();
+        result = true;
+        step.getReleasePhases();
+        result = "phase1";
+        availablePhases.get("phase1");
+        result = phase1;
+        @SuppressWarnings({ "unused", "unchecked" })
+        ReleaseResult execute = phase1.execute(
+          (ReleaseDescriptor) any, (ReleaseEnvironment) any,
+          (List<MavenProject>) any);
+        result = new ReleaseExecutionException(
+          "test execution exception");
+    }
+      };
+  } catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
+      notPossibleDuringTesting.printStackTrace();
+      fail();
+  }
+  try {
+      step.execute(session, null);
+  } catch (final MavenExecutionException e) {
+      assertTrue(e instanceof SmartReactorReleaseException);
+      assertEquals(0, e.getSuppressed().length);
+      assertEquals(ReleaseExecutionException.class, e.getCause()
+        .getClass());
+  }
+  assertFalse(logger.getErrorLog().isEmpty());
     }
 
     @Test
     public void releasePhaseErrorResultCausesExceptionWithProperCause(
-	    @Injectable final Map<String, ReleasePhase> availablePhases,
-	    @Injectable final ReleasePhase phase1,
-	    @Injectable final ReleaseResult result1) {
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		availablePhases, this.releaseDescriptor,
-		this.releaseEnvironment);
-	try {
-	    new Expectations() {
-		{
-		    rtr.isRelease();
-		    result = true;
-		    step.getReleasePhases();
-		    result = "phase1";
-		    availablePhases.get("phase1");
-		    result = phase1;
-		    @SuppressWarnings({ "unused", "unchecked" })
-		    ReleaseResult execute = phase1.execute(
-			    (ReleaseDescriptor) any, (ReleaseEnvironment) any,
-			    (List<MavenProject>) any);
-		    result = result1;
-		    result1.getResultCode();
-		    result = ReleaseResult.ERROR;
-		}
-	    };
-	} catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
-	    notPossibleDuringTesting.printStackTrace();
-	    fail();
-	}
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    assertTrue(e instanceof SmartReactorReleaseException);
-	    assertEquals(0, e.getSuppressed().length);
-	    assertEquals(IllegalStateException.class, e.getCause().getClass());
-	}
-	assertFalse(logger.getErrorLog().isEmpty());
+      @Injectable final Map<String, ReleasePhase> availablePhases,
+      @Injectable final ReleasePhase phase1,
+      @Injectable final ReleaseResult result1) {
+  final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+    availablePhases, this.releaseDescriptor,
+    this.releaseEnvironment);
+  try {
+      new Expectations() {
+    {
+        rtr.isRelease();
+        result = true;
+        step.getReleasePhases();
+        result = "phase1";
+        availablePhases.get("phase1");
+        result = phase1;
+        @SuppressWarnings({ "unused", "unchecked" })
+        ReleaseResult execute = phase1.execute(
+          (ReleaseDescriptor) any, (ReleaseEnvironment) any,
+          (List<MavenProject>) any);
+        result = result1;
+        result1.getResultCode();
+        result = ReleaseResult.ERROR;
+    }
+      };
+  } catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
+      notPossibleDuringTesting.printStackTrace();
+      fail();
+  }
+  try {
+      step.execute(session, null);
+  } catch (final MavenExecutionException e) {
+      assertTrue(e instanceof SmartReactorReleaseException);
+      assertEquals(0, e.getSuppressed().length);
+      assertEquals(IllegalStateException.class, e.getCause().getClass());
+  }
+  assertFalse(logger.getErrorLog().isEmpty());
     }
 
     @Test
     public void rollbackFailureOfAnyKindCausesExceptionSuppression(
-	    @Injectable final Map<String, ReleasePhase> availablePhases) {
-	final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
-		availablePhases, this.releaseDescriptor,
-		this.releaseEnvironment);
-	new Expectations() {
-	    {
-		rtr.isRelease();
-		result = true;
-		step.getReleasePhases();
-		result = "phase1";
-		step.getRollbackPhases();
-		result = "phase2";
-		availablePhases.get("phase1");
-		result = null;
-		availablePhases.get("phase2");
-		result = null;
-	    }
-	};
-	try {
-	    step.execute(session, null);
-	} catch (final MavenExecutionException e) {
-	    assertTrue(e instanceof SmartReactorReleaseException);
-	    assertEquals(1, e.getSuppressed().length);
-	}
-	assertFalse(logger.getErrorLog().isEmpty());
+      @Injectable final Map<String, ReleasePhase> availablePhases) {
+  final TestLogger logger = addLoggerAndReleaseDependencies(step, rtr,
+    availablePhases, this.releaseDescriptor,
+    this.releaseEnvironment);
+  new Expectations() {
+      {
+    rtr.isRelease();
+    result = true;
+    step.getReleasePhases();
+    result = "phase1";
+    step.getRollbackPhases();
+    result = "phase2";
+    availablePhases.get("phase1");
+    result = null;
+    availablePhases.get("phase2");
+    result = null;
+      }
+  };
+  try {
+      step.execute(session, null);
+  } catch (final MavenExecutionException e) {
+      assertTrue(e instanceof SmartReactorReleaseException);
+      assertEquals(1, e.getSuppressed().length);
+  }
+  assertFalse(logger.getErrorLog().isEmpty());
     }
 
 }

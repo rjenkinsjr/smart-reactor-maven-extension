@@ -32,56 +32,56 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "transform-poms")
 public class TransformProjectsIntoReleases extends
-	AbstractSmartReactorReleaseStep {
+  AbstractSmartReactorReleaseStep {
 
     private List<String> releasePhases;
     private List<String> rollbackPhases;
 
     @Override
     public String getAnnouncement() {
-	return "Converting reactor projects to releases...";
+  return "Converting reactor projects to releases...";
     }
 
     @Override
     protected void configureReleaseDescriptor(final MavenSession session,
-	    final RTRComponents components) {
-	final MavenProject executionRoot = session.getTopLevelProject();
-	this.releaseDescriptor.setAddSchema(RTRConfig.isAddSchema(session,
-		executionRoot));
-	this.releaseDescriptor.setAllowTimestampedSnapshots(RTRConfig
-		.isAllowTimestampedSnapshots(session, executionRoot));
-	this.releaseDescriptor.setAutoVersionSubmodules(RTRConfig
-		.isAutoVersionSubmodules(session, executionRoot));
-	this.releaseDescriptor.setProjectVersionPolicyId(RTRConfig
-		.getProjectVersionPolicyId(session, executionRoot));
-	final String releaseVersion = RTRConfig.getReleaseVersion(session,
-		executionRoot);
-	if (releaseVersion != null) {
-	    this.releaseDescriptor.setDefaultReleaseVersion(releaseVersion);
-	}
-	final String tag = RTRConfig.getTag(session, executionRoot);
-	if (tag != null) {
-	    this.releaseDescriptor.setScmReleaseLabel(tag);
-	}
-	final String tagBase = RTRConfig.getTagBase(session, executionRoot);
-	if (tagBase != null) {
-	    this.releaseDescriptor.setScmTagBase(tagBase);
-	}
-	final String tagNameFormat = RTRConfig.getTagNameFormat(session,
-		executionRoot);
-	if (tagNameFormat != null) {
-	    this.releaseDescriptor.setScmTagNameFormat(tagNameFormat);
-	}
+      final RTRComponents components) {
+  final MavenProject executionRoot = session.getTopLevelProject();
+  this.releaseDescriptor.setAddSchema(RTRConfig.isAddSchema(session,
+    executionRoot));
+  this.releaseDescriptor.setAllowTimestampedSnapshots(RTRConfig
+    .isAllowTimestampedSnapshots(session, executionRoot));
+  this.releaseDescriptor.setAutoVersionSubmodules(RTRConfig
+    .isAutoVersionSubmodules(session, executionRoot));
+  this.releaseDescriptor.setProjectVersionPolicyId(RTRConfig
+    .getProjectVersionPolicyId(session, executionRoot));
+  final String releaseVersion = RTRConfig.getReleaseVersion(session,
+    executionRoot);
+  if (releaseVersion != null) {
+      this.releaseDescriptor.setDefaultReleaseVersion(releaseVersion);
+  }
+  final String tag = RTRConfig.getTag(session, executionRoot);
+  if (tag != null) {
+      this.releaseDescriptor.setScmReleaseLabel(tag);
+  }
+  final String tagBase = RTRConfig.getTagBase(session, executionRoot);
+  if (tagBase != null) {
+      this.releaseDescriptor.setScmTagBase(tagBase);
+  }
+  final String tagNameFormat = RTRConfig.getTagNameFormat(session,
+    executionRoot);
+  if (tagNameFormat != null) {
+      this.releaseDescriptor.setScmTagNameFormat(tagNameFormat);
+  }
     }
 
     @Override
     protected List<String> getReleasePhases() {
-	return this.releasePhases;
+  return this.releasePhases;
     }
 
     @Override
     protected List<String> getRollbackPhases() {
-	return this.rollbackPhases;
+  return this.rollbackPhases;
     }
 
 }

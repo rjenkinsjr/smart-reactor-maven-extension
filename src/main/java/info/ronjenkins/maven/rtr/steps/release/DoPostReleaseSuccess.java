@@ -34,17 +34,17 @@ public class DoPostReleaseSuccess extends AbstractSmartReactorReleaseStep {
 
     @Override
     public String getAnnouncement() {
-	return "Performing cleanup of successful release...";
+  return "Performing cleanup of successful release...";
     }
 
     @Override
     protected List<String> getReleasePhases() {
-	return this.releasePhases;
+  return this.releasePhases;
     }
 
     @Override
     protected List<String> getRollbackPhases() {
-	return this.rollbackPhases;
+  return this.rollbackPhases;
     }
 
 }

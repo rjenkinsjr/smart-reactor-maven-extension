@@ -59,9 +59,9 @@ public final class RTRConfig {
      * @return true if disabled, false if enabled.
      */
     public static boolean isDisabled(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_DISABLED, DEFAULT_DISABLED, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_DISABLED, DEFAULT_DISABLED, session, project);
     }
 
     /**
@@ -75,10 +75,10 @@ public final class RTRConfig {
      * @return true if allowed, false if prohibited.
      */
     public static boolean isSinglePomReactorAllowed(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_SINGLE_POM_REACTOR_ALLOWED,
-		DEFAULT_SINGLE_POM_REACTOR_ALLOWED, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_SINGLE_POM_REACTOR_ALLOWED,
+    DEFAULT_SINGLE_POM_REACTOR_ALLOWED, session, project);
     }
 
     /**
@@ -92,10 +92,10 @@ public final class RTRConfig {
      * @return true if allowed, false if prohibited.
      */
     public static boolean isExternalSnapshotsAllowed(
-	    final MavenSession session, final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_EXTERNAL_SNAPSHOTS_ALLOWED,
-		DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED, session, project);
+      final MavenSession session, final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_EXTERNAL_SNAPSHOTS_ALLOWED,
+    DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED, session, project);
     }
 
     /**
@@ -108,9 +108,9 @@ public final class RTRConfig {
      * @return true if a release was requested, false otherwise.
      */
     public static boolean isRelease(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_RELEASE, DEFAULT_RELEASE, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_RELEASE, DEFAULT_RELEASE, session, project);
     }
 
     /**
@@ -123,9 +123,9 @@ public final class RTRConfig {
      * @return true if set in the session or given project, false if unset.
      */
     public static boolean isAddSchema(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_ADDSCHEMA, DEFAULT_ADDSCHEMA, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_ADDSCHEMA, DEFAULT_ADDSCHEMA, session, project);
     }
 
     /**
@@ -138,10 +138,10 @@ public final class RTRConfig {
      * @return true if set in the session or given project, false if unset.
      */
     public static boolean isAllowTimestampedSnapshots(
-	    final MavenSession session, final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_ALLOWTIMESTAMPEDSNAPSHOTS,
-		DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS, session, project);
+      final MavenSession session, final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_ALLOWTIMESTAMPEDSNAPSHOTS,
+    DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS, session, project);
     }
 
     /**
@@ -154,10 +154,10 @@ public final class RTRConfig {
      * @return true if set in the session or given project, false if unset.
      */
     public static boolean isAutoVersionSubmodules(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getFlag(PROP_AUTOVERSIONSUBMODULES,
-		DEFAULT_AUTOVERSIONSUBMODULES, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getFlag(PROP_AUTOVERSIONSUBMODULES,
+    DEFAULT_AUTOVERSIONSUBMODULES, session, project);
     }
 
     /**
@@ -170,11 +170,11 @@ public final class RTRConfig {
      * @return never null. "default" if unset anywhere.
      */
     public static String getProjectVersionPolicyId(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return StringUtils.defaultString(
-		getProperty(PROP_PROJECTVERSIONPOLICYID, session, project),
-		DEFAULT_PROJECTVERSIONPOLICYID);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return StringUtils.defaultString(
+    getProperty(PROP_PROJECTVERSIONPOLICYID, session, project),
+    DEFAULT_PROJECTVERSIONPOLICYID);
     }
 
     /**
@@ -187,9 +187,9 @@ public final class RTRConfig {
      * @return null iff unset anywhere.
      */
     public static String getReleaseVersion(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getProperty(PROP_RELEASEVERSION, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getProperty(PROP_RELEASEVERSION, session, project);
     }
 
     /**
@@ -202,9 +202,9 @@ public final class RTRConfig {
      * @return null iff unset anywhere.
      */
     public static String getTag(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getProperty(PROP_TAG, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getProperty(PROP_TAG, session, project);
     }
 
     /**
@@ -217,9 +217,9 @@ public final class RTRConfig {
      * @return null iff unset anywhere.
      */
     public static String getTagBase(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getProperty(PROP_TAGBASE, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getProperty(PROP_TAGBASE, session, project);
     }
 
     /**
@@ -232,9 +232,9 @@ public final class RTRConfig {
      * @return null iff unset anywhere.
      */
     public static String getTagNameFormat(final MavenSession session,
-	    final MavenProject project) {
-	checkParameters(session, project);
-	return getProperty(PROP_TAGNAMEFORMAT, session, project);
+      final MavenProject project) {
+  checkParameters(session, project);
+  return getProperty(PROP_TAGNAMEFORMAT, session, project);
     }
 
     /*
@@ -242,32 +242,32 @@ public final class RTRConfig {
      */
 
     private static String getProperty(final String prop,
-	    final MavenSession session, final MavenProject project) {
-	if (session == null) {
-	    return project.getProperties().getProperty(prop);
-	} else if (project == null) {
-	    return session.getUserProperties().getProperty(prop);
-	} else {
-	    return StringUtils.defaultString(session.getUserProperties()
-		    .getProperty(prop),
-		    project.getProperties().getProperty(prop));
-	}
+      final MavenSession session, final MavenProject project) {
+  if (session == null) {
+      return project.getProperties().getProperty(prop);
+  } else if (project == null) {
+      return session.getUserProperties().getProperty(prop);
+  } else {
+      return StringUtils.defaultString(session.getUserProperties()
+        .getProperty(prop),
+        project.getProperties().getProperty(prop));
+  }
     }
 
     private static boolean getFlag(final String prop,
-	    final boolean defaultValue, final MavenSession session,
-	    final MavenProject project) {
-	final String rawValue = getProperty(prop, session, project);
-	return rawValue == null ? defaultValue : BooleanUtils.toBoolean(
-		rawValue, "true", "false");
+      final boolean defaultValue, final MavenSession session,
+      final MavenProject project) {
+  final String rawValue = getProperty(prop, session, project);
+  return rawValue == null ? defaultValue : BooleanUtils.toBoolean(
+    rawValue, "true", "false");
     }
 
     private static void checkParameters(final MavenSession session,
-	    final MavenProject project) {
-	if (session == null && project == null) {
-	    throw new NullPointerException(
-		    "session and project cannot both be null");
-	}
+      final MavenProject project) {
+  if (session == null && project == null) {
+      throw new NullPointerException(
+        "session and project cannot both be null");
+  }
     }
 
     /* This class is not instantiable. */

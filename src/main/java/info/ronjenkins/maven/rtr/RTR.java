@@ -63,47 +63,47 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      */
     @Override
     public void afterProjectsRead(final MavenSession session)
-	    throws MavenExecutionException {
-	// Don't do anything if the Smart Reactor is disabled.
-	final MavenProject executionRoot = session.getTopLevelProject();
-	this.disabled = RTRConfig.isDisabled(session, executionRoot);
-	if (this.disabled) {
-	    return;
-	}
-	this.release = RTRConfig.isRelease(session, executionRoot);
-	this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(
-		session, executionRoot);
-	this.logger.info("Assembling smart reactor...");
-	this.components = new RTRComponents(this.builder);
-	this.executeSteps(this.startSteps, session, this.components);
-	// Done. Maven build will proceed from here, none the wiser. ;)
+      throws MavenExecutionException {
+  // Don't do anything if the Smart Reactor is disabled.
+  final MavenProject executionRoot = session.getTopLevelProject();
+  this.disabled = RTRConfig.isDisabled(session, executionRoot);
+  if (this.disabled) {
+      return;
+  }
+  this.release = RTRConfig.isRelease(session, executionRoot);
+  this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(
+    session, executionRoot);
+  this.logger.info("Assembling smart reactor...");
+  this.components = new RTRComponents(this.builder);
+  this.executeSteps(this.startSteps, session, this.components);
+  // Done. Maven build will proceed from here, none the wiser. ;)
     }
 
     @Override
     public void afterSessionEnd(final MavenSession session)
-	    throws MavenExecutionException {
-	if (this.disabled) {
-	    return;
-	}
-	if (session.getResult().hasExceptions()) {
-	    this.executeSteps(this.endFailureSteps, session, this.components);
-	} else {
-	    this.executeSteps(this.endSuccessSteps, session, this.components);
-	}
+      throws MavenExecutionException {
+  if (this.disabled) {
+      return;
+  }
+  if (session.getResult().hasExceptions()) {
+      this.executeSteps(this.endFailureSteps, session, this.components);
+  } else {
+      this.executeSteps(this.endSuccessSteps, session, this.components);
+  }
     }
 
     private void executeSteps(final List<String> steps,
-	    final MavenSession session, final RTRComponents components)
-	    throws MavenExecutionException {
-	SmartReactorStep step;
-	for (final String name : steps) {
-	    step = this.availableSteps.get(name);
-	    if (step == null) {
-		throw new MavenExecutionException("Unable to find step '"
-			+ name + "' to execute", new IllegalStateException());
-	    }
-	    step.execute(session, components);
-	}
+      final MavenSession session, final RTRComponents components)
+      throws MavenExecutionException {
+  SmartReactorStep step;
+  for (final String name : steps) {
+      step = this.availableSteps.get(name);
+      if (step == null) {
+    throw new MavenExecutionException("Unable to find step '"
+      + name + "' to execute", new IllegalStateException());
+      }
+      step.execute(session, components);
+  }
     }
 
     /**
@@ -113,7 +113,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      * @return true if allowed, false if prohibited.
      */
     public boolean isExternalSnapshotsAllowed() {
-	return this.externalSnapshotsAllowed;
+  return this.externalSnapshotsAllowed;
     }
 
     /**
@@ -122,7 +122,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      * @return true if a release was requested, false otherwise.
      */
     public boolean isRelease() {
-	return this.release;
+  return this.release;
     }
 
     /**
@@ -133,7 +133,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      *            true if backup POMs have been created, false otherwise.
      */
     public void setBackupPomsCreated(final boolean backupPomsCreated) {
-	this.backupPomsCreated = backupPomsCreated;
+  this.backupPomsCreated = backupPomsCreated;
     }
 
     /**
@@ -143,7 +143,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
      *         otherwise.
      */
     public boolean isBackupPomsCreated() {
-	return this.backupPomsCreated;
+  return this.backupPomsCreated;
     }
 
 }

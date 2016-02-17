@@ -34,25 +34,25 @@ public final class BuildSmartReactorTest {
 
     @Test
     public void onlySnapshotsRemain(@Injectable final MavenProject snapshot,
-	    @Injectable final MavenProject release) {
-	final BuildSmartReactor step = new BuildSmartReactor();
-	final List<MavenProject> projects = new ArrayList<MavenProject>();
-	projects.add(snapshot);
-	projects.add(release);
-	new Expectations() {
-	    {
-		session.getProjects();
-		result = projects;
-		snapshot.getArtifact().isSnapshot();
-		result = true;
-		release.getArtifact().isSnapshot();
-		result = false;
-	    }
-	};
-	step.execute(session, null);
-	assertEquals(projects, session.getProjects());
-	assertEquals(1, session.getProjects().size());
-	assertEquals(snapshot, session.getProjects().get(0));
+      @Injectable final MavenProject release) {
+  final BuildSmartReactor step = new BuildSmartReactor();
+  final List<MavenProject> projects = new ArrayList<MavenProject>();
+  projects.add(snapshot);
+  projects.add(release);
+  new Expectations() {
+      {
+    session.getProjects();
+    result = projects;
+    snapshot.getArtifact().isSnapshot();
+    result = true;
+    release.getArtifact().isSnapshot();
+    result = false;
+      }
+  };
+  step.execute(session, null);
+  assertEquals(projects, session.getProjects());
+  assertEquals(1, session.getProjects().size());
+  assertEquals(snapshot, session.getProjects().get(0));
     }
 
 }

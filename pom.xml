@@ -332,7 +332,8 @@
             <configuration>
               <target>
                 <property name="itSettingsXmlDest" location="${it.settings.xml}" />
-                <property name="itSettingsXmlSrc" location="${it.resources.src}/settings.xml" />
+                <property name="itSettingsXmlSrc"
+                  location="${it.resources.src}/settings.xml" />
                 <script language="groovy"><![CDATA[
 // 1. Read src settings.xml, get ids of all repos and plugin repos.
 // 2. Read dest settings.xml, add src settings.xml ids as mirror exclusions.
@@ -686,20 +687,21 @@ destFile.deleteOnExit()
             <groupId>com.github.github</groupId>
             <artifactId>site-maven-plugin</artifactId>
             <version>0.12</version>
-              <executions>
-                <execution>
-                  <id>push-site-to-github</id>
-                  <phase>site-deploy</phase>
-                  <goals>
-                    <goal>site</goal>
-                  </goals>
-                  <configuration>
-                    <server>github</server><!-- settings.xml -->
-                    <message>Publishing site for version ${project.version}</message>
-                    <merge>true</merge>
-                  </configuration>
-                </execution>
-              </executions>
+            <executions>
+              <execution>
+                <id>push-site-to-github</id>
+                <phase>site-deploy</phase>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <configuration>
+                  <server>github</server><!-- settings.xml -->
+                  <message>Publishing site for version
+                    ${project.version}</message>
+                  <merge>true</merge>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

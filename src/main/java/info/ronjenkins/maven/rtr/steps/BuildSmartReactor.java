@@ -33,19 +33,19 @@ public class BuildSmartReactor extends AbstractSmartReactorStep {
 
     @Override
     public void execute(final MavenSession session,
-	    final RTRComponents components) {
-	// The reactor is a mutable list whose type is unknown, so rather than
-	// reassign it via sessions.setProjects(), we will manipulate the live
-	// list instead.
-	final Iterator<MavenProject> iterator = session.getProjects()
-		.iterator();
-	MavenProject project;
-	while (iterator.hasNext()) {
-	    project = iterator.next();
-	    if (!project.getArtifact().isSnapshot()) {
-		iterator.remove();
-	    }
-	}
+      final RTRComponents components) {
+  // The reactor is a mutable list whose type is unknown, so rather than
+  // reassign it via sessions.setProjects(), we will manipulate the live
+  // list instead.
+  final Iterator<MavenProject> iterator = session.getProjects()
+    .iterator();
+  MavenProject project;
+  while (iterator.hasNext()) {
+      project = iterator.next();
+      if (!project.getArtifact().isSnapshot()) {
+    iterator.remove();
+      }
+  }
     }
 
 }
