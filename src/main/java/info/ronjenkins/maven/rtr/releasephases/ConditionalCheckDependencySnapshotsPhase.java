@@ -24,7 +24,7 @@ import org.codehaus.plexus.logging.Logger;
  */
 @Component(role = ReleasePhase.class, hint = "conditional-check-dependency-snapshots")
 public class ConditionalCheckDependencySnapshotsPhase extends
-  CheckDependencySnapshotsPhase {
+	CheckDependencySnapshotsPhase {
 
     @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
     private RTR rtr;
@@ -49,9 +49,9 @@ public class ConditionalCheckDependencySnapshotsPhase extends
      */
     @Override
     public ReleaseResult simulate(final ReleaseDescriptor rd,
-      final ReleaseEnvironment re, final List<MavenProject> projects)
-      throws ReleaseExecutionException, ReleaseFailureException {
-  return this.execute(rd, re, projects);
+	    final ReleaseEnvironment re, final List<MavenProject> projects)
+	    throws ReleaseExecutionException, ReleaseFailureException {
+	return this.execute(rd, re, projects);
     }
 
     /**
@@ -71,18 +71,18 @@ public class ConditionalCheckDependencySnapshotsPhase extends
      */
     @Override
     public ReleaseResult execute(final ReleaseDescriptor rd,
-      final ReleaseEnvironment re, final List<MavenProject> projects)
-      throws ReleaseExecutionException, ReleaseFailureException {
-  final ReleaseResult result;
-  if (this.rtr.isExternalSnapshotsAllowed()) {
-      this.logger
-        .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
-      result = new ReleaseResult();
-      result.setResultCode(ReleaseResult.SUCCESS);
-  } else {
-      result = super.execute(rd, re, projects);
-  }
-  return result;
+	    final ReleaseEnvironment re, final List<MavenProject> projects)
+	    throws ReleaseExecutionException, ReleaseFailureException {
+	final ReleaseResult result;
+	if (this.rtr.isExternalSnapshotsAllowed()) {
+	    this.logger
+		    .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
+	    result = new ReleaseResult();
+	    result.setResultCode(ReleaseResult.SUCCESS);
+	} else {
+	    result = super.execute(rd, re, projects);
+	}
+	return result;
     }
 
 }

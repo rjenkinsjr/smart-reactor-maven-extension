@@ -53,139 +53,139 @@ public final class RTRTest {
 
     @Test
     public void disabledMeansNoop() {
-  final RTR rtr = new MockUp<RTR>() {
-      @Mock
-      void executeSteps(final List<String> steps,
-        final MavenSession session, final RTRComponents components) {
-    throw new IllegalStateException("Should not reach here!");
-      }
-  }.getMockInstance();
-  final TestLogger logger = addLogger(rtr);
-  new Expectations() {
-      {
-    session.getTopLevelProject();
-    result = root;
-    RTRConfig.isDisabled(session, root);
-    result = true;
-      }
-  };
-  try {
-      rtr.afterProjectsRead(session);
-      rtr.afterSessionEnd(session);
-  } catch (final MavenExecutionException e) {
-      fail();
-  }
-  assertTrue(logger.getInfoLog().isEmpty());
+	final RTR rtr = new MockUp<RTR>() {
+	    @Mock
+	    void executeSteps(final List<String> steps,
+		    final MavenSession session, final RTRComponents components) {
+		throw new IllegalStateException("Should not reach here!");
+	    }
+	}.getMockInstance();
+	final TestLogger logger = addLogger(rtr);
+	new Expectations() {
+	    {
+		session.getTopLevelProject();
+		result = root;
+		RTRConfig.isDisabled(session, root);
+		result = true;
+	    }
+	};
+	try {
+	    rtr.afterProjectsRead(session);
+	    rtr.afterSessionEnd(session);
+	} catch (final MavenExecutionException e) {
+	    fail();
+	}
+	assertTrue(logger.getInfoLog().isEmpty());
     }
 
     @Test
     public void booleanMethodTests() {
-  final RTR rtr = new MockUp<RTR>() {
-      @Mock
-      boolean isRelease(final Invocation inv) throws Throwable {
-    return (boolean) inv.proceed();
-      }
-  }.getMockInstance();
-  addLogger(rtr);
-  Deencapsulation.setField(rtr, "builder", builder);
-  Deencapsulation.setField(rtr, "startSteps", Collections.emptyList());
-  new Expectations() {
-      {
-    session.getTopLevelProject();
-    result = root;
-    RTRConfig.isRelease(session, root);
-    result = true;
-    RTRConfig.isExternalSnapshotsAllowed(session, root);
-    result = true;
-      }
-  };
-  try {
-      rtr.afterProjectsRead(session);
-  } catch (final MavenExecutionException e) {
-      fail();
-  }
-  assertTrue(rtr.isRelease());
-  assertTrue(rtr.isExternalSnapshotsAllowed());
+	final RTR rtr = new MockUp<RTR>() {
+	    @Mock
+	    boolean isRelease(final Invocation inv) throws Throwable {
+		return (boolean) inv.proceed();
+	    }
+	}.getMockInstance();
+	addLogger(rtr);
+	Deencapsulation.setField(rtr, "builder", builder);
+	Deencapsulation.setField(rtr, "startSteps", Collections.emptyList());
+	new Expectations() {
+	    {
+		session.getTopLevelProject();
+		result = root;
+		RTRConfig.isRelease(session, root);
+		result = true;
+		RTRConfig.isExternalSnapshotsAllowed(session, root);
+		result = true;
+	    }
+	};
+	try {
+	    rtr.afterProjectsRead(session);
+	} catch (final MavenExecutionException e) {
+	    fail();
+	}
+	assertTrue(rtr.isRelease());
+	assertTrue(rtr.isExternalSnapshotsAllowed());
     }
 
     @Test
     public void successfulExecution(
-      @Injectable Map<String, SmartReactorStep> availableSteps) {
-  final RTR rtr = new MockUp<RTR>() {
-  }.getMockInstance();
-  final TestLogger logger = addLogger(rtr);
-  Deencapsulation.setField(rtr, "builder", builder);
-  Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
-  Deencapsulation
-    .setField(rtr, "endSuccessSteps", Arrays.asList("step2"));
-  Deencapsulation.setField(rtr, "availableSteps", availableSteps);
-  new Expectations() {
-      {
-    session.getTopLevelProject();
-    result = root;
-    session.getResult().hasExceptions();
-    result = false;
-    RTRConfig.isDisabled(session, root);
-    result = false;
-      }
-  };
-  try {
-      rtr.afterProjectsRead(session);
-      rtr.afterSessionEnd(session);
-  } catch (final MavenExecutionException e) {
-      e.printStackTrace();
-      fail();
-  }
-  assertFalse(logger.getInfoLog().isEmpty());
+	    @Injectable Map<String, SmartReactorStep> availableSteps) {
+	final RTR rtr = new MockUp<RTR>() {
+	}.getMockInstance();
+	final TestLogger logger = addLogger(rtr);
+	Deencapsulation.setField(rtr, "builder", builder);
+	Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
+	Deencapsulation
+		.setField(rtr, "endSuccessSteps", Arrays.asList("step2"));
+	Deencapsulation.setField(rtr, "availableSteps", availableSteps);
+	new Expectations() {
+	    {
+		session.getTopLevelProject();
+		result = root;
+		session.getResult().hasExceptions();
+		result = false;
+		RTRConfig.isDisabled(session, root);
+		result = false;
+	    }
+	};
+	try {
+	    rtr.afterProjectsRead(session);
+	    rtr.afterSessionEnd(session);
+	} catch (final MavenExecutionException e) {
+	    e.printStackTrace();
+	    fail();
+	}
+	assertFalse(logger.getInfoLog().isEmpty());
     }
 
     @Test
     public void failedExecution(
-      @Injectable Map<String, SmartReactorStep> availableSteps) {
-  final RTR rtr = new MockUp<RTR>() {
-  }.getMockInstance();
-  final TestLogger logger = addLogger(rtr);
-  Deencapsulation.setField(rtr, "builder", builder);
-  Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
-  Deencapsulation
-    .setField(rtr, "endFailureSteps", Arrays.asList("step2"));
-  Deencapsulation.setField(rtr, "availableSteps", availableSteps);
-  new Expectations() {
-      {
-    session.getTopLevelProject();
-    result = root;
-    session.getResult().hasExceptions();
-    result = true;
-    RTRConfig.isDisabled(session, root);
-    result = false;
-      }
-  };
-  try {
-      rtr.afterProjectsRead(session);
-      rtr.afterSessionEnd(session);
-  } catch (final MavenExecutionException e) {
-      e.printStackTrace();
-      fail();
-  }
-  assertFalse(logger.getInfoLog().isEmpty());
+	    @Injectable Map<String, SmartReactorStep> availableSteps) {
+	final RTR rtr = new MockUp<RTR>() {
+	}.getMockInstance();
+	final TestLogger logger = addLogger(rtr);
+	Deencapsulation.setField(rtr, "builder", builder);
+	Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
+	Deencapsulation
+		.setField(rtr, "endFailureSteps", Arrays.asList("step2"));
+	Deencapsulation.setField(rtr, "availableSteps", availableSteps);
+	new Expectations() {
+	    {
+		session.getTopLevelProject();
+		result = root;
+		session.getResult().hasExceptions();
+		result = true;
+		RTRConfig.isDisabled(session, root);
+		result = false;
+	    }
+	};
+	try {
+	    rtr.afterProjectsRead(session);
+	    rtr.afterSessionEnd(session);
+	} catch (final MavenExecutionException e) {
+	    e.printStackTrace();
+	    fail();
+	}
+	assertFalse(logger.getInfoLog().isEmpty());
     }
 
     @Test(expected = MavenExecutionException.class)
     public void nullStepCausesException() throws MavenExecutionException {
-  final RTR rtr = new RTR();
-  addLogger(rtr);
-  Deencapsulation.setField(rtr, "builder", builder);
-  Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
-  Deencapsulation.setField(rtr, "availableSteps", Collections.emptyMap());
-  new Expectations() {
-      {
-    session.getTopLevelProject();
-    result = root;
-    RTRConfig.isDisabled(session, root);
-    result = false;
-      }
-  };
-  rtr.afterProjectsRead(session);
+	final RTR rtr = new RTR();
+	addLogger(rtr);
+	Deencapsulation.setField(rtr, "builder", builder);
+	Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
+	Deencapsulation.setField(rtr, "availableSteps", Collections.emptyMap());
+	new Expectations() {
+	    {
+		session.getTopLevelProject();
+		result = root;
+		RTRConfig.isDisabled(session, root);
+		result = false;
+	    }
+	};
+	rtr.afterProjectsRead(session);
     }
 
 }

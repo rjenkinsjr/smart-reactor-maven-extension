@@ -39,6 +39,6 @@ public interface SmartReactorStep {
      *             if any unrecoverable error occurs.
      */
     public void execute(final MavenSession session,
-            final RTRComponents components) throws MavenExecutionException;
+	    final RTRComponents components) throws MavenExecutionException;
 
 }

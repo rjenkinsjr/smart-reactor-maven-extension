@@ -41,48 +41,48 @@ public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
 
     @Override
     public String getAnnouncement() {
-  return "Reloading POM changes from disk...";
+	return "Reloading POM changes from disk...";
     }
 
     @Override
     protected void releaseExecute(final MavenSession session,
-      final RTRComponents components) throws MavenExecutionException {
-  final List<MavenProject> reactor = session.getProjects();
-  final List<MavenProject> newReactor = new ArrayList<MavenProject>(
-    reactor.size());
-  final ProjectBuilder projectBuilder = components.getProjectBuilder();
-  File pomFile;
-  ProjectBuildingResult result;
-  MavenProject newProject;
-  for (final MavenProject project : reactor) {
-      pomFile = project.getFile();
-      try {
-    result = projectBuilder.build(pomFile,
-      session.getProjectBuildingRequest());
-      } catch (final ProjectBuildingException e) {
-    this.logger.error("");
-    throw new SmartReactorReleaseException(e);
-      }
-      newProject = result.getProject();
-      if (project.isExecutionRoot()) {
-    newProject.setExecutionRoot(true);
-      }
-      newReactor.add(newProject);
-  }
-  // Set the new list of projects, but don't replace the actual list
-  // object.
-  session.getProjects().clear();
-  session.getProjects().addAll(newReactor);
+	    final RTRComponents components) throws MavenExecutionException {
+	final List<MavenProject> reactor = session.getProjects();
+	final List<MavenProject> newReactor = new ArrayList<MavenProject>(
+		reactor.size());
+	final ProjectBuilder projectBuilder = components.getProjectBuilder();
+	File pomFile;
+	ProjectBuildingResult result;
+	MavenProject newProject;
+	for (final MavenProject project : reactor) {
+	    pomFile = project.getFile();
+	    try {
+		result = projectBuilder.build(pomFile,
+			session.getProjectBuildingRequest());
+	    } catch (final ProjectBuildingException e) {
+		this.logger.error("");
+		throw new SmartReactorReleaseException(e);
+	    }
+	    newProject = result.getProject();
+	    if (project.isExecutionRoot()) {
+		newProject.setExecutionRoot(true);
+	    }
+	    newReactor.add(newProject);
+	}
+	// Set the new list of projects, but don't replace the actual list
+	// object.
+	session.getProjects().clear();
+	session.getProjects().addAll(newReactor);
     }
 
     @Override
     protected List<String> getReleasePhases() {
-  throw new UnsupportedOperationException();
+	throw new UnsupportedOperationException();
     }
 
     @Override
     protected List<String> getRollbackPhases() {
-  throw new UnsupportedOperationException();
+	throw new UnsupportedOperationException();
     }
 
 }

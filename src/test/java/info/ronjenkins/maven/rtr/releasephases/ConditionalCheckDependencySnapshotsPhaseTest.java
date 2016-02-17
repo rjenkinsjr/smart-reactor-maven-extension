@@ -50,74 +50,74 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
 
     @Test
     public void allowedMeansNoop() {
-  final ConditionalCheckDependencySnapshotsPhase phase = new ConditionalCheckDependencySnapshotsPhase();
-  final TestLogger logger = addLogger(phase);
-  Deencapsulation.setField(phase, "rtr", this.rtr);
-  new Expectations() {
-      {
-    rtr.isExternalSnapshotsAllowed();
-    result = true;
-      }
-  };
-  try {
-      final ReleaseResult result = phase.execute(
-        (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-        (List<MavenProject>) null);
-      assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-  } catch (final Exception e) {
-      e.printStackTrace();
-      fail();
-  }
-  assertFalse(logger.getWarnLog().isEmpty());
+	final ConditionalCheckDependencySnapshotsPhase phase = new ConditionalCheckDependencySnapshotsPhase();
+	final TestLogger logger = addLogger(phase);
+	Deencapsulation.setField(phase, "rtr", this.rtr);
+	new Expectations() {
+	    {
+		rtr.isExternalSnapshotsAllowed();
+		result = true;
+	    }
+	};
+	try {
+	    final ReleaseResult result = phase.execute(
+		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
+		    (List<MavenProject>) null);
+	    assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
+	} catch (final Exception e) {
+	    e.printStackTrace();
+	    fail();
+	}
+	assertFalse(logger.getWarnLog().isEmpty());
     }
 
     @Test
     public void notAllowedMeansSuccessfulExecution(
-      @Mocked final CheckDependencySnapshotsPhase superMock) {
-  final ConditionalCheckDependencySnapshotsPhase phase = new MockUp<ConditionalCheckDependencySnapshotsPhase>() {
-      @Mock
-      ReleaseResult execute(final Invocation inv,
-        final ReleaseDescriptor rd, final ReleaseEnvironment re,
-        final List<MavenProject> projects) throws Throwable {
-    return (ReleaseResult) inv.proceed();
-      }
-  }.getMockInstance();
-  Deencapsulation.setField(phase, "rtr", this.rtr);
-  new Expectations() {
-      {
-    rtr.isExternalSnapshotsAllowed();
-    result = false;
-      }
-  };
-  try {
-      final ReleaseResult result = phase.execute(
-        (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-        Arrays.asList(root));
-      assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-  } catch (final ReleaseExecutionException | ReleaseFailureException e) {
-      e.printStackTrace();
-      fail();
-  }
+	    @Mocked final CheckDependencySnapshotsPhase superMock) {
+	final ConditionalCheckDependencySnapshotsPhase phase = new MockUp<ConditionalCheckDependencySnapshotsPhase>() {
+	    @Mock
+	    ReleaseResult execute(final Invocation inv,
+		    final ReleaseDescriptor rd, final ReleaseEnvironment re,
+		    final List<MavenProject> projects) throws Throwable {
+		return (ReleaseResult) inv.proceed();
+	    }
+	}.getMockInstance();
+	Deencapsulation.setField(phase, "rtr", this.rtr);
+	new Expectations() {
+	    {
+		rtr.isExternalSnapshotsAllowed();
+		result = false;
+	    }
+	};
+	try {
+	    final ReleaseResult result = phase.execute(
+		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
+		    Arrays.asList(root));
+	    assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
+	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
+	    e.printStackTrace();
+	    fail();
+	}
     }
 
     @Test
     public void simulateEqualsExecute() {
-  final ConditionalCheckDependencySnapshotsPhase phase = new MockUp<ConditionalCheckDependencySnapshotsPhase>() {
-      @Mock
-      ReleaseResult execute(final ReleaseDescriptor rd,
-        final ReleaseEnvironment re,
-        final List<MavenProject> projects) throws Throwable {
-    return new ReleaseResult();
-      }
-  }.getMockInstance();
-  try {
-      final ReleaseResult result = phase.simulate(
-        (ReleaseDescriptor) null, (ReleaseEnvironment) null,
-        (List<MavenProject>) null);
-      assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-  } catch (final ReleaseExecutionException | ReleaseFailureException e) {
-      fail();
-  }
+	final ConditionalCheckDependencySnapshotsPhase phase = new MockUp<ConditionalCheckDependencySnapshotsPhase>() {
+	    @Mock
+	    ReleaseResult execute(final ReleaseDescriptor rd,
+		    final ReleaseEnvironment re,
+		    final List<MavenProject> projects) throws Throwable {
+		return new ReleaseResult();
+	    }
+	}.getMockInstance();
+	try {
+	    final ReleaseResult result = phase.simulate(
+		    (ReleaseDescriptor) null, (ReleaseEnvironment) null,
+		    (List<MavenProject>) null);
+	    assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
+	} catch (final ReleaseExecutionException | ReleaseFailureException e) {
+	    fail();
+	}
     }
 
 }

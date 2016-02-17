@@ -33,365 +33,365 @@ public final class RTRConfigTest {
 
     @Test(expected = NullPointerException.class)
     public void isDisabledNullCheck() {
-  RTRConfig.isDisabled(null, null);
+	RTRConfig.isDisabled(null, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void isSinglePomReactorAllowedNullCheck() {
-  RTRConfig.isSinglePomReactorAllowed(null, null);
+	RTRConfig.isSinglePomReactorAllowed(null, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void isReleaseNullCheck() {
-  RTRConfig.isRelease(null, null);
+	RTRConfig.isRelease(null, null);
     }
 
     @Test
     public void checkParametersWhenAtLeastOneIsNotNull() {
-  Deencapsulation.invoke(RTRConfig.class, "checkParameters", session,
-    MavenProject.class);
-  Deencapsulation.invoke(RTRConfig.class, "checkParameters",
-    MavenSession.class, project);
-  Deencapsulation.invoke(RTRConfig.class, "checkParameters", session,
-    project);
+	Deencapsulation.invoke(RTRConfig.class, "checkParameters", session,
+		MavenProject.class);
+	Deencapsulation.invoke(RTRConfig.class, "checkParameters",
+		MavenSession.class, project);
+	Deencapsulation.invoke(RTRConfig.class, "checkParameters", session,
+		project);
     }
 
     @Test
     public void sessionValueUsedWhenProjectIsNull() {
-  final String propName = "propName";
-  final String inputValue = "1";
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(propName);
-    result = inputValue;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProperty", propName, session, MavenProject.class);
-  assertEquals(inputValue, value);
+	final String propName = "propName";
+	final String inputValue = "1";
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(propName);
+		result = inputValue;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProperty", propName, session, MavenProject.class);
+	assertEquals(inputValue, value);
     }
 
     @Test
     public void projectValueUsedWhenSessionIsNull() {
-  final String propName = "propName";
-  final String inputValue = "1";
-  new Expectations() {
-      {
-    project.getProperties().getProperty(propName);
-    result = inputValue;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProperty", propName, MavenSession.class, project);
-  assertEquals(inputValue, value);
+	final String propName = "propName";
+	final String inputValue = "1";
+	new Expectations() {
+	    {
+		project.getProperties().getProperty(propName);
+		result = inputValue;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProperty", propName, MavenSession.class, project);
+	assertEquals(inputValue, value);
     }
 
     @Test
     public void nullValueWhenNotDefined() {
-  final String propName = "propName";
-  final String sessionValue = null;
-  final String projectValue = null;
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(propName);
-    result = sessionValue;
-    project.getProperties().getProperty(propName);
-    result = projectValue;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProperty", propName, session, project);
-  assertNull(value);
+	final String propName = "propName";
+	final String sessionValue = null;
+	final String projectValue = null;
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(propName);
+		result = sessionValue;
+		project.getProperties().getProperty(propName);
+		result = projectValue;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProperty", propName, session, project);
+	assertNull(value);
     }
 
     @Test
     public void sessionPropertyUsedWhenNotDefinedInProject() {
-  final String propName = "propName";
-  final String sessionValue = "1";
-  final String projectValue = null;
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(propName);
-    result = sessionValue;
-    project.getProperties().getProperty(propName);
-    result = projectValue;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProperty", propName, session, project);
-  assertEquals(sessionValue, value);
+	final String propName = "propName";
+	final String sessionValue = "1";
+	final String projectValue = null;
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(propName);
+		result = sessionValue;
+		project.getProperties().getProperty(propName);
+		result = projectValue;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProperty", propName, session, project);
+	assertEquals(sessionValue, value);
     }
 
     @Test
     public void projectPropertyUsedWhenNotDefinedInSession() {
-  final String propName = "propName";
-  final String sessionValue = null;
-  final String projectValue = "1";
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(propName);
-    result = sessionValue;
-    project.getProperties().getProperty(propName);
-    result = projectValue;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProperty", propName, session, project);
-  assertEquals(projectValue, value);
+	final String propName = "propName";
+	final String sessionValue = null;
+	final String projectValue = "1";
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(propName);
+		result = sessionValue;
+		project.getProperties().getProperty(propName);
+		result = projectValue;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProperty", propName, session, project);
+	assertEquals(projectValue, value);
     }
 
     @Test
     public void sessionOverridesProjectWhenDefinedInBothPlaces() {
-  final String propName = "propName";
-  final String sessionValue = "1";
-  final String projectValue = "2";
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(propName);
-    result = sessionValue;
-    project.getProperties().getProperty(propName);
-    result = projectValue;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProperty", propName, session, project);
-  assertEquals(sessionValue, value);
+	final String propName = "propName";
+	final String sessionValue = "1";
+	final String projectValue = "2";
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(propName);
+		result = sessionValue;
+		project.getProperties().getProperty(propName);
+		result = projectValue;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProperty", propName, session, project);
+	assertEquals(sessionValue, value);
     }
 
     @Test
     public void flagIsDefaultWhenPropertyIsNull() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "getFlag", "", true, session, project);
-  assertTrue(value);
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"getFlag", "", true, session, project);
+	assertTrue(value);
     }
 
     @Test
     public void flagIsDeterminedBySetProperty() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = "false";
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "getFlag", "", true, session, project);
-  assertFalse(value);
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = "false";
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"getFlag", "", true, session, project);
+	assertFalse(value);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nonBooleanPropertyValueNotAllowed() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = "abc123";
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  Deencapsulation.invoke(RTRConfig.class, "getFlag", "", true, session,
-    project);
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = "abc123";
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	Deencapsulation.invoke(RTRConfig.class, "getFlag", "", true, session,
+		project);
     }
 
     @Test
     public void isDisabled() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_DISABLED");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isDisabled", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_DISABLED");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isDisabled", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void isSinglePomReactorAllowed() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_SINGLE_POM_REACTOR_ALLOWED");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isSinglePomReactorAllowed", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_SINGLE_POM_REACTOR_ALLOWED");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isSinglePomReactorAllowed", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void isExternalSnapshotsAllowed() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isExternalSnapshotsAllowed", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isExternalSnapshotsAllowed", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void isRelease() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_RELEASE");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isRelease", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_RELEASE");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isRelease", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void isAddSchema() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_ADDSCHEMA");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isAddSchema", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_ADDSCHEMA");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isAddSchema", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void isAllowTimestampedSnapshots() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isAllowTimestampedSnapshots", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isAllowTimestampedSnapshots", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void isAutoVersionSubmodules() {
-  final boolean propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_AUTOVERSIONSUBMODULES");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final boolean value = Deencapsulation.invoke(RTRConfig.class,
-    "isAutoVersionSubmodules", session, project);
-  assertEquals(propValue, value);
+	final boolean propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_AUTOVERSIONSUBMODULES");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final boolean value = Deencapsulation.invoke(RTRConfig.class,
+		"isAutoVersionSubmodules", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void getProjectVersionPolicyId() {
-  final String propValue = Deencapsulation.getField(RTRConfig.class,
-    "DEFAULT_PROJECTVERSIONPOLICYID");
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  final String value = Deencapsulation.invoke(RTRConfig.class,
-    "getProjectVersionPolicyId", session, project);
-  assertEquals(propValue, value);
+	final String propValue = Deencapsulation.getField(RTRConfig.class,
+		"DEFAULT_PROJECTVERSIONPOLICYID");
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	final String value = Deencapsulation.invoke(RTRConfig.class,
+		"getProjectVersionPolicyId", session, project);
+	assertEquals(propValue, value);
     }
 
     @Test
     public void getReleaseVersion() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  assertNull(Deencapsulation.invoke(RTRConfig.class, "getReleaseVersion",
-    session, project));
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getReleaseVersion",
+		session, project));
     }
 
     @Test
     public void getTag() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  assertNull(Deencapsulation.invoke(RTRConfig.class, "getTag", session,
-    project));
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getTag", session,
+		project));
     }
 
     @Test
     public void getTagBase() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagBase",
-    session, project));
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagBase",
+		session, project));
     }
 
     @Test
     public void getTagNameFormat() {
-  new Expectations() {
-      {
-    session.getUserProperties().getProperty(anyString);
-    result = null;
-    project.getProperties().getProperty(anyString);
-    result = null;
-      }
-  };
-  assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagNameFormat",
-    session, project));
+	new Expectations() {
+	    {
+		session.getUserProperties().getProperty(anyString);
+		result = null;
+		project.getProperties().getProperty(anyString);
+		result = null;
+	    }
+	};
+	assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagNameFormat",
+		session, project));
     }
 
 }

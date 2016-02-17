@@ -36,8 +36,8 @@ public final class RTRComponents {
      *            not null.
      */
     public RTRComponents(final ProjectBuilder projectBuilder) {
-        Validate.notNull(projectBuilder, "Project builder is null");
-        this.projectBuilder = projectBuilder;
+	Validate.notNull(projectBuilder, "Project builder is null");
+	this.projectBuilder = projectBuilder;
     }
 
     /**
@@ -46,7 +46,7 @@ public final class RTRComponents {
      * @return never null.
      */
     public ProjectBuilder getProjectBuilder() {
-        return this.projectBuilder;
+	return this.projectBuilder;
     }
 
 }

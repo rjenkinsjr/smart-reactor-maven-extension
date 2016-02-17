@@ -35,9 +35,9 @@ public class SmartReactorReleaseException extends MavenExecutionException {
      *            cause. Null or empty is coerced to a default message.
      */
     public SmartReactorReleaseException(final String message) {
-  super("Smart Reactor release failure:", new IllegalStateException(
-    StringUtils.isEmpty(message) ? "no further information."
-      : message));
+	super("Smart Reactor release failure:", new IllegalStateException(
+		StringUtils.isEmpty(message) ? "no further information."
+			: message));
     }
 
     /**
@@ -47,7 +47,7 @@ public class SmartReactorReleaseException extends MavenExecutionException {
      *            not null.
      */
     public SmartReactorReleaseException(final Throwable cause) {
-  super("Smart Reactor release failure:", cause);
+	super("Smart Reactor release failure:", cause);
     }
 
 }

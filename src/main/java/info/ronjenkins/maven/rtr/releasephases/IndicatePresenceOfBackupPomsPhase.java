@@ -63,9 +63,9 @@ public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {
      */
     @Override
     public ReleaseResult simulate(final ReleaseDescriptor rd,
-      final ReleaseEnvironment re, final List<MavenProject> projects)
-      throws ReleaseExecutionException, ReleaseFailureException {
-  return this.execute(rd, re, projects);
+	    final ReleaseEnvironment re, final List<MavenProject> projects)
+	    throws ReleaseExecutionException, ReleaseFailureException {
+	return this.execute(rd, re, projects);
     }
 
     /**
@@ -86,12 +86,12 @@ public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {
      */
     @Override
     public ReleaseResult execute(final ReleaseDescriptor rd,
-      final ReleaseEnvironment re, final List<MavenProject> projects)
-      throws ReleaseExecutionException, ReleaseFailureException {
-  this.rtr.setBackupPomsCreated(true);
-  final ReleaseResult result = new ReleaseResult();
-  result.setResultCode(ReleaseResult.SUCCESS);
-  return result;
+	    final ReleaseEnvironment re, final List<MavenProject> projects)
+	    throws ReleaseExecutionException, ReleaseFailureException {
+	this.rtr.setBackupPomsCreated(true);
+	final ReleaseResult result = new ReleaseResult();
+	result.setResultCode(ReleaseResult.SUCCESS);
+	return result;
     }
 
 }

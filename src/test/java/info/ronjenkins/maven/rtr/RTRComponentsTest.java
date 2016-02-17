@@ -28,13 +28,13 @@ public final class RTRComponentsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void noNullProjectBuilder() {
-  new RTRComponents(null);
+	new RTRComponents(null);
     }
 
     @Test
     public void projectBuilder() {
-  final RTRComponents rtrc = new RTRComponents(projectBuilder);
-  assertEquals(projectBuilder, rtrc.getProjectBuilder());
+	final RTRComponents rtrc = new RTRComponents(projectBuilder);
+	assertEquals(projectBuilder, rtrc.getProjectBuilder());
     }
 
 }

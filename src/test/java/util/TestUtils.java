@@ -43,10 +43,10 @@ public final class TestUtils {
      * @return never null.
      */
     public static TestLogger addLogger(final RTR rtr) {
-  Validate.notNull(rtr, "rtr is null");
-  final TestLogger logger = new TestLogger();
-  Deencapsulation.setField(rtr, "logger", logger);
-  return logger;
+	Validate.notNull(rtr, "rtr is null");
+	final TestLogger logger = new TestLogger();
+	Deencapsulation.setField(rtr, "logger", logger);
+	return logger;
     }
 
     /**
@@ -57,10 +57,10 @@ public final class TestUtils {
      * @return never null.
      */
     public static TestLogger addLogger(final SmartReactorStep step) {
-  Validate.notNull(step, "step is null");
-  final TestLogger logger = new TestLogger();
-  Deencapsulation.setField(step, "logger", logger);
-  return logger;
+	Validate.notNull(step, "step is null");
+	final TestLogger logger = new TestLogger();
+	Deencapsulation.setField(step, "logger", logger);
+	return logger;
     }
 
     /**
@@ -71,10 +71,10 @@ public final class TestUtils {
      * @return never null.
      */
     public static TestLogger addLogger(final ReleasePhase phase) {
-  Validate.notNull(phase, "phase is null");
-  final TestLogger logger = new TestLogger();
-  Deencapsulation.setField(phase, "logger", logger);
-  return logger;
+	Validate.notNull(phase, "phase is null");
+	final TestLogger logger = new TestLogger();
+	Deencapsulation.setField(phase, "logger", logger);
+	return logger;
     }
 
     /**
@@ -94,19 +94,19 @@ public final class TestUtils {
      * @return never null.
      */
     public static TestLogger addLoggerAndReleaseDependencies(
-      final AbstractSmartReactorReleaseStep step, final RTR rtr,
-      final Map<String, ReleasePhase> availablePhases,
-      final ReleaseDescriptor releaseDescriptor,
-      final ReleaseEnvironment releaseEnvironment) {
-  Validate.notNull(step, "step is null");
-  Validate.notNull(rtr, "rtr is null");
-  final TestLogger logger = addLogger(step);
-  Deencapsulation.setField(step, "rtr", rtr);
-  Deencapsulation.setField(step, "availablePhases", availablePhases);
-  Deencapsulation.setField(step, "releaseDescriptor", releaseDescriptor);
-  Deencapsulation
-    .setField(step, "releaseEnvironment", releaseEnvironment);
-  return logger;
+	    final AbstractSmartReactorReleaseStep step, final RTR rtr,
+	    final Map<String, ReleasePhase> availablePhases,
+	    final ReleaseDescriptor releaseDescriptor,
+	    final ReleaseEnvironment releaseEnvironment) {
+	Validate.notNull(step, "step is null");
+	Validate.notNull(rtr, "rtr is null");
+	final TestLogger logger = addLogger(step);
+	Deencapsulation.setField(step, "rtr", rtr);
+	Deencapsulation.setField(step, "availablePhases", availablePhases);
+	Deencapsulation.setField(step, "releaseDescriptor", releaseDescriptor);
+	Deencapsulation
+		.setField(step, "releaseEnvironment", releaseEnvironment);
+	return logger;
     }
 
     /** Uninstantiable. */
