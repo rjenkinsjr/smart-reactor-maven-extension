@@ -108,7 +108,7 @@
     </dependency>
   </dependencies>
   <build>
-    <defaultGoal>clean install site</defaultGoal>
+    <defaultGoal>clean install</defaultGoal>
     <resources>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
@@ -474,6 +474,7 @@
         </property>
       </activation>
       <build>
+        <defaultGoal>clean install site</defaultGoal>
         <plugins>
           <!-- Generate source JAR. -->
           <plugin>
