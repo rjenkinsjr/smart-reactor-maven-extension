@@ -117,6 +117,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void releasePhaseErrorResultCausesExceptionWithProperCause(
       @Injectable final Map<String, ReleasePhase> availablePhases,
@@ -155,6 +156,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void releasePhaseExceptionCausesExceptionWithProperCause(
       @Injectable final Map<String, ReleasePhase> availablePhases,
