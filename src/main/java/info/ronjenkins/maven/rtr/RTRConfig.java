@@ -49,18 +49,8 @@ public final class RTRConfig {
   public static final String PROP_TAGBASE = "tagBase";
   public static final String PROP_TAGNAMEFORMAT = "tagNameFormat";
 
-  private static void checkParameters(final MavenSession session,
-      final MavenProject project) {
-    if (session == null && project == null) {
-      throw new NullPointerException("session and project cannot both be null");
-    }
-  }
-
-  private static boolean getFlag(final String prop, final boolean defaultValue,
-      final MavenSession session, final MavenProject project) {
-    final String rawValue = RTRConfig.getProperty(prop, session, project);
-    return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,
-        "true", "false");
+  /* This class is not instantiable. */
+  private RTRConfig() {
   }
 
   /**
@@ -78,19 +68,6 @@ public final class RTRConfig {
     return StringUtils.defaultString(RTRConfig.getProperty(
         RTRConfig.PROP_PROJECTVERSIONPOLICYID, session, project),
         RTRConfig.DEFAULT_PROJECTVERSIONPOLICYID);
-  }
-
-  private static String getProperty(final String prop,
-      final MavenSession session, final MavenProject project) {
-    if (session == null) {
-      return project.getProperties().getProperty(prop);
-    } else if (project == null) {
-      return session.getUserProperties().getProperty(prop);
-    } else {
-      return StringUtils.defaultString(
-          session.getUserProperties().getProperty(prop), project
-          .getProperties().getProperty(prop));
-    }
   }
 
   /**
@@ -236,10 +213,6 @@ public final class RTRConfig {
         RTRConfig.DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED, session, project);
   }
 
-  /*
-   * Private utility methods.
-   */
-
   /**
    * Indicates whether or not a release was requested.
    *
@@ -273,8 +246,35 @@ public final class RTRConfig {
         RTRConfig.DEFAULT_SINGLE_POM_REACTOR_ALLOWED, session, project);
   }
 
-  /* This class is not instantiable. */
-  private RTRConfig() {
+  /*
+   * Private utility methods.
+   */
+
+  private static void checkParameters(final MavenSession session,
+      final MavenProject project) {
+    if (session == null && project == null) {
+      throw new NullPointerException("session and project cannot both be null");
+    }
+  }
+
+  private static boolean getFlag(final String prop, final boolean defaultValue,
+      final MavenSession session, final MavenProject project) {
+    final String rawValue = RTRConfig.getProperty(prop, session, project);
+    return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,
+        "true", "false");
+  }
+
+  private static String getProperty(final String prop,
+      final MavenSession session, final MavenProject project) {
+    if (session == null) {
+      return project.getProperties().getProperty(prop);
+    } else if (project == null) {
+      return session.getUserProperties().getProperty(prop);
+    } else {
+      return StringUtils.defaultString(
+          session.getUserProperties().getProperty(prop), project
+              .getProperties().getProperty(prop));
+    }
   }
 
 }
