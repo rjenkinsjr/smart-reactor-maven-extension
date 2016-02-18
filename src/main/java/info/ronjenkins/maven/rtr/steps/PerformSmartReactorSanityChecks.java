@@ -38,13 +38,12 @@ public class PerformSmartReactorSanityChecks extends AbstractSmartReactorStep {
     // Check for a single POM-only reactor, assuming this is prohibited.
     if (session.getProjects().size() == 1) {
       final MavenProject executionRoot = session.getTopLevelProject();
-      if (executionRoot.getArtifact().getType().equals("pom")) {
-        if (!RTRConfig.isSinglePomReactorAllowed(session, executionRoot)) {
-          this.logger.error("");
-          throw new SmartReactorSanityCheckException(
-              "Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \""
-                  + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED + "\" to true.");
-        }
+      if (executionRoot.getArtifact().getType().equals("pom")
+          && !RTRConfig.isSinglePomReactorAllowed(session, executionRoot)) {
+        this.logger.error("");
+        throw new SmartReactorSanityCheckException(
+            "Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \""
+                + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED + "\" to true.");
       }
     }
   }
