@@ -50,7 +50,7 @@ public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
     }
     // Ensure that the ancestors of every SNAPSHOT are also SNAPSHOTs.
     final ProjectDependencyGraph pdg = session.getProjectDependencyGraph();
-    final List<MavenProject> badProjects = new ArrayList<MavenProject>();
+    final List<MavenProject> badProjects = new ArrayList<>();
     for (final MavenProject project : session.getProjects()) {
       if (project.getArtifact().isSnapshot()) {
         for (final MavenProject ancestor : pdg.getUpstreamProjects(project,
@@ -65,7 +65,7 @@ public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
     if (!badProjects.isEmpty()) {
       this.logger.error("");
       this.logger
-      .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
+          .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
       for (final MavenProject badProject : badProjects) {
         this.logger.error("  " + badProject.getArtifact().toString() + " @ "
             + badProject.getFile().getAbsolutePath());

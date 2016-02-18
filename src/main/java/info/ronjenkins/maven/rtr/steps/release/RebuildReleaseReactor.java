@@ -58,8 +58,7 @@ public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
   protected void releaseExecute(final MavenSession session,
       final RTRComponents components) throws MavenExecutionException {
     final List<MavenProject> reactor = session.getProjects();
-    final List<MavenProject> newReactor = new ArrayList<MavenProject>(
-        reactor.size());
+    final List<MavenProject> newReactor = new ArrayList<>(reactor.size());
     final ProjectBuilder projectBuilder = components.getProjectBuilder();
     File pomFile;
     ProjectBuildingResult result;
