@@ -177,6 +177,8 @@
               <artifactSet>
                 <includes>
                   <include>org.apache.maven.release:maven-release-manager</include>
+                  <include>org.apache.maven.release:maven-release-api</include>
+                  <include>org.apache.maven.scm:maven-scm-api</include>
                 </includes>
               </artifactSet>
               <shadedArtifactAttached>true</shadedArtifactAttached>
