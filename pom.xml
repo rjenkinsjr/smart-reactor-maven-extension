@@ -698,7 +698,7 @@ destFile.deleteOnExit()
                 <configuration>
                   <server>github</server><!-- settings.xml -->
                   <message>Publishing site for version
-                    ${pom.version}</message>
+                    ${project.version}</message>
                   <merge>true</merge>
                 </configuration>
               </execution>
