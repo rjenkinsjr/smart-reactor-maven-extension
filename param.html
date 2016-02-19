@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20160218" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Smart Reactor Maven Extension &#x2013; The Maven reactor, reimagined!</title>
+    <title>Smart Reactor Maven Extension &#x2013; Parameters</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.4.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -163,10 +163,12 @@
                 <ul class="nav nav-list">
                     <li class="nav-header">User Guide</li>
                               
-      <li class="active">
+      <li>
   
-            <a href="#"><span class="none"></span>Home</a>
-          </li>
+                          <a href="index.html" title="Home">
+          <span class="none"></span>
+        Home</a>
+            </li>
                 
       <li>
   
@@ -175,12 +177,10 @@
         Why Use The Smart Reactor?</a>
             </li>
                 
-      <li>
+      <li class="active">
   
-                          <a href="param.html" title="Parameters">
-          <span class="none"></span>
-        Parameters</a>
-            </li>
+            <a href="#"><span class="none"></span>Parameters</a>
+          </li>
                 
       <li>
   
@@ -225,69 +225,165 @@
         <div id="bodyColumn"  class="span10" >
                                   
             <div class="section">
-<h2><a name="The_Maven_reactor_reimagined"></a>The Maven reactor, reimagined!</h2>
-<p>Want better Maven builds and releases? Just do one of the following:</p>
-
-<ul>
-  
-<li>Download the extension into your <tt>$M2_HOME/lib/ext</tt> directory.</li>
-  
-<li>Create the file <tt>.mvn/extensions.xml</tt> parallel to your project&#x2019;s top-level POM, with the following content.</li>
-</ul>
-
-<div class="source">
-<div class="source"><pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;extensions&gt;
-  &lt;extension&gt;
-    &lt;groupId&gt;info.ronjenkins&lt;/groupId&gt;
-    &lt;artifactId&gt;smart-reactor-maven-extension&lt;/artifactId&gt;
-    &lt;version&gt;0.1.0-SNAPSHOT&lt;/version&gt;
-  &lt;/extension&gt;
-&lt;/extensions&gt;
-</pre></div></div>
-<p>Why bother? Because you can probably identify with one or more of these Maven issues&#x2026;</p>
+<h2><a name="Parameters"></a>Parameters</h2>
+<p>Parameters for the Smart Reactor can be defined as project <tt>&lt;properties&gt;</tt> or as JVM properties with the <tt>-D</tt> command line switch.</p>
 <div class="section">
-<h3><a name="Didnt_change_it_Dont_build_it"></a>Didn&#x2019;t change it? <i>Don&#x2019;t build it!</i></h3>
+<h3><a name="Core_Parameters"></a>Core Parameters</h3>
+
+<table border="0" class="table table-striped">
+  <thead>
+    
+<tr class="a">
+      
+<th align="left">Name </th>
+      
+<th align="left">Type </th>
+      
+<th align="left">Default </th>
+      
+<th align="left">Since </th>
+    </tr>
+  </thead>
+  <tbody>
+    
+<tr class="b">
+      
+<td align="left"><a href="#rtr.disabled">rtr.disabled</a> </td>
+      
+<td align="left"><tt>boolean</tt> </td>
+      
+<td align="left"><tt>false</tt> </td>
+      
+<td align="left"><tt>0.1.0</tt> </td>
+    </tr>
+    
+<tr class="a">
+      
+<td align="left"><a href="#rtr.allowSinglePomReactor">rtr.allowSinglePomReactor</a> </td>
+      
+<td align="left"><tt>boolean</tt> </td>
+      
+<td align="left"><tt>false</tt> </td>
+      
+<td align="left"><tt>0.1.0</tt> </td>
+    </tr>
+    
+<tr class="b">
+      
+<td align="left"><a href="#rtr.allowExternalSnapshots">rtr.allowExternalSnapshots</a> </td>
+      
+<td align="left"><tt>boolean</tt> </td>
+      
+<td align="left"><tt>false</tt> </td>
+      
+<td align="left"><tt>0.1.0</tt> </td>
+    </tr>
+    
+<tr class="a">
+      
+<td align="left"><a href="#rtr.release">rtr.release</a> </td>
+      
+<td align="left"><tt>boolean</tt> </td>
+      
+<td align="left"><tt>false</tt> </td>
+      
+<td align="left"><tt>0.1.0</tt> </td>
+    </tr>
+  </tbody>
+</table>
+<div class="section">
+<h4><a name="Parameter_Details"></a>Parameter Details</h4>
+<div class="section">
+<h5><a name="rtr.disabled"></a>rtr.disabled</h5>
+<p>Disables the extension, restoring default Maven behavior as if the extension was not installed or declared.</p>
 
 <ul>
   
-<li>Modules in the reactor whose versions are non-SNAPSHOTs are dropped; only your SNAPSHOT-versioned modules are built. This forces your build to retrieve your previously-built module artifacts from your remote Maven repository. <b>You properly reuse the code that you&#x2019;ve already released!</b></li>
+<li><b>Type</b>: <tt>boolean</tt></li>
   
-<li>The build will fail-fast if a non-SNAPSHOT module in the reactor depends upon another reactor module that is a SNAPSHOT. This forces the upstream modules to be re-versioned when you alter downstream modules. <b>No more forgetting which modules are impacted!</b></li>
+<li><b>Since</b>: <tt>0.1.0</tt></li>
+  
+<li><b>Required</b>: <tt>no</tt></li>
+  
+<li><b>User Property</b>: <tt>rtr.disabled</tt></li>
+  
+<li><b>Default</b>: <tt>false</tt></li>
 </ul></div>
 <div class="section">
-<h3><a name="Perform_atomic_releases_on_your_terms"></a>Perform <i>atomic</i> releases on <i>your</i> terms!</h3>
+<h5><a name="rtr.allowSinglePomReactor"></a>rtr.allowSinglePomReactor</h5>
+<p>Whether or not to allow a build consisting of exactly one reactor project whose packaging is <tt>pom</tt>.</p>
 
 <ul>
   
-<li>POM transformation now occurs when the reactor is built, at the very beginning of the build. It uses the same transformation logic as the Maven Release Plugin, just without all of the committing/tagging in SCM (but the <tt>&lt;scm&gt;</tt> info still gets transformed). <b>Let your development workflow decide when and how your release POMs get committed!</b></li>
+<li><b>Type</b>: <tt>boolean</tt></li>
   
-<li>No more build-within-a-build - once the POMs are transformed, the reactor is reconstructed from the release POMs. This lets you perform release builds with the exact same command as your non-release builds (if that&#x2019;s what you want), and makes Maven release builds more compatible with external tools. <b>Leave those redundant builds behind!</b></li>
+<li><b>Since</b>: <tt>0.1.0</tt></li>
   
-<li>Because releases are just a special kind of build, they too only include SNAPSHOT modules in the reactor. As a result, only the modules that you changed get released. <b>Stop chewing up version numbers for unchanged modules!</b></li>
+<li><b>Required</b>: <tt>no</tt></li>
   
-<li>If the release build fails, the backup POM files are automatically restored on disk. <b>Make POM juggling a thing of the past!</b></li>
+<li><b>User Property</b>: <tt>rtr.allowSinglePomReactor</tt></li>
+  
+<li><b>Default</b>: <tt>false</tt></li>
 </ul></div>
 <div class="section">
-<h3><a name="Encourage_better_versioning_habits"></a>Encourage better versioning habits!</h3>
+<h5><a name="rtr.allowExternalSnapshots"></a>rtr.allowExternalSnapshots</h5>
+<p>Whether or not to allow a release build when the reactor contains any modules that declare any SNAPSHOT dependencies, plugins, parents or reports that are not also in the reactor. Irrelevant if <tt>rtr.release</tt> is <tt>false</tt>.</p>
 
 <ul>
   
-<li>After performing a Smart Reactor release and committing the subsequent changes back to SCM, all of your module POMs will be non-SNAPSHOTs. The Smart Reactor won&#x2019;t build a project unless it can find a valid collection of SNAPSHOT modules in the reactor. <b>Never accidentally re-release a version again!</b></li>
+<li><b>Type</b>: <tt>boolean</tt></li>
   
-<li>The Smart Reactor will build any SNAPSHOT module, regardless of what its version number actually is. This lets you control the version numbers of your modules at whatever granularity level you choose, because setting version numbers isn&#x2019;t part of the release process anymore. You can use manual POM edits, <tt>mvn release:update-versions</tt>, <tt>mvn versions:set</tt> or whatever works for you. <b>Gain complete control over your module versions!</b></li>
+<li><b>Since</b>: <tt>0.1.0</tt></li>
+  
+<li><b>Required</b>: <tt>no</tt></li>
+  
+<li><b>User Property</b>: <tt>rtr.allowExternalSnapshots</tt></li>
+  
+<li><b>Default</b>: <tt>false</tt></li>
+</ul></div>
+<div class="section">
+<h5><a name="rtr.release"></a>rtr.release</h5>
+<p>Transforms the POMs of SNAPSHOT modules to non-SNAPSHOT versions, then rebuilds the reactor with the release POMs.</p>
+
+<ul>
+  
+<li><b>Type</b>: <tt>boolean</tt></li>
+  
+<li><b>Since</b>: <tt>0.1.0</tt></li>
+  
+<li><b>Required</b>: <tt>no</tt></li>
+  
+<li><b>User Property</b>: <tt>rtr.release</tt></li>
+  
+<li><b>Default</b>: <tt>false</tt></li>
+</ul></div></div></div>
+<div class="section">
+<h3><a name="Release_Parameters"></a>Release Parameters</h3>
+<p>When release POM transformation is enabled, the following parameters from the <tt>release:prepare</tt> goal of the Maven Release Plugin are supported. Unless otherwise stated, these parameters behave exactly as <a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html">documented</a>.</p>
+
+<ul>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#addSchema">addSchema</a></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#allowTimestampedSnapshots">allowTimestampedSnapshots</a>
+  
+<ul>
+    
+<li>According to the source code of the Maven Release Manager, setting <tt>allowTimestampedSnapshots</tt> to <tt>true</tt> actually allows <i>all</i> SNAPSHOT artifacts rather than all <i>timestamped</i> SNAPSHOT artifacts. This mismatch between documentation and behavior is likely a bug, hence why the <tt>rtr.allowSnapshotDependencies</tt> parameter exists. You should use the <tt>rtr.allowSnapshotDependencies</tt> parameter instead of the <tt>allowTimestampedSnapshots</tt> parameter.</li>
+  </ul></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#autoVersionSubmodules">autoVersionSubmodules</a></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#projectVersionPolicyId">projectVersionPolicyId</a></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#releaseVersion">releaseVersion</a></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#tag">tag</a></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#tagBase">tagBase</a></li>
+  
+<li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/prepare-mojo.html#tagNameFormat">tagNameFormat</a></li>
 </ul></div></div>
-<div class="section">
-<h2><a name="Requirements"></a>Requirements</h2>
-<p>The extension requires Maven 3.3.1 or higher; any Maven project compatible with Maven 3.3.1 or higher will work with the extension.</p></div>
-<div class="section">
-<h2><a name="Installation_and_Usage"></a>Installation and Usage</h2>
-<p>Either drop the extension JAR file into your Maven installation&#x2019;s <tt>lib/ext</tt> directory, or declare it in your project&#x2019;s <tt>.mvn/extensions.xml</tt> file. <b>Do not declare the extension in your POM; it won&#x2019;t work correctly.</b></p>
-<p>The Smart Reactor is enabled by default. To disable it, enable the property <a href="param.html#rtr.disabled">rtr.disabled</a>. </p></div>
-<div class="section">
-<h2><a name="License"></a>License</h2>
-<p>The extension is licensed under the Apache License, Version 2.0.</p>
-<p>The extension integrates source code fragments from the Maven Release Manager and the Maven Release Plugin, both of which are also released under the Apache License, Version 2.0. See the <tt>LICENSE</tt> and <tt>THIRDPARTY</tt> files in the JAR file or source repository for more information.</p></div>
                   </div>
             </div>
           </div>

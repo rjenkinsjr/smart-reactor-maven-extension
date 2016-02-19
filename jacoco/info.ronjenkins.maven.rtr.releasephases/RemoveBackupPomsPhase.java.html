@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RemoveBackupPomsPhase.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Smart Reactor Maven Extension</a> &gt; <a href="index.source.html" class="el_package">info.ronjenkins.maven.rtr.releasephases</a> &gt; <span class="el_source">RemoveBackupPomsPhase.java</span></div><h1>RemoveBackupPomsPhase.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2016 Ronald Jack Jenkins Jr.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package info.ronjenkins.maven.rtr.releasephases;
+
+import info.ronjenkins.maven.rtr.RTR;
+
+import java.util.List;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.release.ReleaseExecutionException;
+import org.apache.maven.shared.release.ReleaseFailureException;
+import org.apache.maven.shared.release.ReleaseResult;
+import org.apache.maven.shared.release.config.ReleaseDescriptor;
+import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.apache.maven.shared.release.phase.AbstractBackupPomsPhase;
+import org.apache.maven.shared.release.phase.ReleasePhase;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+
+/**
+ * Deletes all backup POMs, but only if they were created.
+ *
+ * @author Ronald Jack Jenkins Jr.
+ * @see IndicatePresenceOfBackupPomsPhase
+ * @see DefensiveRestoreBackupPomsPhase
+ */
+// Derived from CreateBackupPomsPhase.java in maven-release-plugin, see
+// THIRDPARTY file for further legal information.
+@Component(role = ReleasePhase.class, hint = &quot;remove-backup-poms&quot;)
+<span class="fc" id="L44">public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {</span>
+
+  @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
+  private RTR rtr;
+
+  /**
+   * Deletes all backup POMs for the given projects, if they were created.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult execute(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+<span class="fc" id="L68">    final ReleaseResult result = new ReleaseResult();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">    if (this.rtr.isBackupPomsCreated()) {</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">      for (final MavenProject project : projects) {</span>
+<span class="fc" id="L71">        this.deletePomBackup(project);</span>
+<span class="fc" id="L72">      }</span>
+    }
+<span class="fc" id="L74">    result.setResultCode(ReleaseResult.SUCCESS);</span>
+<span class="fc" id="L75">    return result;</span>
+  }
+
+  /**
+   * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
+   * execute} method.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult simulate(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+<span class="fc" id="L98">    return this.execute(rd, re, projects);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ValidateSmartReactorEligibility.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Smart Reactor Maven Extension</a> &gt; <a href="index.source.html" class="el_package">info.ronjenkins.maven.rtr.steps</a> &gt; <span class="el_source">ValidateSmartReactorEligibility.java</span></div><h1>ValidateSmartReactorEligibility.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2016 Ronald Jack Jenkins Jr.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package info.ronjenkins.maven.rtr.steps;
+
+import info.ronjenkins.maven.rtr.RTRComponents;
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.execution.ProjectDependencyGraph;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Component;
+
+/**
+ * Validates that this Maven session is eligible to be processed by the Smart
+ * Reactor.
+ *
+ * @author Ronald Jack Jenkins Jr.
+ */
+@Component(role = SmartReactorStep.class, hint = &quot;validate-eligibility&quot;)
+<span class="fc" id="L37">public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {</span>
+
+  @Override
+  public void execute(final MavenSession session, final RTRComponents components)
+      throws MavenExecutionException {
+    // Ensure that the root is a SNAPSHOT.
+<span class="fc" id="L43">    final MavenProject root = session.getTopLevelProject();</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    if (!root.getArtifact().isSnapshot()) {</span>
+<span class="fc" id="L45">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L46">      this.logger.error(&quot;Top-level project &quot; + root + &quot; is not a SNAPSHOT.&quot;);</span>
+<span class="fc" id="L47">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L48">      throw new SmartReactorSanityCheckException(</span>
+          &quot;Reactor is ineligible to become a Smart Reactor.&quot;);
+    }
+    // Ensure that the ancestors of every SNAPSHOT are also SNAPSHOTs.
+<span class="fc" id="L52">    final ProjectDependencyGraph pdg = session.getProjectDependencyGraph();</span>
+<span class="fc" id="L53">    final List&lt;MavenProject&gt; badProjects = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">    for (final MavenProject project : session.getProjects()) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">      if (project.getArtifact().isSnapshot()) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (final MavenProject ancestor : pdg.getUpstreamProjects(project,</span>
+            true)) {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">          if (!ancestor.getArtifact().isSnapshot()) {</span>
+<span class="fc" id="L59">            badProjects.add(ancestor);</span>
+          }
+<span class="fc" id="L61">        }</span>
+      }
+<span class="fc" id="L63">    }</span>
+    // Fail if necessary.
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (!badProjects.isEmpty()) {</span>
+<span class="fc" id="L66">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L67">      this.logger</span>
+<span class="fc" id="L68">          .error(&quot;The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:&quot;);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">      for (final MavenProject badProject : badProjects) {</span>
+<span class="fc" id="L70">        this.logger.error(&quot;  &quot; + badProject.getArtifact().toString() + &quot; @ &quot;</span>
+<span class="fc" id="L71">            + badProject.getFile().getAbsolutePath());</span>
+<span class="fc" id="L72">      }</span>
+<span class="fc" id="L73">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L74">      throw new SmartReactorSanityCheckException(</span>
+          &quot;Reactor is ineligible to become a Smart Reactor.&quot;);
+    }
+<span class="fc" id="L77">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

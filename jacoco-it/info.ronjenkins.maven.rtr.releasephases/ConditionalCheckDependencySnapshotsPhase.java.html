@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ConditionalCheckDependencySnapshotsPhase.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Smart Reactor Maven Extension</a> &gt; <a href="index.source.html" class="el_package">info.ronjenkins.maven.rtr.releasephases</a> &gt; <span class="el_source">ConditionalCheckDependencySnapshotsPhase.java</span></div><h1>ConditionalCheckDependencySnapshotsPhase.java</h1><pre class="source lang-java linenums">package info.ronjenkins.maven.rtr.releasephases;
+
+import info.ronjenkins.maven.rtr.RTR;
+
+import java.util.List;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.release.ReleaseExecutionException;
+import org.apache.maven.shared.release.ReleaseFailureException;
+import org.apache.maven.shared.release.ReleaseResult;
+import org.apache.maven.shared.release.config.ReleaseDescriptor;
+import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.apache.maven.shared.release.phase.CheckDependencySnapshotsPhase;
+import org.apache.maven.shared.release.phase.ReleasePhase;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
+
+/**
+ * Checks for SNAPSHOT dependencies in the reactor, but only if requested.
+ *
+ * @author Ronald Jack Jenkins Jr.
+ */
+@Component(role = ReleasePhase.class, hint = &quot;conditional-check-dependency-snapshots&quot;)
+<span class="fc" id="L26">public class ConditionalCheckDependencySnapshotsPhase extends</span>
+CheckDependencySnapshotsPhase {
+
+  @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
+  private RTR rtr;
+  @Requirement
+  protected Logger logger;
+
+  /**
+   * Calls super, if permitted.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult execute(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+    final ReleaseResult result;
+<span class="fc bfc" id="L54" title="All 2 branches covered.">    if (this.rtr.isExternalSnapshotsAllowed()) {</span>
+<span class="fc" id="L55">      this.logger</span>
+<span class="fc" id="L56">      .warn(&quot;External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.&quot;);</span>
+<span class="fc" id="L57">      result = new ReleaseResult();</span>
+<span class="fc" id="L58">      result.setResultCode(ReleaseResult.SUCCESS);</span>
+    } else {
+<span class="fc" id="L60">      result = super.execute(rd, re, projects);</span>
+    }
+<span class="fc" id="L62">    return result;</span>
+  }
+
+  /**
+   * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
+   * execute} method.
+   *
+   * @param rd
+   *          not null.
+   * @param re
+   *          not null.
+   * @param projects
+   *          not null.
+   * @return the result of the phase execution.
+   * @throws ReleaseExecutionException
+   *           as needed.
+   * @throws ReleaseFailureException
+   *           as needed.
+   */
+  @Override
+  public ReleaseResult simulate(final ReleaseDescriptor rd,
+      final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
+          throws ReleaseExecutionException, ReleaseFailureException {
+<span class="nc" id="L85">    return this.execute(rd, re, projects);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

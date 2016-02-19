@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RTR.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Smart Reactor Maven Extension</a> &gt; <a href="index.source.html" class="el_package">info.ronjenkins.maven.rtr</a> &gt; <span class="el_source">RTR.java</span></div><h1>RTR.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2016 Ronald Jack Jenkins Jr.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package info.ronjenkins.maven.rtr;
+
+import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
+
+/**
+ * The entry point for the Smart Reactor Maven Extension.
+ *
+ * @author Ronald Jack Jenkins Jr.
+ */
+@Component(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
+<span class="fc" id="L38">public class RTR extends AbstractMavenLifecycleParticipant {</span>
+
+  @Requirement
+  private Logger logger;
+  @Requirement
+  private ProjectBuilder builder;
+
+  protected List&lt;String&gt; startSteps;
+  protected List&lt;String&gt; endSuccessSteps;
+  protected List&lt;String&gt; endFailureSteps;
+
+  @Requirement(role = SmartReactorStep.class)
+  protected Map&lt;String, SmartReactorStep&gt; availableSteps;
+
+  private RTRComponents components;
+  private boolean disabled;
+  private boolean release;
+  private boolean backupPomsCreated;
+  private boolean externalSnapshotsAllowed;
+
+  /**
+   * RTR entry point.
+   *
+   * @param session
+   *          the current Maven session, never null.
+   */
+  @Override
+  public void afterProjectsRead(final MavenSession session)
+      throws MavenExecutionException {
+    // Don't do anything if the Smart Reactor is disabled.
+<span class="fc" id="L68">    final MavenProject executionRoot = session.getTopLevelProject();</span>
+<span class="fc" id="L69">    this.disabled = RTRConfig.isDisabled(session, executionRoot);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (this.disabled) {</span>
+<span class="fc" id="L71">      return;</span>
+    }
+<span class="fc" id="L73">    this.release = RTRConfig.isRelease(session, executionRoot);</span>
+<span class="fc" id="L74">    this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(</span>
+        session, executionRoot);
+<span class="fc" id="L76">    this.logger.info(&quot;Assembling smart reactor...&quot;);</span>
+<span class="fc" id="L77">    this.components = new RTRComponents(this.builder);</span>
+<span class="fc" id="L78">    this.executeSteps(this.startSteps, session, this.components);</span>
+    // Done. Maven build will proceed from here, none the wiser. ;)
+<span class="fc" id="L80">  }</span>
+
+  @Override
+  public void afterSessionEnd(final MavenSession session)
+      throws MavenExecutionException {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">    if (this.disabled) {</span>
+<span class="fc" id="L86">      return;</span>
+    }
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (session.getResult().hasExceptions()) {</span>
+<span class="fc" id="L89">      this.executeSteps(this.endFailureSteps, session, this.components);</span>
+    } else {
+<span class="fc" id="L91">      this.executeSteps(this.endSuccessSteps, session, this.components);</span>
+    }
+<span class="fc" id="L93">  }</span>
+
+  private void executeSteps(final List&lt;String&gt; steps,
+      final MavenSession session, final RTRComponents components)
+          throws MavenExecutionException {
+    SmartReactorStep step;
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    for (final String name : steps) {</span>
+<span class="fc" id="L100">      step = this.availableSteps.get(name);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">      if (step == null) {</span>
+<span class="fc" id="L102">        throw new MavenExecutionException(&quot;Unable to find step '&quot; + name</span>
+            + &quot;' to execute&quot;, new IllegalStateException());
+      }
+<span class="fc" id="L105">      step.execute(session, components);</span>
+<span class="fc" id="L106">    }</span>
+<span class="fc" id="L107">  }</span>
+
+  /**
+   * Indicates whether or not backup POMs were created by the release process.
+   *
+   * @return backupPomsCreated true if backup POMs have been created, false
+   *         otherwise.
+   */
+  public boolean isBackupPomsCreated() {
+<span class="fc" id="L116">    return this.backupPomsCreated;</span>
+  }
+
+  /**
+   * Indicates whether or not the Smart Reactor should allow a release reactor
+   * containing references to any non-reactor SNAPSHOT artifacts.
+   *
+   * @return true if allowed, false if prohibited.
+   */
+  public boolean isExternalSnapshotsAllowed() {
+<span class="fc" id="L126">    return this.externalSnapshotsAllowed;</span>
+  }
+
+  /**
+   * Indicates whether or not a release was requested.
+   *
+   * @return true if a release was requested, false otherwise.
+   */
+  public boolean isRelease() {
+<span class="fc" id="L135">    return this.release;</span>
+  }
+
+  /**
+   * Sets the flag that indicates whether or not backup POMs were created by the
+   * release process.
+   *
+   * @param backupPomsCreated
+   *          true if backup POMs have been created, false otherwise.
+   */
+  public void setBackupPomsCreated(final boolean backupPomsCreated) {
+<span class="fc" id="L146">    this.backupPomsCreated = backupPomsCreated;</span>
+<span class="fc" id="L147">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

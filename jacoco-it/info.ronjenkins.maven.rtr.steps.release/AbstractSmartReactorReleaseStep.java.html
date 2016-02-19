@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AbstractSmartReactorReleaseStep.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Smart Reactor Maven Extension</a> &gt; <a href="index.source.html" class="el_package">info.ronjenkins.maven.rtr.steps.release</a> &gt; <span class="el_source">AbstractSmartReactorReleaseStep.java</span></div><h1>AbstractSmartReactorReleaseStep.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2016 Ronald Jack Jenkins Jr.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package info.ronjenkins.maven.rtr.steps.release;
+
+import info.ronjenkins.maven.rtr.RTR;
+import info.ronjenkins.maven.rtr.RTRComponents;
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorReleaseException;
+import info.ronjenkins.maven.rtr.steps.AbstractSmartReactorStep;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.release.ReleaseExecutionException;
+import org.apache.maven.shared.release.ReleaseFailureException;
+import org.apache.maven.shared.release.ReleaseResult;
+import org.apache.maven.shared.release.config.ReleaseDescriptor;
+import org.apache.maven.shared.release.env.ReleaseEnvironment;
+import org.apache.maven.shared.release.phase.ReleasePhase;
+import org.codehaus.plexus.component.annotations.Requirement;
+
+/**
+ * Base implementation of a Smart Reactor release step. No-op unless the Smart
+ * Reactor's release property is true at runtime.
+ *
+ * @author Ronald Jack Jenkins Jr.
+ */
+<span class="fc" id="L44">public abstract class AbstractSmartReactorReleaseStep extends</span>
+AbstractSmartReactorStep {
+
+  @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
+  protected RTR rtr;
+
+  @Requirement(role = ReleasePhase.class)
+  protected Map&lt;String, ReleasePhase&gt; availablePhases;
+
+  @Requirement(hint = &quot;rtr-rd&quot;)
+  protected ReleaseDescriptor releaseDescriptor;
+
+  @Requirement(hint = &quot;rtr-re&quot;)
+  protected ReleaseEnvironment releaseEnvironment;
+
+  /**
+   * Subclasses can override this method to configure the release descriptor
+   * injected by Plexus. The default implementation does nothing.
+   *
+   * @param session
+   *          the session to which this step applies. Not null.
+   * @param components
+   *          that this step may need. May be null.
+   */
+  protected void configureReleaseDescriptor(final MavenSession session,
+      final RTRComponents components) {
+<span class="fc" id="L70">  }</span>
+
+  @Override
+  public final void execute(final MavenSession session,
+      final RTRComponents components) throws MavenExecutionException {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (this.rtr.isRelease()) {</span>
+<span class="fc" id="L76">      this.logger.info(this.getAnnouncement());</span>
+<span class="fc" id="L77">      this.configureReleaseDescriptor(session, components);</span>
+<span class="fc" id="L78">      this.releaseExecute(session, components);</span>
+    }
+<span class="fc" id="L80">  }</span>
+
+  /**
+   * Returns the announcement that is logged when this release step begins
+   * execution.
+   *
+   * @return null or empty will prevent the corresponding log entry from
+   *         occurring.
+   */
+  protected abstract String getAnnouncement();
+
+  /**
+   * Returns the list of phases that should be executed by this release step.
+   *
+   * @return never null or empty.
+   * @throws UnsupportedOperationException
+   *           if this step does not execute any release phases.
+   */
+  protected abstract List&lt;String&gt; getReleasePhases();
+
+  /**
+   * Returns the list of phases that should be executed by this release step
+   * when rollback is required.
+   *
+   * @return never null or empty.
+   * @throws UnsupportedOperationException
+   *           if this step does not execute any release phases.
+   */
+  protected abstract List&lt;String&gt; getRollbackPhases();
+
+  /**
+   * Step logic that is executed if a release was requested.
+   *
+   * @param session
+   *          the session to which this step applies. Not null.
+   * @param components
+   *          that this step may need. May be null.
+   * @throws MavenExecutionException
+   *           if any unrecoverable error occurs.
+   */
+  protected void releaseExecute(final MavenSession session,
+      final RTRComponents components) throws MavenExecutionException {
+<span class="fc" id="L122">    this.releaseEnvironment.setSettings(session.getSettings());</span>
+<span class="fc" id="L123">    final List&lt;MavenProject&gt; reactor = session.getProjects();</span>
+    // Execute the release steps.
+    try {
+<span class="fc" id="L126">      this.runPhases(reactor, this.getReleasePhases());</span>
+<span class="fc" id="L127">    } catch (final MavenExecutionException | RuntimeException e) {</span>
+      // Rollback if ANY exception occurred, then rethrow.
+<span class="fc" id="L129">      this.logger.error(&quot;Rolling back release due to error...&quot;);</span>
+      try {
+<span class="fc" id="L131">        this.runPhases(reactor, this.getRollbackPhases());</span>
+<span class="nc" id="L132">      } catch (final MavenExecutionException | RuntimeException e2) {</span>
+        // Suppress this exception.
+<span class="nc" id="L134">        e.addSuppressed(e2);</span>
+<span class="nc" id="L135">        this.logger</span>
+<span class="nc" id="L136">        .error(&quot;Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.&quot;);</span>
+<span class="fc" id="L137">      }</span>
+<span class="fc" id="L138">      throw e;</span>
+<span class="fc" id="L139">    }</span>
+<span class="fc" id="L140">  }</span>
+
+  // Derived from DefaultReleaseManager.java in maven-release-manager, see
+  // THIRDPARTY file for further legal information.
+  private final void runPhases(final List&lt;MavenProject&gt; reactor,
+      final List&lt;String&gt; phases) throws MavenExecutionException {
+    ReleasePhase phase;
+    ReleaseResult result;
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    for (final String name : phases) {</span>
+<span class="fc" id="L149">      phase = this.availablePhases.get(name);</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">      if (phase == null) {</span>
+<span class="nc" id="L151">        throw new SmartReactorReleaseException(&quot;Unable to find phase '&quot; + name</span>
+            + &quot;' to execute&quot;);
+      }
+      try {
+<span class="fc" id="L155">        result = phase.execute(this.releaseDescriptor, this.releaseEnvironment,</span>
+            reactor);
+<span class="fc" id="L157">      } catch (final ReleaseExecutionException | ReleaseFailureException e) {</span>
+<span class="fc" id="L158">        throw new SmartReactorReleaseException(e);</span>
+<span class="fc" id="L159">      }</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">      if (result.getResultCode() == ReleaseResult.ERROR) {</span>
+<span class="nc" id="L161">        throw new SmartReactorReleaseException(result.getOutput());</span>
+      }
+<span class="fc" id="L163">    }</span>
+<span class="fc" id="L164">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

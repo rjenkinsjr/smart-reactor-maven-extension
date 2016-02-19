@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20160218" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Smart Reactor Maven Extension &#x2013; The Maven reactor, reimagined!</title>
+    <title>Smart Reactor Maven Extension &#x2013; Frequently Asked Questions</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.4.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -163,10 +163,12 @@
                 <ul class="nav nav-list">
                     <li class="nav-header">User Guide</li>
                               
-      <li class="active">
+      <li>
   
-            <a href="#"><span class="none"></span>Home</a>
-          </li>
+                          <a href="index.html" title="Home">
+          <span class="none"></span>
+        Home</a>
+            </li>
                 
       <li>
   
@@ -182,12 +184,10 @@
         Parameters</a>
             </li>
                 
-      <li>
+      <li class="active">
   
-                          <a href="faq.html" title="FAQ">
-          <span class="none"></span>
-        FAQ</a>
-            </li>
+            <a href="#"><span class="none"></span>FAQ</a>
+          </li>
                               <li class="nav-header">Project Documentation</li>
                                                                                                                                                                                                               
       <li>
@@ -225,69 +225,48 @@
         <div id="bodyColumn"  class="span10" >
                                   
             <div class="section">
-<h2><a name="The_Maven_reactor_reimagined"></a>The Maven reactor, reimagined!</h2>
-<p>Want better Maven builds and releases? Just do one of the following:</p>
+<h2><a name="Frequently_Asked_Questions"></a>Frequently Asked Questions</h2>
+<div class="section">
+<div class="section">
+<h4><a name="Where_are_the_goals_documented"></a>Where are the goals documented?</h4>
+<p>There are no goals; this is an extension, not a plugin. It is enabled by default once it is installed or included in your project. <a href="param.html">Parameters</a> are used to control how the extension behaves.</p></div>
+<div class="section">
+<h4><a name="My_project_is_just_a_single_POM_that_I_use_as_a_parent_for_many_unrelated_projects_so_its_in_a_separate_SCM_repository._When_I_try_to_use_this_extension_with_my_parent_POM_project_I_get_an_error._Whats_wrong"></a>My project is just a single POM that I use as a parent for many unrelated projects, so it&#x2019;s in a separate SCM repository. When I try to use this extension with my parent POM project, I get an error. What&#x2019;s wrong?</h4>
+<p>By default, the Smart Reactor will fail if it contains exactly one SNAPSHOT project whose packaging is <tt>pom</tt>. This check exists to prevent pointless builds of aggregator POMs, usually caused by forgetting to version one or more modules. When developing a standalone parent POM, however, this check prevents the extension from otherwise working as intended. To disable this check, enable the property <a href="param.html#rtr.allowSinglePomReactor">rtr.allowSinglePomReactor</a> in the POM (recommended) or at the command line. </p></div>
+<div class="section">
+<h4><a name="How_do_I_perform_a_release"></a>How do I perform a release?</h4>
+<p>Enable the <a href="param.html#rtr.release">rtr.release</a> parameter. If you already have a profile in your project dedicated to releases, just add this parameter as a profile-specific property.</p>
 
-<ul>
+<ol style="list-style-type: decimal">
   
-<li>Download the extension into your <tt>$M2_HOME/lib/ext</tt> directory.</li>
+<li>All SNAPSHOT projects that are selected for release will have their POMs transformed on disk.</li>
   
-<li>Create the file <tt>.mvn/extensions.xml</tt> parallel to your project&#x2019;s top-level POM, with the following content.</li>
-</ul>
+<li>The transformed POMs are reloaded into the reactor.</li>
+  
+<li>The build is performed, using whatever other parameters/profiles/goals/phases you have specified.</li>
+</ol></div>
+<div class="section">
+<h4><a name="How_do_I_get_my_release_POMs_checked_back_into_my_SCM_tool"></a>How do I get my release POMs checked back into my SCM tool?</h4>
+<p>The extension will not push changes back into SCM; your CI engine is ideal for this. Users of Git should find this trivial to implement regardless of the CI engine being used.</p></div>
+<div class="section">
+<h4><a name="You_assert_that_one_of_the_downsides_of_the_Maven_Release_Plugin_is_that_a_failed_release_results_in_an_SCM_tag_that_must_be_manually_rolled_backbut_if_your_CI_release_build_fails_before_creating_the_SCM_tag_and_after_pushing_the_release_artifacts_to_the_Maven_repository_now_you_have_released_artifacts_that_must_be_manually_rolled_back._Havent_I_just_traded_one_problem_for_another"></a>You assert that one of the downsides of the Maven Release Plugin is that a failed release results in an SCM tag that must be manually rolled back&#x2026;but if your CI release build fails before creating the SCM tag and after pushing the release artifacts to the Maven repository, now you have released artifacts that must be manually rolled back. Haven&#x2019;t I just traded one problem for another?</h4>
+<p>Technically speaking - yes, you&#x2019;ve traded the &#x201c;dangling SCM tag&#x201d; problem for the &#x201c;dangling release artifacts&#x201d; problem. There will always be some breakdown of atomicity when integrating many disparate tools to build and release Maven projects, and this is a good example of what can happen as a result. With that said:</p>
 
-<div class="source">
-<div class="source"><pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;extensions&gt;
-  &lt;extension&gt;
-    &lt;groupId&gt;info.ronjenkins&lt;/groupId&gt;
-    &lt;artifactId&gt;smart-reactor-maven-extension&lt;/artifactId&gt;
-    &lt;version&gt;0.1.0-SNAPSHOT&lt;/version&gt;
-  &lt;/extension&gt;
-&lt;/extensions&gt;
-</pre></div></div>
-<p>Why bother? Because you can probably identify with one or more of these Maven issues&#x2026;</p>
+<ol style="list-style-type: decimal">
+  
+<li>It is unlikely that your CI build would be able to check out code from SCM, build a Maven project and push to the Maven repository, but then fail when committing/tagging back to SCM. You&#x2019;ve already checked out from SCM, so clearly your SCM system is working at the time the build starts. It&#x2019;s always possible that your SCM system could crash while your build is working, but that window of opportunity is only as large as the duration of your CI build (which should be small).</li>
+  
+<li>If you have post-Maven-deploy verification steps in your CI build that cannot be performed prior to the Maven build (e.g. SonarQube analysis), you have the same atomicity problem regardless of whether you used the Smart Reactor or the Maven Release Plugin. In fact, this problem would be worse with the Maven Release Plugin because you would have to roll back the Maven artifacts <i>and</i> the SCM tag, whereas with the Smart Reactor you would only have to roll back the Maven artifacts.</li>
+  
+<li>Rollback of improperly-released Maven artifacts could be mitigated by deploying to a &#x201c;staging&#x201d; Maven repository from your CI build, or by scripting a rollback procedure in the event of a CI build failure. Nexus, Artifactory and Archiva all have REST APIs for deleting artifacts.</li>
+</ol></div>
 <div class="section">
-<h3><a name="Didnt_change_it_Dont_build_it"></a>Didn&#x2019;t change it? <i>Don&#x2019;t build it!</i></h3>
-
-<ul>
-  
-<li>Modules in the reactor whose versions are non-SNAPSHOTs are dropped; only your SNAPSHOT-versioned modules are built. This forces your build to retrieve your previously-built module artifacts from your remote Maven repository. <b>You properly reuse the code that you&#x2019;ve already released!</b></li>
-  
-<li>The build will fail-fast if a non-SNAPSHOT module in the reactor depends upon another reactor module that is a SNAPSHOT. This forces the upstream modules to be re-versioned when you alter downstream modules. <b>No more forgetting which modules are impacted!</b></li>
-</ul></div>
+<h4><a name="Suppose_I_perform_a_release_and_commit_my_release_POMs_to_trunkmasterinsert_name_of_my_SCM_tools_concept_of_mainline_here._How_can_I_perform_post-release_analytics_e.g._SonarQube_analysis_on_the_code_that_was_released_when_the_Smart_Reactor_refuses_to_build_already-released_code"></a>Suppose I perform a release and commit my release POMs to trunk/master/[insert name of my SCM tool&#x2019;s concept of mainline here]. How can I perform post-release analytics (e.g. SonarQube analysis) on the code that was released, when the Smart Reactor refuses to build already-released code?</h4>
+<p><a href="param.html#rtr.disabled">Disable the Smart Reactor</a> when performing builds on already-released projects.</p>
+<p>Make sure that you prevent these analytics from accidentally publishing to your Maven repository. Running <tt>mvn verify</tt> instead of <tt>mvn install</tt> is a good place to start.</p></div>
 <div class="section">
-<h3><a name="Perform_atomic_releases_on_your_terms"></a>Perform <i>atomic</i> releases on <i>your</i> terms!</h3>
-
-<ul>
-  
-<li>POM transformation now occurs when the reactor is built, at the very beginning of the build. It uses the same transformation logic as the Maven Release Plugin, just without all of the committing/tagging in SCM (but the <tt>&lt;scm&gt;</tt> info still gets transformed). <b>Let your development workflow decide when and how your release POMs get committed!</b></li>
-  
-<li>No more build-within-a-build - once the POMs are transformed, the reactor is reconstructed from the release POMs. This lets you perform release builds with the exact same command as your non-release builds (if that&#x2019;s what you want), and makes Maven release builds more compatible with external tools. <b>Leave those redundant builds behind!</b></li>
-  
-<li>Because releases are just a special kind of build, they too only include SNAPSHOT modules in the reactor. As a result, only the modules that you changed get released. <b>Stop chewing up version numbers for unchanged modules!</b></li>
-  
-<li>If the release build fails, the backup POM files are automatically restored on disk. <b>Make POM juggling a thing of the past!</b></li>
-</ul></div>
-<div class="section">
-<h3><a name="Encourage_better_versioning_habits"></a>Encourage better versioning habits!</h3>
-
-<ul>
-  
-<li>After performing a Smart Reactor release and committing the subsequent changes back to SCM, all of your module POMs will be non-SNAPSHOTs. The Smart Reactor won&#x2019;t build a project unless it can find a valid collection of SNAPSHOT modules in the reactor. <b>Never accidentally re-release a version again!</b></li>
-  
-<li>The Smart Reactor will build any SNAPSHOT module, regardless of what its version number actually is. This lets you control the version numbers of your modules at whatever granularity level you choose, because setting version numbers isn&#x2019;t part of the release process anymore. You can use manual POM edits, <tt>mvn release:update-versions</tt>, <tt>mvn versions:set</tt> or whatever works for you. <b>Gain complete control over your module versions!</b></li>
-</ul></div></div>
-<div class="section">
-<h2><a name="Requirements"></a>Requirements</h2>
-<p>The extension requires Maven 3.3.1 or higher; any Maven project compatible with Maven 3.3.1 or higher will work with the extension.</p></div>
-<div class="section">
-<h2><a name="Installation_and_Usage"></a>Installation and Usage</h2>
-<p>Either drop the extension JAR file into your Maven installation&#x2019;s <tt>lib/ext</tt> directory, or declare it in your project&#x2019;s <tt>.mvn/extensions.xml</tt> file. <b>Do not declare the extension in your POM; it won&#x2019;t work correctly.</b></p>
-<p>The Smart Reactor is enabled by default. To disable it, enable the property <a href="param.html#rtr.disabled">rtr.disabled</a>. </p></div>
-<div class="section">
-<h2><a name="License"></a>License</h2>
-<p>The extension is licensed under the Apache License, Version 2.0.</p>
-<p>The extension integrates source code fragments from the Maven Release Manager and the Maven Release Plugin, both of which are also released under the Apache License, Version 2.0. See the <tt>LICENSE</tt> and <tt>THIRDPARTY</tt> files in the JAR file or source repository for more information.</p></div>
+<h4><a name="What_does_rtr_mean"></a>What does &#x201c;rtr&#x201d; mean?</h4>
+<p>The first name I came up with for this extension was &#x201c;Selective Release&#x201d;, or &#x201c;selrel&#x201d; for short. As I started developing it, I realized that the logic impacted both release and non-release builds. The name &#x201c;Selective Build and Release&#x201d; was too verbose, so I had to come up with something else. When I realized that I was making a &#x201c;smarter&#x201d; Maven reactor, I settled on the name &#x201c;Smart Reactor&#x201d;. When you put the two words together, you get &#x201c;smaRTReactor&#x201d;.</p></div></div></div>
                   </div>
             </div>
           </div>
