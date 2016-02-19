@@ -615,7 +615,7 @@ destFile.deleteOnExit()
         </property>
       </activation>
       <build>
-        <defaultGoal>clean install site</defaultGoal>
+        <defaultGoal>clean deploy site-deploy</defaultGoal>
         <plugins>
           <!-- Generate source JAR. -->
           <plugin>
