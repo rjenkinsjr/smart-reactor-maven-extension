@@ -162,6 +162,29 @@
           </properties>
         </configuration>
       </plugin>
+      <!-- Generate shaded JAR, for "lib" installations. -->
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <id>generate-lib-version</id>
+            <!-- phase package -->
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>org.apache.maven.release:maven-release-manager</include>
+                </includes>
+              </artifactSet>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>mvnlib</shadedClassifierName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Resource management. -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -642,29 +665,6 @@ destFile.deleteOnExit()
                 <goals>
                   <goal>jar</goal>
                 </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- Generate shaded JAR, for "lib" installations. -->
-          <plugin>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>2.4.3</version>
-            <executions>
-              <execution>
-                <id>generate-lib-version</id>
-                <!-- phase package -->
-                <goals>
-                  <goal>shade</goal>
-                </goals>
-                <configuration>
-                  <artifactSet>
-                    <includes>
-                      <include>org.apache.maven.release:maven-release-manager</include>
-                    </includes>
-                  </artifactSet>
-                  <shadedArtifactAttached>true</shadedArtifactAttached>
-                  <shadedClassifierName>mvnlib</shadedClassifierName>
-                </configuration>
               </execution>
             </executions>
           </plugin>
