@@ -178,7 +178,24 @@
                 <includes>
                   <include>org.apache.maven.release:maven-release-manager</include>
                   <include>org.apache.maven.release:maven-release-api</include>
+                  <include>org.apache.maven:maven-artifact-manager</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-accurev</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-bazaar</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-clearcase</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-cvsexe</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-cvsjava</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-gitexe</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-hg</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-perforce</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-starteam</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-svnexe</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-synergy</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-vss</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-tfs</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-integrity</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-jazz</include>
                   <include>org.apache.maven.scm:maven-scm-api</include>
+                  <include>org.apache.maven.scm:maven-scm-manager-plexus</include>
                 </includes>
               </artifactSet>
               <shadedArtifactAttached>true</shadedArtifactAttached>
