@@ -38,9 +38,9 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</connection>
+    <connection>scm:git:git://github.com/rjenkinsjr/smart-reactor-maven-extension.git</connection>
     <developerConnection>scm:git:git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</developerConnection>
-    <url>git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</url>
+    <url>https://github.com/rjenkinsjr/smart-reactor-maven-extension</url>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -698,7 +698,7 @@ destFile.deleteOnExit()
                 <configuration>
                   <server>github</server><!-- settings.xml -->
                   <message>Publishing site for version
-                    ${project.version}</message>
+                    ${pom.version}</message>
                   <merge>true</merge>
                 </configuration>
               </execution>
