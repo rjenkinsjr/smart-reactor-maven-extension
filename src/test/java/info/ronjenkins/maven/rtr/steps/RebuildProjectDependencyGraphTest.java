@@ -30,12 +30,11 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class RebuildProjectDependencyGraphTest {
-
   @Injectable
   MavenSession session;
   @Injectable
   MavenProject root;
-
+  
   @Test
   public void exceptionsGetTranslated() {
     final RebuildProjectDependencyGraph step = new RebuildProjectDependencyGraph();
@@ -56,13 +55,14 @@ public final class RebuildProjectDependencyGraphTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof MavenExecutionException);
       Assert.assertNotNull(e.getCause());
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void successfulExecution() {
     final RebuildProjectDependencyGraph step = new RebuildProjectDependencyGraph();
@@ -83,13 +83,14 @@ public final class RebuildProjectDependencyGraphTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
-    } catch (final Exception e) {
+    }
+    catch (final Exception e) {
       e.printStackTrace();
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
 }

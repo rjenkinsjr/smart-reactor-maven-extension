@@ -36,12 +36,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class RemoveBackupPomsPhaseTest {
-
   @Injectable
   MavenProject root;
   @Injectable
-  RTR rtr;
-
+  RTR          rtr;
+  
   @Test
   public void backupPomsCreatedMeansSuccessfulExecution() {
     final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
@@ -56,11 +55,12 @@ public final class RemoveBackupPomsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, Arrays.asList(this.root));
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
+  
   @Test
   public void backupPomsNotCreatedMeansNoop() {
     final RemoveBackupPomsPhase phase = new RemoveBackupPomsPhase();
@@ -75,11 +75,12 @@ public final class RemoveBackupPomsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
+  
   @Test
   public void simulateEqualsExecute() {
     final RemoveBackupPomsPhase phase = new MockUp<RemoveBackupPomsPhase>() {
@@ -94,9 +95,9 @@ public final class RemoveBackupPomsPhaseTest {
       final ReleaseResult result = phase.simulate((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
 }

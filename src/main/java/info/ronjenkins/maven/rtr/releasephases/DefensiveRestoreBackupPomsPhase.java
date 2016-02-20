@@ -40,10 +40,9 @@ import org.codehaus.plexus.component.annotations.Requirement;
  */
 @Component(role = ReleasePhase.class, hint = "defensive-restore-backup-poms")
 public class DefensiveRestoreBackupPomsPhase extends RestoreBackupPomsPhase {
-
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
   private RTR rtr;
-
+  
   /**
    * Restores all backup POMs for the given projects, if they were created.
    *
@@ -66,13 +65,14 @@ public class DefensiveRestoreBackupPomsPhase extends RestoreBackupPomsPhase {
     final ReleaseResult result;
     if (this.rtr.isBackupPomsCreated()) {
       result = super.execute(rd, re, projects);
-    } else {
+    }
+    else {
       result = new ReleaseResult();
       result.setResultCode(ReleaseResult.SUCCESS);
     }
     return result;
   }
-
+  
   /**
    * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
    * execute} method.
@@ -95,5 +95,4 @@ public class DefensiveRestoreBackupPomsPhase extends RestoreBackupPomsPhase {
           throws ReleaseExecutionException, ReleaseFailureException {
     return this.execute(rd, re, projects);
   }
-
 }

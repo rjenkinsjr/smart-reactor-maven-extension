@@ -27,10 +27,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class BuildSmartReactorTest {
-
   @Injectable
   MavenSession session;
-
+  
   @Test
   public void onlySnapshotsRemain(@Injectable final MavenProject snapshot,
       @Injectable final MavenProject release) {
@@ -53,5 +52,4 @@ public final class BuildSmartReactorTest {
     Assert.assertEquals(1, this.session.getProjects().size());
     Assert.assertEquals(snapshot, this.session.getProjects().get(0));
   }
-
 }

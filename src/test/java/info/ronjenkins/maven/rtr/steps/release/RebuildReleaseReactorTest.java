@@ -41,37 +41,40 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class RebuildReleaseReactorTest {
-
   @Injectable
-  MavenSession session;
+  MavenSession   session;
   @Injectable
-  RTRComponents components;
+  RTRComponents  components;
   @Mocked
   ProjectBuilder projectBuilder;
   @Mocked
-  RTR rtr;
-
+  RTR            rtr;
+  
   @Test
   public void assertUOEs() {
     final RebuildReleaseReactor step = new RebuildReleaseReactor();
     try {
       step.getReleasePhases();
       Assert.fail();
-    } catch (final UnsupportedOperationException expected) {
+    }
+    catch (final UnsupportedOperationException expected) {
       // expected
-    } catch (final Exception notExpected) {
+    }
+    catch (final Exception notExpected) {
       Assert.fail();
     }
     try {
       step.getRollbackPhases();
       Assert.fail();
-    } catch (final UnsupportedOperationException expected) {
+    }
+    catch (final UnsupportedOperationException expected) {
       // expected
-    } catch (final Exception notExpected) {
+    }
+    catch (final Exception notExpected) {
       Assert.fail();
     }
   }
-
+  
   @Test
   public void disabledReleaseMeansNoop() {
     final RebuildReleaseReactor step = new RebuildReleaseReactor();
@@ -85,12 +88,13 @@ public final class RebuildReleaseReactorTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void exceptionsArePropagated(@Injectable final MavenProject root) {
     final RebuildReleaseReactor step = new RebuildReleaseReactor();
@@ -112,19 +116,21 @@ public final class RebuildReleaseReactorTest {
           this.result = pbe;
         }
       };
-    } catch (final ProjectBuildingException notPossibleDuringTesting) {
+    }
+    catch (final ProjectBuildingException notPossibleDuringTesting) {
       notPossibleDuringTesting.printStackTrace();
       Assert.fail();
     }
     try {
       step.execute(this.session, this.components);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorReleaseException);
       Assert.assertEquals(pbe, e.getCause());
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void successfulExecution(@Injectable final MavenProject root,
       @Injectable final MavenProject child,
@@ -175,13 +181,15 @@ public final class RebuildReleaseReactorTest {
           this.result = false;
         }
       };
-    } catch (final ProjectBuildingException notPossibleDuringTesting) {
+    }
+    catch (final ProjectBuildingException notPossibleDuringTesting) {
       notPossibleDuringTesting.printStackTrace();
       Assert.fail();
     }
     try {
       step.execute(this.session, this.components);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());

@@ -42,19 +42,18 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class AbstractSmartReactorReleaseStepsTest {
-
   @Tested
   @Injectable
   AbstractSmartReactorReleaseStep step;
   @Injectable
-  MavenSession session;
+  MavenSession                    session;
   @Mocked
-  RTR rtr;
+  RTR                             rtr;
   @Mocked
-  ReleaseDescriptor releaseDescriptor;
+  ReleaseDescriptor               releaseDescriptor;
   @Mocked
-  ReleaseEnvironment releaseEnvironment;
-
+  ReleaseEnvironment              releaseEnvironment;
+  
   @Test
   public void coverBasicImplementations() {
     final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
@@ -70,7 +69,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     dprf.getReleasePhases();
     dprf.getRollbackPhases();
   }
-
+  
   @Test
   public void disabledReleaseMeansNoop() {
     final TestLogger logger = TestUtils.addLoggerAndReleaseDependencies(
@@ -83,12 +82,13 @@ public final class AbstractSmartReactorReleaseStepsTest {
     };
     try {
       this.step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void nullReleasePhaseCausesException(
       @Injectable final Map<String, ReleasePhase> availablePhases) {
@@ -109,14 +109,15 @@ public final class AbstractSmartReactorReleaseStepsTest {
     };
     try {
       this.step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorReleaseException);
       Assert.assertEquals(0, e.getSuppressed().length);
       Assert.assertEquals(IllegalStateException.class, e.getCause().getClass());
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @SuppressWarnings("unchecked")
   @Test
   public void releasePhaseErrorResultCausesExceptionWithProperCause(
@@ -142,20 +143,22 @@ public final class AbstractSmartReactorReleaseStepsTest {
           this.result = ReleaseResult.ERROR;
         }
       };
-    } catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
       notPossibleDuringTesting.printStackTrace();
       Assert.fail();
     }
     try {
       this.step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorReleaseException);
       Assert.assertEquals(0, e.getSuppressed().length);
       Assert.assertEquals(IllegalStateException.class, e.getCause().getClass());
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @SuppressWarnings("unchecked")
   @Test
   public void releasePhaseExceptionCausesExceptionWithProperCause(
@@ -179,13 +182,15 @@ public final class AbstractSmartReactorReleaseStepsTest {
               "test execution exception");
         }
       };
-    } catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException notPossibleDuringTesting) {
       notPossibleDuringTesting.printStackTrace();
       Assert.fail();
     }
     try {
       this.step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorReleaseException);
       Assert.assertEquals(0, e.getSuppressed().length);
       Assert.assertEquals(ReleaseExecutionException.class, e.getCause()
@@ -193,7 +198,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void rollbackFailureOfAnyKindCausesExceptionSuppression(
       @Injectable final Map<String, ReleasePhase> availablePhases) {
@@ -216,13 +221,14 @@ public final class AbstractSmartReactorReleaseStepsTest {
     };
     try {
       this.step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorReleaseException);
       Assert.assertEquals(1, e.getSuppressed().length);
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void successfulExecution(
       @Injectable final Map<String, ReleasePhase> availablePhases) {
@@ -239,10 +245,10 @@ public final class AbstractSmartReactorReleaseStepsTest {
     };
     try {
       this.step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
 }

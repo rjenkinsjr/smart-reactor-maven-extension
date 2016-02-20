@@ -36,14 +36,13 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class PerformSmartReactorSanityChecksTest {
-
   @Injectable
   MavenSession session;
   @Mocked
   MavenProject root;
   @Mocked
-  RTRConfig config;
-
+  RTRConfig    config;
+  
   @Test
   public void singleProjectNonPomReactorAlwaysWorks() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -56,17 +55,17 @@ public final class PerformSmartReactorSanityChecksTest {
         this.result = PerformSmartReactorSanityChecksTest.this.root;
         PerformSmartReactorSanityChecksTest.this.root.getArtifact().getType();
         this.result = "jar";
-
       }
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void singleProjectPomReactorFailsIfNotAllowed() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -87,12 +86,13 @@ public final class PerformSmartReactorSanityChecksTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void singleProjectPomReactorWorksIfAllowed() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -113,12 +113,13 @@ public final class PerformSmartReactorSanityChecksTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void twoProjectReactorAlwaysWorks() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -142,10 +143,10 @@ public final class PerformSmartReactorSanityChecksTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
 }

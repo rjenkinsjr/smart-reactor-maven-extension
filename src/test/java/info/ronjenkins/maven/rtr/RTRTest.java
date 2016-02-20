@@ -41,16 +41,15 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class RTRTest {
-
   @Injectable
-  MavenSession session;
+  MavenSession   session;
   @Mocked
-  RTRConfig config;
+  RTRConfig      config;
   @Injectable
   ProjectBuilder builder;
   @Injectable
-  MavenProject root;
-
+  MavenProject   root;
+  
   @Test
   public void booleanMethodTests() {
     final RTR rtr = new MockUp<RTR>() {
@@ -75,13 +74,14 @@ public final class RTRTest {
     };
     try {
       rtr.afterProjectsRead(this.session);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(rtr.isRelease());
     Assert.assertTrue(rtr.isExternalSnapshotsAllowed());
   }
-
+  
   @Test
   public void disabledMeansNoop() {
     final RTR rtr = new MockUp<RTR>() {
@@ -103,17 +103,17 @@ public final class RTRTest {
     try {
       rtr.afterProjectsRead(this.session);
       rtr.afterSessionEnd(this.session);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail();
     }
     Assert.assertTrue(logger.getInfoLog().isEmpty());
   }
-
+  
   @Test
   public void failedExecution(
       @Injectable final Map<String, SmartReactorStep> availableSteps) {
-    final RTR rtr = new MockUp<RTR>() {
-    }.getMockInstance();
+    final RTR rtr = new MockUp<RTR>() {}.getMockInstance();
     final TestLogger logger = TestUtils.addLogger(rtr);
     Deencapsulation.setField(rtr, "builder", this.builder);
     Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
@@ -132,13 +132,14 @@ public final class RTRTest {
     try {
       rtr.afterProjectsRead(this.session);
       rtr.afterSessionEnd(this.session);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       e.printStackTrace();
       Assert.fail();
     }
     Assert.assertFalse(logger.getInfoLog().isEmpty());
   }
-
+  
   @Test(expected = MavenExecutionException.class)
   public void nullStepCausesException() throws MavenExecutionException {
     final RTR rtr = new RTR();
@@ -156,12 +157,11 @@ public final class RTRTest {
     };
     rtr.afterProjectsRead(this.session);
   }
-
+  
   @Test
   public void successfulExecution(
       @Injectable final Map<String, SmartReactorStep> availableSteps) {
-    final RTR rtr = new MockUp<RTR>() {
-    }.getMockInstance();
+    final RTR rtr = new MockUp<RTR>() {}.getMockInstance();
     final TestLogger logger = TestUtils.addLogger(rtr);
     Deencapsulation.setField(rtr, "builder", this.builder);
     Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
@@ -180,11 +180,11 @@ public final class RTRTest {
     try {
       rtr.afterProjectsRead(this.session);
       rtr.afterSessionEnd(this.session);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       e.printStackTrace();
       Assert.fail();
     }
     Assert.assertFalse(logger.getInfoLog().isEmpty());
   }
-
 }

@@ -34,7 +34,6 @@ import org.apache.maven.shared.release.phase.ReleasePhase;
  * @author Ronald Jack Jenkins Jr.
  */
 public final class TestUtils {
-
   /**
    * Adds a test logger to a release phase for testing.
    *
@@ -48,7 +47,7 @@ public final class TestUtils {
     Deencapsulation.setField(phase, "logger", logger);
     return logger;
   }
-
+  
   /**
    * Adds a test logger to an RTR for testing.
    *
@@ -62,7 +61,7 @@ public final class TestUtils {
     Deencapsulation.setField(rtr, "logger", logger);
     return logger;
   }
-
+  
   /**
    * Adds a test logger to a smart reactor step for testing.
    *
@@ -76,7 +75,7 @@ public final class TestUtils {
     Deencapsulation.setField(step, "logger", logger);
     return logger;
   }
-
+  
   /**
    * Adds a test logger and other dependencies to a smart reactor release step
    * for testing.
@@ -107,9 +106,7 @@ public final class TestUtils {
     Deencapsulation.setField(step, "releaseEnvironment", releaseEnvironment);
     return logger;
   }
-
+  
   /** Uninstantiable. */
-  private TestUtils() {
-  }
-
+  private TestUtils() {}
 }

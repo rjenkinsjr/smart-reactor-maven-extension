@@ -42,12 +42,11 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class ConditionalCheckDependencySnapshotsPhaseTest {
-
   @Injectable
   MavenProject root;
   @Injectable
-  RTR rtr;
-
+  RTR          rtr;
+  
   @Test
   public void allowedMeansNoop() {
     final ConditionalCheckDependencySnapshotsPhase phase = new ConditionalCheckDependencySnapshotsPhase();
@@ -64,13 +63,14 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final Exception e) {
+    }
+    catch (final Exception e) {
       e.printStackTrace();
       Assert.fail();
     }
     Assert.assertFalse(logger.getWarnLog().isEmpty());
   }
-
+  
   @Test
   public void notAllowedMeansSuccessfulExecution(
       @Mocked final CheckDependencySnapshotsPhase superMock) {
@@ -94,12 +94,13 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, Arrays.asList(this.root));
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       e.printStackTrace();
       Assert.fail();
     }
   }
-
+  
   @Test
   public void simulateEqualsExecute() {
     final ConditionalCheckDependencySnapshotsPhase phase = new MockUp<ConditionalCheckDependencySnapshotsPhase>() {
@@ -114,9 +115,9 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
       final ReleaseResult result = phase.simulate((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
 }

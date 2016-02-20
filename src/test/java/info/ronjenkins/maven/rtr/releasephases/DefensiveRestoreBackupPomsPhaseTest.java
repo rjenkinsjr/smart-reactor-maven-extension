@@ -39,12 +39,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class DefensiveRestoreBackupPomsPhaseTest {
-
   @Injectable
   MavenProject root;
   @Injectable
-  RTR rtr;
-
+  RTR          rtr;
+  
   @Test
   public void backupPomsCreatedMeansSuccessfulExecution(
       @Mocked final RestoreBackupPomsPhase superMock) {
@@ -67,12 +66,13 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, Arrays.asList(this.root));
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       e.printStackTrace();
       Assert.fail();
     }
   }
-
+  
   @Test
   public void backupPomsNotCreatedMeansNoop() {
     final DefensiveRestoreBackupPomsPhase phase = new DefensiveRestoreBackupPomsPhase();
@@ -87,11 +87,12 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
+  
   @Test
   public void simulateEqualsExecute() {
     final DefensiveRestoreBackupPomsPhase phase = new MockUp<DefensiveRestoreBackupPomsPhase>() {
@@ -106,9 +107,9 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
       final ReleaseResult result = phase.simulate((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
 }

@@ -28,23 +28,21 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "post-release-failure")
 public class DoPostReleaseFailure extends AbstractSmartReactorReleaseStep {
-
   private List<String> releasePhases;
   private List<String> rollbackPhases;
-
+  
   @Override
   public String getAnnouncement() {
     return "Performing cleanup of failed release...";
   }
-
+  
   @Override
   protected List<String> getReleasePhases() {
     return this.releasePhases;
   }
-
+  
   @Override
   protected List<String> getRollbackPhases() {
     return this.rollbackPhases;
   }
-
 }

@@ -15,14 +15,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TransformProjectsIntoReleasesTest {
-
   @Injectable
   MavenSession session;
   @Injectable
   MavenProject executionRoot;
   @Mocked
-  RTRConfig config;
-
+  RTRConfig    config;
+  
   @Test
   public void configureReleaseDescriptor() {
     final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
@@ -72,7 +71,7 @@ public class TransformProjectsIntoReleasesTest {
     Assert.assertEquals("tagBase", rd.getScmTagBase());
     Assert.assertEquals("tagNameFormat", rd.getScmTagNameFormat());
   }
-
+  
   @Test
   public void configureReleaseDescriptorWithoutOptionalParameters(
       @Mocked final ReleaseDescriptor rd) {
@@ -111,5 +110,4 @@ public class TransformProjectsIntoReleasesTest {
       }
     };
   }
-
 }

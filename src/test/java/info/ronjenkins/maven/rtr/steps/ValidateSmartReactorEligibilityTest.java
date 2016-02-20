@@ -35,12 +35,11 @@ import util.TestLogger;
 import util.TestUtils;
 
 public final class ValidateSmartReactorEligibilityTest {
-
   @Injectable
   MavenSession session;
   @Mocked
   MavenProject root;
-
+  
   @Test
   public void parentSnapshotAndChildReleaseIsEligible(
       @Injectable final MavenProject child) {
@@ -62,12 +61,13 @@ public final class ValidateSmartReactorEligibilityTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail(ExceptionUtils.getFullStackTrace(e));
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void parentSnapshotAndChildSnapshotIsEligible(
       @Injectable final ProjectDependencyGraph pdg,
@@ -95,12 +95,13 @@ public final class ValidateSmartReactorEligibilityTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail(ExceptionUtils.getFullStackTrace(e));
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void singleReleaseIsNotEligible() {
     final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
@@ -116,12 +117,13 @@ public final class ValidateSmartReactorEligibilityTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void singleSnapshotIsEligible() {
     final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
@@ -137,12 +139,13 @@ public final class ValidateSmartReactorEligibilityTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail(ExceptionUtils.getFullStackTrace(e));
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void threeGenerationSnapshotFamilyIsEligible(
       @Injectable final ProjectDependencyGraph pdg,
@@ -176,12 +179,13 @@ public final class ValidateSmartReactorEligibilityTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.fail(ExceptionUtils.getFullStackTrace(e));
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-
+  
   @Test
   public void threeGenerationSnapshotFamilyWithReleaseChildIsNotEligible(
       @Injectable final ProjectDependencyGraph pdg,
@@ -213,10 +217,10 @@ public final class ValidateSmartReactorEligibilityTest {
     };
     try {
       step.execute(this.session, null);
-    } catch (final MavenExecutionException e) {
+    }
+    catch (final MavenExecutionException e) {
       Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-
 }

@@ -25,12 +25,11 @@ import org.codehaus.plexus.logging.Logger;
 @Component(role = ReleasePhase.class, hint = "conditional-check-dependency-snapshots")
 public class ConditionalCheckDependencySnapshotsPhase extends
 CheckDependencySnapshotsPhase {
-
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
-  private RTR rtr;
+  private RTR      rtr;
   @Requirement
   protected Logger logger;
-
+  
   /**
    * Calls super, if permitted.
    *
@@ -56,12 +55,13 @@ CheckDependencySnapshotsPhase {
       .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
       result = new ReleaseResult();
       result.setResultCode(ReleaseResult.SUCCESS);
-    } else {
+    }
+    else {
       result = super.execute(rd, re, projects);
     }
     return result;
   }
-
+  
   /**
    * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
    * execute} method.
@@ -84,5 +84,4 @@ CheckDependencySnapshotsPhase {
           throws ReleaseExecutionException, ReleaseFailureException {
     return this.execute(rd, re, projects);
   }
-
 }

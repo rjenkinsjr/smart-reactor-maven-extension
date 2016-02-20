@@ -33,7 +33,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class IndicatePresenceOfBackupPomsPhaseTest {
-
   @Test
   public void simulateEqualsExecute() {
     final IndicatePresenceOfBackupPomsPhase phase = new MockUp<IndicatePresenceOfBackupPomsPhase>() {
@@ -48,11 +47,12 @@ public final class IndicatePresenceOfBackupPomsPhaseTest {
       final ReleaseResult result = phase.simulate((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
   }
-
+  
   @Test
   public void successfulExecution() {
     final IndicatePresenceOfBackupPomsPhase phase = new IndicatePresenceOfBackupPomsPhase();
@@ -62,10 +62,10 @@ public final class IndicatePresenceOfBackupPomsPhaseTest {
       final ReleaseResult result = phase.execute((ReleaseDescriptor) null,
           (ReleaseEnvironment) null, (List<MavenProject>) null);
       Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-    } catch (final ReleaseExecutionException | ReleaseFailureException e) {
+    }
+    catch (final ReleaseExecutionException | ReleaseFailureException e) {
       Assert.fail();
     }
     Assert.assertTrue(rtr.isBackupPomsCreated());
   }
-
 }

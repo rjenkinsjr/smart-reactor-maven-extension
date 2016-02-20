@@ -27,7 +27,6 @@ import org.apache.maven.execution.MavenSession;
  * @author Ronald Jack Jenkins Jr.
  */
 public interface SmartReactorStep {
-
   /**
    * Executes this step.
    *
@@ -40,5 +39,4 @@ public interface SmartReactorStep {
    */
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException;
-
 }

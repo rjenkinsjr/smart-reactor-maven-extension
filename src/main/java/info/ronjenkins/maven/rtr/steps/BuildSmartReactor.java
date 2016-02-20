@@ -30,7 +30,6 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "build-smart-reactor")
 public class BuildSmartReactor extends AbstractSmartReactorStep {
-
   @Override
   public void execute(final MavenSession session, final RTRComponents components) {
     // The reactor is a mutable list whose type is unknown, so rather than
@@ -45,5 +44,4 @@ public class BuildSmartReactor extends AbstractSmartReactorStep {
       }
     }
   }
-
 }

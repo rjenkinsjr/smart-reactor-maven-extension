@@ -35,7 +35,6 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "validate-eligibility")
 public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
-
   @Override
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException {
@@ -75,5 +74,4 @@ public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
           "Reactor is ineligible to become a Smart Reactor.");
     }
   }
-
 }

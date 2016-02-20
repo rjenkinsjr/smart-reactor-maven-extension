@@ -31,7 +31,6 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "sanity-checks")
 public class PerformSmartReactorSanityChecks extends AbstractSmartReactorStep {
-
   @Override
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException {
@@ -47,5 +46,4 @@ public class PerformSmartReactorSanityChecks extends AbstractSmartReactorStep {
       }
     }
   }
-
 }

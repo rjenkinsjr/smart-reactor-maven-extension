@@ -21,7 +21,6 @@ import mockit.Deencapsulation;
 import org.junit.Test;
 
 public final class PrivateNoArgConstructorCoverageTest {
-
   @Test
   public void cover() {
     final Class<?>[] classes = new Class<?>[] { RTRConfig.class };
@@ -29,5 +28,4 @@ public final class PrivateNoArgConstructorCoverageTest {
       Deencapsulation.newInstance(clazz);
     }
   }
-
 }

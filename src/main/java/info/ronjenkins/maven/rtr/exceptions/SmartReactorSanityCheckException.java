@@ -23,9 +23,8 @@ import org.apache.maven.MavenExecutionException;
  * @author Ronald Jack Jenkins Jr.
  */
 public class SmartReactorSanityCheckException extends MavenExecutionException {
-
   private static final long serialVersionUID = -3239867428541322183L;
-
+  
   /**
    * Super constructor.
    *
@@ -36,5 +35,4 @@ public class SmartReactorSanityCheckException extends MavenExecutionException {
     super("Smart Reactor sanity check failure:", new IllegalStateException(
         message));
   }
-
 }

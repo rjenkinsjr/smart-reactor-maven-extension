@@ -36,25 +36,21 @@ import org.codehaus.plexus.logging.Logger;
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
 public class RTR extends AbstractMavenLifecycleParticipant {
-
   @Requirement
-  private Logger logger;
+  private Logger                          logger;
   @Requirement
-  private ProjectBuilder builder;
-
-  protected List<String> startSteps;
-  protected List<String> endSuccessSteps;
-  protected List<String> endFailureSteps;
-
+  private ProjectBuilder                  builder;
+  protected List<String>                  startSteps;
+  protected List<String>                  endSuccessSteps;
+  protected List<String>                  endFailureSteps;
   @Requirement(role = SmartReactorStep.class)
   protected Map<String, SmartReactorStep> availableSteps;
-
-  private RTRComponents components;
-  private boolean disabled;
-  private boolean release;
-  private boolean backupPomsCreated;
-  private boolean externalSnapshotsAllowed;
-
+  private RTRComponents                   components;
+  private boolean                         disabled;
+  private boolean                         release;
+  private boolean                         backupPomsCreated;
+  private boolean                         externalSnapshotsAllowed;
+  
   /**
    * RTR entry point.
    *
@@ -78,7 +74,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     this.executeSteps(this.startSteps, session, this.components);
     // Done. Maven build will proceed from here, none the wiser. ;)
   }
-
+  
   @Override
   public void afterSessionEnd(final MavenSession session)
       throws MavenExecutionException {
@@ -87,11 +83,12 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     }
     if (session.getResult().hasExceptions()) {
       this.executeSteps(this.endFailureSteps, session, this.components);
-    } else {
+    }
+    else {
       this.executeSteps(this.endSuccessSteps, session, this.components);
     }
   }
-
+  
   private void executeSteps(final List<String> steps,
       final MavenSession session, final RTRComponents components)
           throws MavenExecutionException {
@@ -105,7 +102,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
       step.execute(session, components);
     }
   }
-
+  
   /**
    * Indicates whether or not backup POMs were created by the release process.
    *
@@ -115,7 +112,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public boolean isBackupPomsCreated() {
     return this.backupPomsCreated;
   }
-
+  
   /**
    * Indicates whether or not the Smart Reactor should allow a release reactor
    * containing references to any non-reactor SNAPSHOT artifacts.
@@ -125,7 +122,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public boolean isExternalSnapshotsAllowed() {
     return this.externalSnapshotsAllowed;
   }
-
+  
   /**
    * Indicates whether or not a release was requested.
    *
@@ -134,7 +131,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public boolean isRelease() {
     return this.release;
   }
-
+  
   /**
    * Sets the flag that indicates whether or not backup POMs were created by the
    * release process.
@@ -145,5 +142,4 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public void setBackupPomsCreated(final boolean backupPomsCreated) {
     this.backupPomsCreated = backupPomsCreated;
   }
-
 }

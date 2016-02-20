@@ -32,18 +32,17 @@ import org.codehaus.plexus.util.dag.CycleDetectedException;
  */
 @Component(role = SmartReactorStep.class, hint = "rebuild-graph")
 public class RebuildProjectDependencyGraph extends AbstractSmartReactorStep {
-
   @Override
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException {
     try {
       session.setProjectDependencyGraph(new DefaultProjectDependencyGraph(
           session.getProjects()));
-    } catch (final CycleDetectedException | DuplicateProjectException e) {
+    }
+    catch (final CycleDetectedException | DuplicateProjectException e) {
       this.logger.error("");
       throw new MavenExecutionException(
           "Could not assemble new project dependency graph", e);
     }
   }
-
 }

@@ -42,10 +42,9 @@ import org.codehaus.plexus.component.annotations.Requirement;
 // THIRDPARTY file for further legal information.
 @Component(role = ReleasePhase.class, hint = "remove-backup-poms")
 public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
-
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
   private RTR rtr;
-
+  
   /**
    * Deletes all backup POMs for the given projects, if they were created.
    *
@@ -74,7 +73,7 @@ public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
     result.setResultCode(ReleaseResult.SUCCESS);
     return result;
   }
-
+  
   /**
    * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
    * execute} method.

@@ -38,22 +38,21 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "rebuild-release-reactor")
 public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
-
   @Override
   public String getAnnouncement() {
     return "Reloading POM changes from disk...";
   }
-
+  
   @Override
   protected List<String> getReleasePhases() {
     throw new UnsupportedOperationException();
   }
-
+  
   @Override
   protected List<String> getRollbackPhases() {
     throw new UnsupportedOperationException();
   }
-
+  
   @Override
   protected void releaseExecute(final MavenSession session,
       final RTRComponents components) throws MavenExecutionException {
@@ -68,7 +67,8 @@ public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
       try {
         result = projectBuilder.build(pomFile,
             session.getProjectBuildingRequest());
-      } catch (final ProjectBuildingException e) {
+      }
+      catch (final ProjectBuildingException e) {
         this.logger.error("");
         throw new SmartReactorReleaseException(e);
       }
@@ -83,5 +83,4 @@ public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
     session.getProjects().clear();
     session.getProjects().addAll(newReactor);
   }
-
 }

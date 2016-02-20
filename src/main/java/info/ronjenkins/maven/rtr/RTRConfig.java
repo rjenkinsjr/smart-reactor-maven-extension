@@ -26,33 +26,41 @@ import org.apache.maven.project.MavenProject;
  * @author Ronald Jack Jenkins Jr.
  */
 public final class RTRConfig {
-
-  public static final String PROP_DISABLED = "rtr.disabled";
-  public static final boolean DEFAULT_DISABLED = false;
-  public static final String PROP_SINGLE_POM_REACTOR_ALLOWED = "rtr.allowSinglePomReactor";
+  public static final String  PROP_DISABLED                      = "rtr.disabled";
+  public static final boolean DEFAULT_DISABLED                   = false;
+  public static final String  PROP_SINGLE_POM_REACTOR_ALLOWED    = "rtr.allowSinglePomReactor";
   public static final boolean DEFAULT_SINGLE_POM_REACTOR_ALLOWED = false;
-  public static final String PROP_EXTERNAL_SNAPSHOTS_ALLOWED = "rtr.allowExternalSnapshots";
+  public static final String  PROP_EXTERNAL_SNAPSHOTS_ALLOWED    = "rtr.allowExternalSnapshots";
   public static final boolean DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED = false;
-  public static final String PROP_RELEASE = "rtr.release";
-  public static final boolean DEFAULT_RELEASE = false;
-
-  public static final String PROP_ADDSCHEMA = "addSchema";
-  public static final boolean DEFAULT_ADDSCHEMA = true;
-  public static final String PROP_ALLOWTIMESTAMPEDSNAPSHOTS = "allowTimestampedSnapshots";
-  public static final boolean DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS = false;
-  public static final String PROP_AUTOVERSIONSUBMODULES = "autoVersionSubmodules";
-  public static final boolean DEFAULT_AUTOVERSIONSUBMODULES = false;
-  public static final String PROP_PROJECTVERSIONPOLICYID = "projectVersionPolicyId";
-  public static final String DEFAULT_PROJECTVERSIONPOLICYID = "default";
-  public static final String PROP_RELEASEVERSION = "releaseVersion";
-  public static final String PROP_TAG = "tag";
-  public static final String PROP_TAGBASE = "tagBase";
-  public static final String PROP_TAGNAMEFORMAT = "tagNameFormat";
-
-  /* This class is not instantiable. */
-  private RTRConfig() {
+  public static final String  PROP_RELEASE                       = "rtr.release";
+  public static final boolean DEFAULT_RELEASE                    = false;
+  public static final String  PROP_ADDSCHEMA                     = "addSchema";
+  public static final boolean DEFAULT_ADDSCHEMA                  = true;
+  public static final String  PROP_ALLOWTIMESTAMPEDSNAPSHOTS     = "allowTimestampedSnapshots";
+  public static final boolean DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS  = false;
+  public static final String  PROP_AUTOVERSIONSUBMODULES         = "autoVersionSubmodules";
+  public static final boolean DEFAULT_AUTOVERSIONSUBMODULES      = false;
+  public static final String  PROP_PROJECTVERSIONPOLICYID        = "projectVersionPolicyId";
+  public static final String  DEFAULT_PROJECTVERSIONPOLICYID     = "default";
+  public static final String  PROP_RELEASEVERSION                = "releaseVersion";
+  public static final String  PROP_TAG                           = "tag";
+  public static final String  PROP_TAGBASE                       = "tagBase";
+  public static final String  PROP_TAGNAMEFORMAT                 = "tagNameFormat";
+  
+  private static void checkParameters(final MavenSession session,
+      final MavenProject project) {
+    if (session == null && project == null) {
+      throw new NullPointerException("session and project cannot both be null");
+    }
   }
-
+  
+  private static boolean getFlag(final String prop, final boolean defaultValue,
+      final MavenSession session, final MavenProject project) {
+    final String rawValue = RTRConfig.getProperty(prop, session, project);
+    return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,
+        "true", "false");
+  }
+  
   /**
    * Returns the "projectVersionPolicyId" property.
    *
@@ -69,7 +77,22 @@ public final class RTRConfig {
         RTRConfig.PROP_PROJECTVERSIONPOLICYID, session, project),
         RTRConfig.DEFAULT_PROJECTVERSIONPOLICYID);
   }
-
+  
+  private static String getProperty(final String prop,
+      final MavenSession session, final MavenProject project) {
+    if (session == null) {
+      return project.getProperties().getProperty(prop);
+    }
+    else if (project == null) {
+      return session.getUserProperties().getProperty(prop);
+    }
+    else {
+      return StringUtils.defaultString(
+          session.getUserProperties().getProperty(prop), project
+              .getProperties().getProperty(prop));
+    }
+  }
+  
   /**
    * Returns the "releaseVersion" property.
    *
@@ -85,7 +108,7 @@ public final class RTRConfig {
     return RTRConfig.getProperty(RTRConfig.PROP_RELEASEVERSION, session,
         project);
   }
-
+  
   /**
    * Returns the "tag" property.
    *
@@ -100,7 +123,7 @@ public final class RTRConfig {
     RTRConfig.checkParameters(session, project);
     return RTRConfig.getProperty(RTRConfig.PROP_TAG, session, project);
   }
-
+  
   /**
    * Returns the "tagBase" property.
    *
@@ -115,7 +138,7 @@ public final class RTRConfig {
     RTRConfig.checkParameters(session, project);
     return RTRConfig.getProperty(RTRConfig.PROP_TAGBASE, session, project);
   }
-
+  
   /**
    * Returns the "tagNameFormat" property.
    *
@@ -131,7 +154,7 @@ public final class RTRConfig {
     return RTRConfig
         .getProperty(RTRConfig.PROP_TAGNAMEFORMAT, session, project);
   }
-
+  
   /**
    * Returns the "addSchema" property.
    *
@@ -147,7 +170,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_ADDSCHEMA,
         RTRConfig.DEFAULT_ADDSCHEMA, session, project);
   }
-
+  
   /**
    * Returns the "allowTimestampedSnapshots" property.
    *
@@ -163,7 +186,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_ALLOWTIMESTAMPEDSNAPSHOTS,
         RTRConfig.DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS, session, project);
   }
-
+  
   /**
    * Returns the "autoVersionSubmodules" property.
    *
@@ -179,7 +202,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_AUTOVERSIONSUBMODULES,
         RTRConfig.DEFAULT_AUTOVERSIONSUBMODULES, session, project);
   }
-
+  
   /**
    * Indicates whether or not the Smart Reactor is disabled.
    *
@@ -195,7 +218,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_DISABLED,
         RTRConfig.DEFAULT_DISABLED, session, project);
   }
-
+  
   /**
    * Indicates whether or not the Smart Reactor should allow a release reactor
    * containing references to any non-reactor SNAPSHOT artifacts.
@@ -212,7 +235,10 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_EXTERNAL_SNAPSHOTS_ALLOWED,
         RTRConfig.DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED, session, project);
   }
-
+  
+  /*
+   * Private utility methods.
+   */
   /**
    * Indicates whether or not a release was requested.
    *
@@ -228,7 +254,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_RELEASE, RTRConfig.DEFAULT_RELEASE,
         session, project);
   }
-
+  
   /**
    * Indicates whether or not the Smart Reactor should allow a reactor
    * containing a single POM-packaging project.
@@ -245,36 +271,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED,
         RTRConfig.DEFAULT_SINGLE_POM_REACTOR_ALLOWED, session, project);
   }
-
-  /*
-   * Private utility methods.
-   */
-
-  private static void checkParameters(final MavenSession session,
-      final MavenProject project) {
-    if (session == null && project == null) {
-      throw new NullPointerException("session and project cannot both be null");
-    }
-  }
-
-  private static boolean getFlag(final String prop, final boolean defaultValue,
-      final MavenSession session, final MavenProject project) {
-    final String rawValue = RTRConfig.getProperty(prop, session, project);
-    return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,
-        "true", "false");
-  }
-
-  private static String getProperty(final String prop,
-      final MavenSession session, final MavenProject project) {
-    if (session == null) {
-      return project.getProperties().getProperty(prop);
-    } else if (project == null) {
-      return session.getUserProperties().getProperty(prop);
-    } else {
-      return StringUtils.defaultString(
-          session.getUserProperties().getProperty(prop), project
-              .getProperties().getProperty(prop));
-    }
-  }
-
+  
+  /* This class is not instantiable. */
+  private RTRConfig() {}
 }

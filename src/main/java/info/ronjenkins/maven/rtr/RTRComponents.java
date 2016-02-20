@@ -26,9 +26,8 @@ import org.apache.maven.project.ProjectBuilder;
  */
 // TODO: work on eliminating this class if possible.
 public final class RTRComponents {
-
   private final ProjectBuilder projectBuilder;
-
+  
   /**
    * Constructor.
    *
@@ -39,7 +38,7 @@ public final class RTRComponents {
     Validate.notNull(projectBuilder, "Project builder is null");
     this.projectBuilder = projectBuilder;
   }
-
+  
   /**
    * Returns the shared project builder.
    *
@@ -48,5 +47,4 @@ public final class RTRComponents {
   public ProjectBuilder getProjectBuilder() {
     return this.projectBuilder;
   }
-
 }
