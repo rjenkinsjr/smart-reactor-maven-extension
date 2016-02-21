@@ -53,12 +53,18 @@
     <maven.invoker.version>2.0.0</maven.invoker.version>
     <maven.javadoc.version>2.10.3</maven.javadoc.version>
     <jacoco.version>0.7.5.201505241946</jacoco.version>
-    <jacoco.ut.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.file>
-    <jacoco.it.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.file>
-    <it.dest>${project.build.directory}/it</it.dest>
+    <shaded.classifier>libext</shaded.classifier>
+    <shaded.artifact>${project.build.directory}/${project.artifactId}-${project.version}-${shaded.classifier}.jar</shaded.artifact>
+    <it.dir>${project.build.directory}/it</it.dir>
     <it.resources.src>${project.basedir}/src/it/resources</it.resources.src>
     <it.resources.dest>${project.build.directory}/it-resources</it.resources.dest>
+    <it.localRepositoryPath>${project.build.directory}/it-repo</it.localRepositoryPath>
     <it.settings.xml>${it.resources.dest}/settings.xml</it.settings.xml>
+    <libextIt.dir>${project.build.directory}/libext-it</libextIt.dir>
+    <libextIt.mavenDir>${project.build.directory}/libext-it-maven</libextIt.mavenDir>
+    <libextIt.localRepositoryPath>${project.build.directory}/libext-it-repo</libextIt.localRepositoryPath>
+    <jacoco.ut.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.file>
+    <jacoco.it.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.file>
     <sonar.java.source>${maven.compiler.source}</sonar.java.source>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <sonar.jacoco.reportPath>${jacoco.ut.file}</sonar.jacoco.reportPath>
@@ -197,9 +203,15 @@
                   <include>org.apache.maven.scm:maven-scm-api</include>
                   <include>org.apache.maven.scm:maven-scm-manager-plexus</include>
                 </includes>
+                <excludes>
+                  <exclude>jdom:*</exclude>
+                  <exclude>org.apache.maven:maven-project</exclude>
+                  <exclude>org.apache.maven:maven-artifact-manager</exclude>
+                  <exclude>classworlds:*</exclude>
+                  <exclude>org.eclipse.sisu:*</exclude>
+                </excludes>
               </artifactSet>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>mvnlib</shadedClassifierName>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
             </configuration>
           </execution>
         </executions>
@@ -268,10 +280,6 @@
             <version>${groovy.version}</version>
           </dependency>
         </dependencies>
-        <configuration>
-          <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
-          <settingsFile>${it.settings.xml}</settingsFile>
-        </configuration>
         <executions>
           <!-- Installs this Maven extension into the IT local Maven repo. -->
           <execution>
@@ -280,8 +288,11 @@
             <goals>
               <goal>install</goal>
             </goals>
+            <configuration>
+              <localRepositoryPath>${it.localRepositoryPath}</localRepositoryPath>
+            </configuration>
           </execution>
-          <!-- Executes the tests. -->
+          <!-- Executes the actual integration tests. -->
           <execution>
             <id>integration-test</id>
             <!-- phase integration-test -->
@@ -290,15 +301,37 @@
             </goals>
             <configuration>
               <cloneClean>true</cloneClean>
-              <cloneProjectsTo>${it.dest}</cloneProjectsTo>
+              <cloneProjectsTo>${it.dir}</cloneProjectsTo>
               <goals>
                 <goal>clean</goal>
               </goals>
+              <localRepositoryPath>${it.localRepositoryPath}</localRepositoryPath>
               <mavenOpts>${invokerArgLine}</mavenOpts>
               <scriptVariables>
                 <itResourcesDir>${it.resources.dest}</itResourcesDir>
                 <itCommonPrebuild>${it.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
               </scriptVariables>
+              <settingsFile>${it.settings.xml}</settingsFile>
+            </configuration>
+          </execution>
+          <!-- Executes sanity tests on the libext-classified artifact. -->
+          <execution>
+            <id>libext-integration-test</id>
+            <!-- phase integration-test -->
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <cloneClean>true</cloneClean>
+              <cloneProjectsTo>${libextIt.dir}</cloneProjectsTo>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+              <localRepositoryPath>${libextIt.localRepositoryPath}</localRepositoryPath>
+              <mavenHome>${libextIt.mavenDir}</mavenHome>
+              <noLog>true</noLog>
+              <projectsDirectory>${project.basedir}/src/libext-it</projectsDirectory>
+              <streamLogs>true</streamLogs>
             </configuration>
           </execution>
         </executions>
@@ -365,6 +398,51 @@
           </dependency>
         </dependencies>
         <executions>
+          <!-- Swap shaded and original artifacts, for integration testing. -->
+          <execution>
+            <id>swap-shaded-and-original-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="main.artifact"
+                  location="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+                <move file="${main.artifact}" tofile="${shaded.artifact}" />
+                <move
+                  file="${project.build.directory}/original-${project.artifactId}-${project.version}.jar"
+                  tofile="${main.artifact}" />
+              </target>
+            </configuration>
+          </execution>
+          <!-- Download and prep Maven for use for libext integration testing. -->
+          <execution>
+            <id>download-and-prepare-maven</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- Download Maven. -->
+                <property name="libextIt.maven.zip" location="${libextIt.mavenDir}/maven.zip" />
+                <mkdir dir="${libextIt.mavenDir}" />
+                <get
+                  src="http://www.us.apache.org/dist/maven/maven-3/${maven.version}/binaries/apache-maven-${maven.version}-bin.zip"
+                  dest="${libextIt.maven.zip}" />
+                <!-- Unzip Maven. -->
+                <unzip src="${libextIt.maven.zip}" dest="${libextIt.mavenDir}">
+                  <mapper>
+                    <cutdirsmapper dirs="1" />
+                  </mapper>
+                </unzip>
+                <delete file="${libextIt.maven.zip}" />
+                <!-- Install the libext extension. -->
+                <copy file="${shaded.artifact}" todir="${libextIt.mavenDir}/lib/ext" />
+              </target>
+            </configuration>
+          </execution>
           <!-- Generate settings.xml for Maven Invoker Plugin. -->
           <execution>
             <id>generate-invoker-plugin-settings</id>
@@ -462,6 +540,39 @@ destFile.deleteOnExit()
                   <globmapper from="*.md" to="*.md.vm" />
                 </copy>
               </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- More custom scripting. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.10</version>
+        <executions>
+          <!-- Get the Maven version. -->
+          <execution>
+            <id>maven-version</id>
+            <!-- phase validate -->
+            <goals>
+              <goal>maven-version</goal>
+            </goals>
+          </execution>
+          <!-- Attach the shaded artifact. -->
+          <execution>
+            <id>attach-shaded-artifact</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${shaded.artifact}</file>
+                  <type>jar</type>
+                  <classifier>${shaded.classifier}</classifier>
+                </artifact>
+              </artifacts>
             </configuration>
           </execution>
         </executions>
