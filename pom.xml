@@ -331,6 +331,7 @@
               <mavenHome>${libextIt.mavenDir}</mavenHome>
               <noLog>true</noLog>
               <projectsDirectory>${project.basedir}/src/libext-it</projectsDirectory>
+              <settingsFile>${it.settings.xml}</settingsFile>
               <streamLogs>true</streamLogs>
             </configuration>
           </execution>
