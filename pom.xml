@@ -61,8 +61,9 @@
     <it.localRepositoryPath>${project.build.directory}/it-repo</it.localRepositoryPath>
     <it.settings.xml>${it.resources.dest}/settings.xml</it.settings.xml>
     <libextIt.dir>${project.build.directory}/libext-it</libextIt.dir>
-    <libextIt.mavenDir>${project.build.directory}/libext-it-maven</libextIt.mavenDir>
+    <libextIt.resources.src>${project.basedir}/src/libext-it/resources</libextIt.resources.src>
     <libextIt.localRepositoryPath>${project.build.directory}/libext-it-repo</libextIt.localRepositoryPath>
+    <libextIt.mavenDir>${project.build.directory}/libext-it-maven</libextIt.mavenDir>
     <jacoco.ut.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.file>
     <jacoco.it.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.file>
     <sonar.java.source>${maven.compiler.source}</sonar.java.source>
@@ -331,6 +332,10 @@
               <mavenHome>${libextIt.mavenDir}</mavenHome>
               <noLog>true</noLog>
               <projectsDirectory>${project.basedir}/src/libext-it</projectsDirectory>
+              <scriptVariables>
+                <libextItResourcesDir>${libextIt.resources.src}</libextItResourcesDir>
+                <libextItCommonPrebuild>${libextIt.resources.src}/prebuild-common.groovy</libextItCommonPrebuild>
+              </scriptVariables>
               <settingsFile>${it.settings.xml}</settingsFile>
               <streamLogs>true</streamLogs>
             </configuration>
