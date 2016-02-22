@@ -15,14 +15,17 @@
  */
 package info.ronjenkins.maven.rtr;
 
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.graph.DefaultProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.codehaus.plexus.component.annotations.Component;
@@ -60,6 +63,14 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   @Override
   public void afterProjectsRead(final MavenSession session)
       throws MavenExecutionException {
+    // Don't allow this extension to be loaded as a build extension.
+    try {
+      RTR.checkForRequiredClasses();
+    }
+    catch (final NoClassDefFoundError e) {
+      throw new SmartReactorSanityCheckException(
+          "This extension must be loaded as a core extension, not as a build extension.");
+    }
     // Don't do anything if the Smart Reactor is disabled.
     final MavenProject executionRoot = session.getTopLevelProject();
     this.disabled = RTRConfig.isDisabled(session, executionRoot);
@@ -73,6 +84,15 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     this.components = new RTRComponents(this.builder);
     this.executeSteps(this.startSteps, session, this.components);
     // Done. Maven build will proceed from here, none the wiser. ;)
+  }
+  
+  private static void checkForRequiredClasses() {
+    try {
+      new DefaultProjectDependencyGraph(new ArrayList<MavenProject>());
+    }
+    catch (final Exception e) {
+      // Irrelevant.
+    }
   }
   
   @Override
@@ -91,7 +111,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   
   private void executeSteps(final List<String> steps,
       final MavenSession session, final RTRComponents components)
-          throws MavenExecutionException {
+      throws MavenExecutionException {
     SmartReactorStep step;
     for (final String name : steps) {
       step = this.availableSteps.get(name);

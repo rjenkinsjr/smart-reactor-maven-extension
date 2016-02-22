@@ -51,6 +51,11 @@ public final class RTRTest {
   MavenProject   root;
   
   @Test
+  public void classCheckTest() {
+    Deencapsulation.invoke(RTR.class, "checkForRequiredClasses");
+  }
+  
+  @Test
   public void booleanMethodTests() {
     final RTR rtr = new MockUp<RTR>() {
       @Mock
@@ -80,6 +85,23 @@ public final class RTRTest {
     }
     Assert.assertTrue(rtr.isRelease());
     Assert.assertTrue(rtr.isExternalSnapshotsAllowed());
+  }
+  
+  @Test(expected = MavenExecutionException.class)
+  public void buildExtensionCausesException() throws MavenExecutionException {
+    final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      void checkForRequiredClasses() {
+        throw new NoClassDefFoundError();
+      }
+      
+      @Mock
+      void afterProjectsRead(final Invocation inv, final MavenSession session)
+          throws Throwable {
+        inv.proceed(session);
+      }
+    }.getMockInstance();
+    rtr.afterProjectsRead(this.session);
   }
   
   @Test

@@ -311,6 +311,7 @@
               <scriptVariables>
                 <itResourcesDir>${it.resources.dest}</itResourcesDir>
                 <itCommonPrebuild>${it.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
+                <extensionVersion>${project.version}</extensionVersion>
               </scriptVariables>
               <settingsFile>${it.settings.xml}</settingsFile>
             </configuration>
