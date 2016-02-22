@@ -51,7 +51,7 @@ public final class TestUtils {
   /**
    * Adds a test logger to an RTR for testing.
    *
-   * @param step
+   * @param rtr
    *          not null.
    * @return never null.
    */
