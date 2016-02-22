@@ -331,6 +331,7 @@
               </goals>
               <localRepositoryPath>${libextIt.localRepositoryPath}</localRepositoryPath>
               <mavenHome>${libextIt.mavenDir}</mavenHome>
+              <mavenOpts>${invokerArgLine}</mavenOpts>
               <noLog>true</noLog>
               <projectsDirectory>${project.basedir}/src/libext-it</projectsDirectory>
               <scriptVariables>
