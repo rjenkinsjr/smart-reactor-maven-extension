@@ -39,7 +39,7 @@ public final class ValidateSmartReactorEligibilityTest {
   MavenSession session;
   @Mocked
   MavenProject root;
-  
+
   @Test
   public void parentSnapshotAndChildReleaseIsEligible(
       @Injectable final MavenProject child) {
@@ -53,7 +53,7 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child);
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-            .isSnapshot();
+        .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = false;
@@ -67,7 +67,7 @@ public final class ValidateSmartReactorEligibilityTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void parentSnapshotAndChildSnapshotIsEligible(
       @Injectable final ProjectDependencyGraph pdg,
@@ -82,10 +82,10 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child);
         ValidateSmartReactorEligibilityTest.this.session
-            .getProjectDependencyGraph();
+        .getProjectDependencyGraph();
         this.result = pdg;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-            .isSnapshot();
+        .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = true;
@@ -101,7 +101,7 @@ public final class ValidateSmartReactorEligibilityTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void singleReleaseIsNotEligible() {
     final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
@@ -111,7 +111,7 @@ public final class ValidateSmartReactorEligibilityTest {
         ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
         this.result = ValidateSmartReactorEligibilityTest.this.root;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-            .isSnapshot();
+        .isSnapshot();
         this.result = false;
       }
     };
@@ -123,7 +123,7 @@ public final class ValidateSmartReactorEligibilityTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void singleSnapshotIsEligible() {
     final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
@@ -133,7 +133,7 @@ public final class ValidateSmartReactorEligibilityTest {
         ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
         this.result = ValidateSmartReactorEligibilityTest.this.root;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-            .isSnapshot();
+        .isSnapshot();
         this.result = true;
       }
     };
@@ -145,7 +145,7 @@ public final class ValidateSmartReactorEligibilityTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void threeGenerationSnapshotFamilyIsEligible(
       @Injectable final ProjectDependencyGraph pdg,
@@ -161,10 +161,10 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child, grandchild);
         ValidateSmartReactorEligibilityTest.this.session
-            .getProjectDependencyGraph();
+        .getProjectDependencyGraph();
         this.result = pdg;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-            .isSnapshot();
+        .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = true;
@@ -185,7 +185,7 @@ public final class ValidateSmartReactorEligibilityTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void threeGenerationSnapshotFamilyWithReleaseChildIsNotEligible(
       @Injectable final ProjectDependencyGraph pdg,
@@ -201,10 +201,10 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child, grandchild);
         ValidateSmartReactorEligibilityTest.this.session
-            .getProjectDependencyGraph();
+        .getProjectDependencyGraph();
         this.result = pdg;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-            .isSnapshot();
+        .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = false;

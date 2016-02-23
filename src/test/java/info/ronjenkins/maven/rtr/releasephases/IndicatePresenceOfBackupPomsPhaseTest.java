@@ -39,7 +39,7 @@ public final class IndicatePresenceOfBackupPomsPhaseTest {
       @Mock
       ReleaseResult execute(final ReleaseDescriptor rd,
           final ReleaseEnvironment re, final List<MavenProject> projects)
-              throws Throwable {
+          throws Throwable {
         return new ReleaseResult();
       }
     }.getMockInstance();
@@ -52,7 +52,7 @@ public final class IndicatePresenceOfBackupPomsPhaseTest {
       Assert.fail();
     }
   }
-  
+
   @Test
   public void successfulExecution() {
     final IndicatePresenceOfBackupPomsPhase phase = new IndicatePresenceOfBackupPomsPhase();

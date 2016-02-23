@@ -44,7 +44,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
   private RTR rtr;
-  
+
   /**
    * Deletes all backup POMs for the given projects, if they were created.
    *
@@ -63,7 +63,7 @@ public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
   @Override
   public ReleaseResult execute(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List<MavenProject> projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     final ReleaseResult result = new ReleaseResult();
     if (this.rtr.isBackupPomsCreated()) {
       for (final MavenProject project : projects) {
@@ -73,7 +73,7 @@ public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
     result.setResultCode(ReleaseResult.SUCCESS);
     return result;
   }
-  
+
   /**
    * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
    * execute} method.
@@ -93,7 +93,7 @@ public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {
   @Override
   public ReleaseResult simulate(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List<MavenProject> projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     return this.execute(rd, re, projects);
   }
 }

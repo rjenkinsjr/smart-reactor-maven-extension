@@ -64,7 +64,7 @@ public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
     if (!badProjects.isEmpty()) {
       this.logger.error("");
       this.logger
-          .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
+      .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
       for (final MavenProject badProject : badProjects) {
         this.logger.error("  " + badProject.getArtifact().toString() + " @ "
             + badProject.getFile().getAbsolutePath());

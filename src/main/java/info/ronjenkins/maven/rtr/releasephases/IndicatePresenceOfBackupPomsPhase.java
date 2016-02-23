@@ -43,7 +43,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
   private RTR rtr;
-  
+
   /**
    * Indicates to the Smart Reactor that the backup POMs have been created
    * successfully.
@@ -63,13 +63,13 @@ public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {
   @Override
   public ReleaseResult execute(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List<MavenProject> projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     this.rtr.setBackupPomsCreated(true);
     final ReleaseResult result = new ReleaseResult();
     result.setResultCode(ReleaseResult.SUCCESS);
     return result;
   }
-  
+
   /**
    * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
    * execute} method.
@@ -89,7 +89,7 @@ public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {
   @Override
   public ReleaseResult simulate(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List<MavenProject> projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     return this.execute(rd, re, projects);
   }
 }

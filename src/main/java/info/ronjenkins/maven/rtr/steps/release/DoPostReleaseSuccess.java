@@ -30,17 +30,17 @@ import org.codehaus.plexus.component.annotations.Component;
 public class DoPostReleaseSuccess extends AbstractSmartReactorReleaseStep {
   private List<String> releasePhases;
   private List<String> rollbackPhases;
-  
+
   @Override
   public String getAnnouncement() {
     return "Performing cleanup of successful release...";
   }
-  
+
   @Override
   protected List<String> getReleasePhases() {
     return this.releasePhases;
   }
-  
+
   @Override
   protected List<String> getRollbackPhases() {
     return this.rollbackPhases;

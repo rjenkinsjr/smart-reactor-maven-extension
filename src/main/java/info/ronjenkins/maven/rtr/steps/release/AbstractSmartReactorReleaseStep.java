@@ -42,7 +42,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
  * @author Ronald Jack Jenkins Jr.
  */
 public abstract class AbstractSmartReactorReleaseStep extends
-AbstractSmartReactorStep {
+    AbstractSmartReactorStep {
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
   protected RTR                       rtr;
   @Requirement(role = ReleasePhase.class)
@@ -51,7 +51,7 @@ AbstractSmartReactorStep {
   protected ReleaseDescriptor         releaseDescriptor;
   @Requirement(hint = "rtr-re")
   protected ReleaseEnvironment        releaseEnvironment;
-  
+
   /**
    * Subclasses can override this method to configure the release descriptor
    * injected by Plexus. The default implementation does nothing.
@@ -63,7 +63,7 @@ AbstractSmartReactorStep {
    */
   protected void configureReleaseDescriptor(final MavenSession session,
       final RTRComponents components) {}
-  
+
   @Override
   public final void execute(final MavenSession session,
       final RTRComponents components) throws MavenExecutionException {
@@ -73,7 +73,7 @@ AbstractSmartReactorStep {
       this.releaseExecute(session, components);
     }
   }
-  
+
   /**
    * Returns the announcement that is logged when this release step begins
    * execution.
@@ -82,7 +82,7 @@ AbstractSmartReactorStep {
    *         occurring.
    */
   protected abstract String getAnnouncement();
-  
+
   /**
    * Returns the list of phases that should be executed by this release step.
    *
@@ -91,7 +91,7 @@ AbstractSmartReactorStep {
    *           if this step does not execute any release phases.
    */
   protected abstract List<String> getReleasePhases();
-  
+
   /**
    * Returns the list of phases that should be executed by this release step
    * when rollback is required.
@@ -101,7 +101,7 @@ AbstractSmartReactorStep {
    *           if this step does not execute any release phases.
    */
   protected abstract List<String> getRollbackPhases();
-  
+
   /**
    * Step logic that is executed if a release was requested.
    *
@@ -130,12 +130,12 @@ AbstractSmartReactorStep {
         // Suppress this exception.
         e.addSuppressed(e2);
         this.logger
-        .error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
+            .error("Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.");
       }
       throw e;
     }
   }
-  
+
   // Derived from DefaultReleaseManager.java in maven-release-manager, see
   // THIRDPARTY file for further legal information.
   private final void runPhases(final List<MavenProject> reactor,

@@ -42,17 +42,17 @@ public class RebuildReleaseReactor extends AbstractSmartReactorReleaseStep {
   public String getAnnouncement() {
     return "Reloading POM changes from disk...";
   }
-  
+
   @Override
   protected List<String> getReleasePhases() {
     throw new UnsupportedOperationException();
   }
-  
+
   @Override
   protected List<String> getRollbackPhases() {
     throw new UnsupportedOperationException();
   }
-  
+
   @Override
   protected void releaseExecute(final MavenSession session,
       final RTRComponents components) throws MavenExecutionException {

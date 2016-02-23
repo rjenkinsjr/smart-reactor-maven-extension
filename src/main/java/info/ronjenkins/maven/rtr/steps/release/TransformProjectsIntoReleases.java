@@ -32,10 +32,10 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = "transform-poms")
 public class TransformProjectsIntoReleases extends
-AbstractSmartReactorReleaseStep {
+    AbstractSmartReactorReleaseStep {
   private List<String> releasePhases;
   private List<String> rollbackPhases;
-  
+
   @Override
   protected void configureReleaseDescriptor(final MavenSession session,
       final RTRComponents components) {
@@ -67,17 +67,17 @@ AbstractSmartReactorReleaseStep {
       this.releaseDescriptor.setScmTagNameFormat(tagNameFormat);
     }
   }
-  
+
   @Override
   public String getAnnouncement() {
     return "Converting reactor projects to releases...";
   }
-  
+
   @Override
   protected List<String> getReleasePhases() {
     return this.releasePhases;
   }
-  
+
   @Override
   protected List<String> getRollbackPhases() {
     return this.rollbackPhases;

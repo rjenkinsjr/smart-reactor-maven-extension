@@ -24,12 +24,12 @@ import org.junit.Test;
 public final class RTRComponentsTest {
   @Injectable
   ProjectBuilder projectBuilder;
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void noNullProjectBuilder() {
     new RTRComponents(null);
   }
-  
+
   @Test
   public void projectBuilder() {
     final RTRComponents rtrc = new RTRComponents(this.projectBuilder);

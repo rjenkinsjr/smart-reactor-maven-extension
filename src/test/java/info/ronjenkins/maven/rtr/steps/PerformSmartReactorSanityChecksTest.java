@@ -42,7 +42,7 @@ public final class PerformSmartReactorSanityChecksTest {
   MavenProject root;
   @Mocked
   RTRConfig    config;
-  
+
   @Test
   public void singleProjectNonPomReactorAlwaysWorks() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -65,7 +65,7 @@ public final class PerformSmartReactorSanityChecksTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void singleProjectPomReactorFailsIfNotAllowed() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -92,7 +92,7 @@ public final class PerformSmartReactorSanityChecksTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void singleProjectPomReactorWorksIfAllowed() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();
@@ -119,7 +119,7 @@ public final class PerformSmartReactorSanityChecksTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void twoProjectReactorAlwaysWorks() {
     final PerformSmartReactorSanityChecks step = new PerformSmartReactorSanityChecks();

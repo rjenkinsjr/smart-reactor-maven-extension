@@ -25,7 +25,7 @@ import org.apache.maven.MavenExecutionException;
  */
 public class SmartReactorReleaseException extends MavenExecutionException {
   private static final long serialVersionUID = -4704891299848581663L;
-  
+
   /**
    * Super constructor with integrated {@link IllegalStateException}.
    *
@@ -37,7 +37,7 @@ public class SmartReactorReleaseException extends MavenExecutionException {
     super("Smart Reactor release failure:", new IllegalStateException(
         StringUtils.isEmpty(message) ? "no further information." : message));
   }
-  
+
   /**
    * Super constructor with root cause.
    *

@@ -21,7 +21,7 @@ public class TransformProjectsIntoReleasesTest {
   MavenProject executionRoot;
   @Mocked
   RTRConfig    config;
-  
+
   @Test
   public void configureReleaseDescriptor() {
     final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
@@ -71,7 +71,7 @@ public class TransformProjectsIntoReleasesTest {
     Assert.assertEquals("tagBase", rd.getScmTagBase());
     Assert.assertEquals("tagNameFormat", rd.getScmTagNameFormat());
   }
-  
+
   @Test
   public void configureReleaseDescriptorWithoutOptionalParameters(
       @Mocked final ReleaseDescriptor rd) {

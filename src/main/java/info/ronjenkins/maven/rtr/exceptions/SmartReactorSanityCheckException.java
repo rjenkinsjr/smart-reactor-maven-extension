@@ -24,7 +24,7 @@ import org.apache.maven.MavenExecutionException;
  */
 public class SmartReactorSanityCheckException extends MavenExecutionException {
   private static final long serialVersionUID = -3239867428541322183L;
-  
+
   /**
    * Super constructor.
    *

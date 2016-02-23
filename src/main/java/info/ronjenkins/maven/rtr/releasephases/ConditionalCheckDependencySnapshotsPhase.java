@@ -24,12 +24,12 @@ import org.codehaus.plexus.logging.Logger;
  */
 @Component(role = ReleasePhase.class, hint = "conditional-check-dependency-snapshots")
 public class ConditionalCheckDependencySnapshotsPhase extends
-CheckDependencySnapshotsPhase {
+    CheckDependencySnapshotsPhase {
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
   private RTR      rtr;
   @Requirement
   protected Logger logger;
-  
+
   /**
    * Calls super, if permitted.
    *
@@ -48,11 +48,11 @@ CheckDependencySnapshotsPhase {
   @Override
   public ReleaseResult execute(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List<MavenProject> projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     final ReleaseResult result;
     if (this.rtr.isExternalSnapshotsAllowed()) {
       this.logger
-      .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
+          .warn("External SNAPSHOT artifacts are allowed for this release. Artifacts produced by this build may not behave consistently compared to earlier builds.");
       result = new ReleaseResult();
       result.setResultCode(ReleaseResult.SUCCESS);
     }
@@ -61,7 +61,7 @@ CheckDependencySnapshotsPhase {
     }
     return result;
   }
-  
+
   /**
    * Invokes the {@link #execute(ReleaseDescriptor, ReleaseEnvironment, List)
    * execute} method.
@@ -81,7 +81,7 @@ CheckDependencySnapshotsPhase {
   @Override
   public ReleaseResult simulate(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List<MavenProject> projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     return this.execute(rd, re, projects);
   }
 }

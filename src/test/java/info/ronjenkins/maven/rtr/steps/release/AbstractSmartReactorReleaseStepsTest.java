@@ -53,7 +53,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
   ReleaseDescriptor               releaseDescriptor;
   @Mocked
   ReleaseEnvironment              releaseEnvironment;
-  
+
   @Test
   public void coverBasicImplementations() {
     final TransformProjectsIntoReleases tpir = new TransformProjectsIntoReleases();
@@ -69,7 +69,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     dprf.getReleasePhases();
     dprf.getRollbackPhases();
   }
-  
+
   @Test
   public void disabledReleaseMeansNoop() {
     final TestLogger logger = TestUtils.addLoggerAndReleaseDependencies(
@@ -88,7 +88,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void nullReleasePhaseCausesException(
       @Injectable final Map<String, ReleasePhase> availablePhases) {
@@ -117,7 +117,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @SuppressWarnings("unchecked")
   @Test
   public void releasePhaseErrorResultCausesExceptionWithProperCause(
@@ -158,7 +158,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @SuppressWarnings("unchecked")
   @Test
   public void releasePhaseExceptionCausesExceptionWithProperCause(
@@ -198,7 +198,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void rollbackFailureOfAnyKindCausesExceptionSuppression(
       @Injectable final Map<String, ReleasePhase> availablePhases) {
@@ -228,7 +228,7 @@ public final class AbstractSmartReactorReleaseStepsTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void successfulExecution(
       @Injectable final Map<String, ReleasePhase> availablePhases) {

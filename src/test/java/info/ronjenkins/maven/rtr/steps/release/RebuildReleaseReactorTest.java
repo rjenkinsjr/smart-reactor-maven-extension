@@ -49,7 +49,7 @@ public final class RebuildReleaseReactorTest {
   ProjectBuilder projectBuilder;
   @Mocked
   RTR            rtr;
-  
+
   @Test
   public void assertUOEs() {
     final RebuildReleaseReactor step = new RebuildReleaseReactor();
@@ -74,7 +74,7 @@ public final class RebuildReleaseReactorTest {
       Assert.fail();
     }
   }
-  
+
   @Test
   public void disabledReleaseMeansNoop() {
     final RebuildReleaseReactor step = new RebuildReleaseReactor();
@@ -94,7 +94,7 @@ public final class RebuildReleaseReactorTest {
     }
     Assert.assertTrue(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void exceptionsArePropagated(@Injectable final MavenProject root) {
     final RebuildReleaseReactor step = new RebuildReleaseReactor();
@@ -130,7 +130,7 @@ public final class RebuildReleaseReactorTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void successfulExecution(@Injectable final MavenProject root,
       @Injectable final MavenProject child,
@@ -165,11 +165,11 @@ public final class RebuildReleaseReactorTest {
           this.result = RebuildReleaseReactorTest.this.projectBuilder;
           RebuildReleaseReactorTest.this.projectBuilder.build(rootFile,
               RebuildReleaseReactorTest.this.session
-                  .getProjectBuildingRequest());
+              .getProjectBuildingRequest());
           this.result = rootResult;
           RebuildReleaseReactorTest.this.projectBuilder.build(childFile,
               RebuildReleaseReactorTest.this.session
-                  .getProjectBuildingRequest());
+              .getProjectBuildingRequest());
           this.result = childResult;
           rootResult.getProject();
           this.result = newRoot;

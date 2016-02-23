@@ -34,7 +34,7 @@ public final class RebuildProjectDependencyGraphTest {
   MavenSession session;
   @Injectable
   MavenProject root;
-  
+
   @Test
   public void exceptionsGetTranslated() {
     final RebuildProjectDependencyGraph step = new RebuildProjectDependencyGraph();
@@ -62,7 +62,7 @@ public final class RebuildProjectDependencyGraphTest {
     }
     Assert.assertFalse(logger.getErrorLog().isEmpty());
   }
-  
+
   @Test
   public void successfulExecution() {
     final RebuildProjectDependencyGraph step = new RebuildProjectDependencyGraph();

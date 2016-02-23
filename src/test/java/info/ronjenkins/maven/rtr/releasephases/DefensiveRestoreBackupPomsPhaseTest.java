@@ -43,7 +43,7 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
   MavenProject root;
   @Injectable
   RTR          rtr;
-  
+
   @Test
   public void backupPomsCreatedMeansSuccessfulExecution(
       @Mocked final RestoreBackupPomsPhase superMock) {
@@ -51,7 +51,7 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
       @Mock
       ReleaseResult execute(final Invocation inv, final ReleaseDescriptor rd,
           final ReleaseEnvironment re, final List<MavenProject> projects)
-              throws Throwable {
+          throws Throwable {
         return (ReleaseResult) inv.proceed();
       }
     }.getMockInstance();
@@ -72,7 +72,7 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
       Assert.fail();
     }
   }
-  
+
   @Test
   public void backupPomsNotCreatedMeansNoop() {
     final DefensiveRestoreBackupPomsPhase phase = new DefensiveRestoreBackupPomsPhase();
@@ -92,14 +92,14 @@ public final class DefensiveRestoreBackupPomsPhaseTest {
       Assert.fail();
     }
   }
-  
+
   @Test
   public void simulateEqualsExecute() {
     final DefensiveRestoreBackupPomsPhase phase = new MockUp<DefensiveRestoreBackupPomsPhase>() {
       @Mock
       ReleaseResult execute(final ReleaseDescriptor rd,
           final ReleaseEnvironment re, final List<MavenProject> projects)
-              throws Throwable {
+          throws Throwable {
         return new ReleaseResult();
       }
     }.getMockInstance();

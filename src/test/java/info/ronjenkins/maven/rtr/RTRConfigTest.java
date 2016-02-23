@@ -29,7 +29,7 @@ public final class RTRConfigTest {
   MavenSession session;
   @Injectable
   MavenProject project;
-  
+
   @Test
   public void checkParametersWhenAtLeastOneIsNotNull() {
     Deencapsulation.invoke(RTRConfig.class, "checkParameters", this.session,
@@ -39,7 +39,7 @@ public final class RTRConfigTest {
     Deencapsulation.invoke(RTRConfig.class, "checkParameters", this.session,
         this.project);
   }
-  
+
   @Test
   public void flagIsDefaultWhenPropertyIsNull() {
     new Expectations() {
@@ -55,7 +55,7 @@ public final class RTRConfigTest {
         "", true, this.session, this.project);
     Assert.assertTrue(value);
   }
-  
+
   @Test
   public void flagIsDeterminedBySetProperty() {
     new Expectations() {
@@ -71,7 +71,7 @@ public final class RTRConfigTest {
         "", true, this.session, this.project);
     Assert.assertFalse(value);
   }
-  
+
   @Test
   public void getProjectVersionPolicyId() {
     final String propValue = Deencapsulation.getField(RTRConfig.class,
@@ -89,7 +89,7 @@ public final class RTRConfigTest {
         "getProjectVersionPolicyId", this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test
   public void getReleaseVersion() {
     new Expectations() {
@@ -104,7 +104,7 @@ public final class RTRConfigTest {
     Assert.assertNull(Deencapsulation.invoke(RTRConfig.class,
         "getReleaseVersion", this.session, this.project));
   }
-  
+
   @Test
   public void getTag() {
     new Expectations() {
@@ -119,7 +119,7 @@ public final class RTRConfigTest {
     Assert.assertNull(Deencapsulation.invoke(RTRConfig.class, "getTag",
         this.session, this.project));
   }
-  
+
   @Test
   public void getTagBase() {
     new Expectations() {
@@ -134,7 +134,7 @@ public final class RTRConfigTest {
     Assert.assertNull(Deencapsulation.invoke(RTRConfig.class, "getTagBase",
         this.session, this.project));
   }
-  
+
   @Test
   public void getTagNameFormat() {
     new Expectations() {
@@ -149,7 +149,7 @@ public final class RTRConfigTest {
     Assert.assertNull(Deencapsulation.invoke(RTRConfig.class,
         "getTagNameFormat", this.session, this.project));
   }
-  
+
   @Test
   public void isAddSchema() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -167,7 +167,7 @@ public final class RTRConfigTest {
         "isAddSchema", this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test
   public void isAllowTimestampedSnapshots() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -185,7 +185,7 @@ public final class RTRConfigTest {
         "isAllowTimestampedSnapshots", this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test
   public void isAutoVersionSubmodules() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -203,7 +203,7 @@ public final class RTRConfigTest {
         "isAutoVersionSubmodules", this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test
   public void isDisabled() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -221,12 +221,12 @@ public final class RTRConfigTest {
         this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test(expected = NullPointerException.class)
   public void isDisabledNullCheck() {
     RTRConfig.isDisabled(null, null);
   }
-  
+
   @Test
   public void isExternalSnapshotsAllowed() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -244,7 +244,7 @@ public final class RTRConfigTest {
         "isExternalSnapshotsAllowed", this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test
   public void isRelease() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -262,12 +262,12 @@ public final class RTRConfigTest {
         this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test(expected = NullPointerException.class)
   public void isReleaseNullCheck() {
     RTRConfig.isRelease(null, null);
   }
-  
+
   @Test
   public void isSinglePomReactorAllowed() {
     final boolean propValue = Deencapsulation.getField(RTRConfig.class,
@@ -285,12 +285,12 @@ public final class RTRConfigTest {
         "isSinglePomReactorAllowed", this.session, this.project);
     Assert.assertEquals(propValue, value);
   }
-  
+
   @Test(expected = NullPointerException.class)
   public void isSinglePomReactorAllowedNullCheck() {
     RTRConfig.isSinglePomReactorAllowed(null, null);
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void nonBooleanPropertyValueNotAllowed() {
     new Expectations() {
@@ -305,7 +305,7 @@ public final class RTRConfigTest {
     Deencapsulation.invoke(RTRConfig.class, "getFlag", "", true, this.session,
         this.project);
   }
-  
+
   @Test
   public void nullValueWhenNotDefined() {
     final String propName = "propName";
@@ -323,7 +323,7 @@ public final class RTRConfigTest {
         propName, this.session, this.project);
     Assert.assertNull(value);
   }
-  
+
   @Test
   public void projectPropertyUsedWhenNotDefinedInSession() {
     final String propName = "propName";
@@ -341,7 +341,7 @@ public final class RTRConfigTest {
         propName, this.session, this.project);
     Assert.assertEquals(projectValue, value);
   }
-  
+
   @Test
   public void projectValueUsedWhenSessionIsNull() {
     final String propName = "propName";
@@ -356,7 +356,7 @@ public final class RTRConfigTest {
         propName, MavenSession.class, this.project);
     Assert.assertEquals(inputValue, value);
   }
-  
+
   @Test
   public void sessionOverridesProjectWhenDefinedInBothPlaces() {
     final String propName = "propName";
@@ -374,7 +374,7 @@ public final class RTRConfigTest {
         propName, this.session, this.project);
     Assert.assertEquals(sessionValue, value);
   }
-  
+
   @Test
   public void sessionPropertyUsedWhenNotDefinedInProject() {
     final String propName = "propName";
@@ -392,7 +392,7 @@ public final class RTRConfigTest {
         propName, this.session, this.project);
     Assert.assertEquals(sessionValue, value);
   }
-  
+
   @Test
   public void sessionValueUsedWhenProjectIsNull() {
     final String propName = "propName";

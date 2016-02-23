@@ -46,21 +46,21 @@ public final class RTRConfig {
   public static final String  PROP_TAG                           = "tag";
   public static final String  PROP_TAGBASE                       = "tagBase";
   public static final String  PROP_TAGNAMEFORMAT                 = "tagNameFormat";
-  
+
   private static void checkParameters(final MavenSession session,
       final MavenProject project) {
     if (session == null && project == null) {
       throw new NullPointerException("session and project cannot both be null");
     }
   }
-  
+
   private static boolean getFlag(final String prop, final boolean defaultValue,
       final MavenSession session, final MavenProject project) {
     final String rawValue = RTRConfig.getProperty(prop, session, project);
     return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,
         "true", "false");
   }
-  
+
   /**
    * Returns the "projectVersionPolicyId" property.
    *
@@ -77,7 +77,7 @@ public final class RTRConfig {
         RTRConfig.PROP_PROJECTVERSIONPOLICYID, session, project),
         RTRConfig.DEFAULT_PROJECTVERSIONPOLICYID);
   }
-  
+
   private static String getProperty(final String prop,
       final MavenSession session, final MavenProject project) {
     if (session == null) {
@@ -89,10 +89,10 @@ public final class RTRConfig {
     else {
       return StringUtils.defaultString(
           session.getUserProperties().getProperty(prop), project
-              .getProperties().getProperty(prop));
+          .getProperties().getProperty(prop));
     }
   }
-  
+
   /**
    * Returns the "releaseVersion" property.
    *
@@ -108,7 +108,7 @@ public final class RTRConfig {
     return RTRConfig.getProperty(RTRConfig.PROP_RELEASEVERSION, session,
         project);
   }
-  
+
   /**
    * Returns the "tag" property.
    *
@@ -123,7 +123,7 @@ public final class RTRConfig {
     RTRConfig.checkParameters(session, project);
     return RTRConfig.getProperty(RTRConfig.PROP_TAG, session, project);
   }
-  
+
   /**
    * Returns the "tagBase" property.
    *
@@ -138,7 +138,7 @@ public final class RTRConfig {
     RTRConfig.checkParameters(session, project);
     return RTRConfig.getProperty(RTRConfig.PROP_TAGBASE, session, project);
   }
-  
+
   /**
    * Returns the "tagNameFormat" property.
    *
@@ -154,7 +154,7 @@ public final class RTRConfig {
     return RTRConfig
         .getProperty(RTRConfig.PROP_TAGNAMEFORMAT, session, project);
   }
-  
+
   /**
    * Returns the "addSchema" property.
    *
@@ -170,7 +170,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_ADDSCHEMA,
         RTRConfig.DEFAULT_ADDSCHEMA, session, project);
   }
-  
+
   /**
    * Returns the "allowTimestampedSnapshots" property.
    *
@@ -186,7 +186,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_ALLOWTIMESTAMPEDSNAPSHOTS,
         RTRConfig.DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS, session, project);
   }
-  
+
   /**
    * Returns the "autoVersionSubmodules" property.
    *
@@ -202,7 +202,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_AUTOVERSIONSUBMODULES,
         RTRConfig.DEFAULT_AUTOVERSIONSUBMODULES, session, project);
   }
-  
+
   /**
    * Indicates whether or not the Smart Reactor is disabled.
    *
@@ -218,7 +218,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_DISABLED,
         RTRConfig.DEFAULT_DISABLED, session, project);
   }
-  
+
   /**
    * Indicates whether or not the Smart Reactor should allow a release reactor
    * containing references to any non-reactor SNAPSHOT artifacts.
@@ -235,7 +235,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_EXTERNAL_SNAPSHOTS_ALLOWED,
         RTRConfig.DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED, session, project);
   }
-  
+
   /*
    * Private utility methods.
    */
@@ -254,7 +254,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_RELEASE, RTRConfig.DEFAULT_RELEASE,
         session, project);
   }
-  
+
   /**
    * Indicates whether or not the Smart Reactor should allow a reactor
    * containing a single POM-packaging project.
@@ -271,7 +271,7 @@ public final class RTRConfig {
     return RTRConfig.getFlag(RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED,
         RTRConfig.DEFAULT_SINGLE_POM_REACTOR_ALLOWED, session, project);
   }
-  
+
   /* This class is not instantiable. */
   private RTRConfig() {}
 }

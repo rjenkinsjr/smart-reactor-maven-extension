@@ -46,7 +46,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
   MavenProject root;
   @Injectable
   RTR          rtr;
-  
+
   @Test
   public void allowedMeansNoop() {
     final ConditionalCheckDependencySnapshotsPhase phase = new ConditionalCheckDependencySnapshotsPhase();
@@ -55,7 +55,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
     new Expectations() {
       {
         ConditionalCheckDependencySnapshotsPhaseTest.this.rtr
-            .isExternalSnapshotsAllowed();
+        .isExternalSnapshotsAllowed();
         this.result = true;
       }
     };
@@ -70,7 +70,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
     }
     Assert.assertFalse(logger.getWarnLog().isEmpty());
   }
-  
+
   @Test
   public void notAllowedMeansSuccessfulExecution(
       @Mocked final CheckDependencySnapshotsPhase superMock) {
@@ -78,7 +78,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
       @Mock
       ReleaseResult execute(final Invocation inv, final ReleaseDescriptor rd,
           final ReleaseEnvironment re, final List<MavenProject> projects)
-              throws Throwable {
+          throws Throwable {
         return (ReleaseResult) inv.proceed();
       }
     }.getMockInstance();
@@ -86,7 +86,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
     new Expectations() {
       {
         ConditionalCheckDependencySnapshotsPhaseTest.this.rtr
-            .isExternalSnapshotsAllowed();
+        .isExternalSnapshotsAllowed();
         this.result = false;
       }
     };
@@ -100,14 +100,14 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
       Assert.fail();
     }
   }
-  
+
   @Test
   public void simulateEqualsExecute() {
     final ConditionalCheckDependencySnapshotsPhase phase = new MockUp<ConditionalCheckDependencySnapshotsPhase>() {
       @Mock
       ReleaseResult execute(final ReleaseDescriptor rd,
           final ReleaseEnvironment re, final List<MavenProject> projects)
-              throws Throwable {
+          throws Throwable {
         return new ReleaseResult();
       }
     }.getMockInstance();

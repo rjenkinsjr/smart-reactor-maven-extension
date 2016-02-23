@@ -29,7 +29,7 @@ import org.junit.Test;
 public final class BuildSmartReactorTest {
   @Injectable
   MavenSession session;
-  
+
   @Test
   public void onlySnapshotsRemain(@Injectable final MavenProject snapshot,
       @Injectable final MavenProject release) {

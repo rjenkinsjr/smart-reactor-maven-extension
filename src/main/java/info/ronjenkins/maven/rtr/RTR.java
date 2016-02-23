@@ -39,6 +39,15 @@ import org.codehaus.plexus.logging.Logger;
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "rtr")
 public class RTR extends AbstractMavenLifecycleParticipant {
+  private static void checkForRequiredClasses() {
+    try {
+      new DefaultProjectDependencyGraph(new ArrayList<MavenProject>());
+    }
+    catch (final Exception e) {
+      // Irrelevant.
+    }
+  }
+  
   @Requirement
   private Logger                          logger;
   @Requirement
@@ -53,7 +62,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   private boolean                         release;
   private boolean                         backupPomsCreated;
   private boolean                         externalSnapshotsAllowed;
-  
+
   /**
    * RTR entry point.
    *
@@ -85,16 +94,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     this.executeSteps(this.startSteps, session, this.components);
     // Done. Maven build will proceed from here, none the wiser. ;)
   }
-  
-  private static void checkForRequiredClasses() {
-    try {
-      new DefaultProjectDependencyGraph(new ArrayList<MavenProject>());
-    }
-    catch (final Exception e) {
-      // Irrelevant.
-    }
-  }
-  
+
   @Override
   public void afterSessionEnd(final MavenSession session)
       throws MavenExecutionException {
@@ -108,10 +108,10 @@ public class RTR extends AbstractMavenLifecycleParticipant {
       this.executeSteps(this.endSuccessSteps, session, this.components);
     }
   }
-  
+
   private void executeSteps(final List<String> steps,
       final MavenSession session, final RTRComponents components)
-      throws MavenExecutionException {
+          throws MavenExecutionException {
     SmartReactorStep step;
     for (final String name : steps) {
       step = this.availableSteps.get(name);
@@ -122,7 +122,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
       step.execute(session, components);
     }
   }
-  
+
   /**
    * Indicates whether or not backup POMs were created by the release process.
    *
@@ -132,7 +132,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public boolean isBackupPomsCreated() {
     return this.backupPomsCreated;
   }
-  
+
   /**
    * Indicates whether or not the Smart Reactor should allow a release reactor
    * containing references to any non-reactor SNAPSHOT artifacts.
@@ -142,7 +142,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public boolean isExternalSnapshotsAllowed() {
     return this.externalSnapshotsAllowed;
   }
-  
+
   /**
    * Indicates whether or not a release was requested.
    *
@@ -151,7 +151,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   public boolean isRelease() {
     return this.release;
   }
-  
+
   /**
    * Sets the flag that indicates whether or not backup POMs were created by the
    * release process.
