@@ -59,6 +59,7 @@
     <it.resources.src>${project.basedir}/src/it/resources</it.resources.src>
     <it.resources.dest>${project.build.directory}/it-resources</it.resources.dest>
     <it.localRepositoryPath>${project.build.directory}/it-repo</it.localRepositoryPath>
+    <it.mavenDir>${project.build.directory}/it-maven</it.mavenDir>
     <it.settings.xml>${it.resources.dest}/settings.xml</it.settings.xml>
     <libextIt.dir>${project.build.directory}/libext-it</libextIt.dir>
     <libextIt.resources.src>${project.basedir}/src/libext-it/resources</libextIt.resources.src>
@@ -333,7 +334,7 @@
                 <goal>clean</goal>
               </goals>
               <localRepositoryPath>${it.localRepositoryPath}</localRepositoryPath>
-              <mavenHome>${maven.home}</mavenHome>
+              <mavenHome>${it.mavenDir}</mavenHome>
               <mavenOpts>${invokerArgLine}</mavenOpts>
               <scriptVariables>
                 <itResourcesDir>${it.resources.dest}</itResourcesDir>
@@ -425,7 +426,7 @@
               </target>
             </configuration>
           </execution>
-          <!-- Download and prep Maven for use for libext integration testing. -->
+          <!-- Download and prep Maven for use for integration testing. -->
           <execution>
             <id>download-and-prepare-maven</id>
             <phase>pre-integration-test</phase>
@@ -435,21 +436,27 @@
             <configuration>
               <target>
                 <!-- Download Maven. -->
-                <property name="libextIt.maven.zip" location="${libextIt.mavenDir}/maven.zip" />
-                <mkdir dir="${libextIt.mavenDir}" />
+                <property name="maven.zip"
+                  location="${project.build.directory}/maven.zip" />
                 <get
                   src="http://www.us.apache.org/dist/maven/maven-3/${maven.version}/binaries/apache-maven-${maven.version}-bin.zip"
-                  dest="${libextIt.maven.zip}" />
+                  dest="${maven.zip}" />
                 <!-- Unzip Maven. -->
-                <unzip src="${libextIt.maven.zip}" dest="${libextIt.mavenDir}">
+                <unzip src="${maven.zip}" dest="${it.mavenDir}">
                   <mapper>
                     <cutdirsmapper dirs="1" />
                   </mapper>
                 </unzip>
-                <delete file="${libextIt.maven.zip}" />
+                <unzip src="${maven.zip}" dest="${libextIt.mavenDir}">
+                  <mapper>
+                    <cutdirsmapper dirs="1" />
+                  </mapper>
+                </unzip>
+                <delete file="${maven.zip}" />
                 <!-- Install the libext extension. -->
                 <copy file="${shaded.artifact}" todir="${libextIt.mavenDir}/lib/ext" />
-                <!-- Chmod the Maven installation for execution. -->
+                <!-- Chmod the Maven installations for execution. -->
+                <chmod dir="${it.mavenDir}" perm="+rx" includes="**/*" />
                 <chmod dir="${libextIt.mavenDir}" perm="+rx"
                   includes="**/*" />
               </target>
