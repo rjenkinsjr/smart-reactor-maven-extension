@@ -186,7 +186,6 @@
                 <includes>
                   <include>org.apache.maven.release:maven-release-manager</include>
                   <include>org.apache.maven.release:maven-release-api</include>
-                  <include>org.apache.maven:maven-artifact-manager</include>
                   <include>org.apache.maven.scm:maven-scm-provider-accurev</include>
                   <include>org.apache.maven.scm:maven-scm-provider-bazaar</include>
                   <include>org.apache.maven.scm:maven-scm-provider-clearcase</include>
@@ -205,13 +204,6 @@
                   <include>org.apache.maven.scm:maven-scm-api</include>
                   <include>org.apache.maven.scm:maven-scm-manager-plexus</include>
                 </includes>
-                <excludes>
-                  <exclude>jdom:*</exclude>
-                  <exclude>org.apache.maven:maven-project</exclude>
-                  <exclude>org.apache.maven:maven-artifact-manager</exclude>
-                  <exclude>classworlds:*</exclude>
-                  <exclude>org.eclipse.sisu:*</exclude>
-                </excludes>
               </artifactSet>
               <createDependencyReducedPom>false</createDependencyReducedPom>
             </configuration>
