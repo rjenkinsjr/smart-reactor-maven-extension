@@ -451,6 +451,9 @@
                 <delete file="${libextIt.maven.zip}" />
                 <!-- Install the libext extension. -->
                 <copy file="${shaded.artifact}" todir="${libextIt.mavenDir}/lib/ext" />
+                <!-- Chmod the Maven installation for execution. -->
+                <chmod dir="${libextIt.mavenDir}" perm="+rx"
+                  includes="**/*" />
               </target>
             </configuration>
           </execution>
