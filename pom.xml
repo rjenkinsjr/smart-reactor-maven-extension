@@ -50,7 +50,7 @@
     <plexus.version>1.5.5</plexus.version>
     <groovy.version>2.4.5</groovy.version>
     <maven.surefire.version>2.19.1</maven.surefire.version>
-    <maven.invoker.version>2.0.1-SNAPSHOT</maven.invoker.version>
+    <maven.invoker.version>2.0.0</maven.invoker.version>
     <maven.javadoc.version>2.10.3</maven.javadoc.version>
     <jacoco.version>0.7.5.201505241946</jacoco.version>
     <shaded.classifier>libext</shaded.classifier>
