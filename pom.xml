@@ -293,29 +293,6 @@
               <localRepositoryPath>${it.localRepositoryPath}</localRepositoryPath>
             </configuration>
           </execution>
-          <!-- Executes the actual integration tests. -->
-          <execution>
-            <id>integration-test</id>
-            <!-- phase integration-test -->
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <cloneClean>true</cloneClean>
-              <cloneProjectsTo>${it.dir}</cloneProjectsTo>
-              <goals>
-                <goal>clean</goal>
-              </goals>
-              <localRepositoryPath>${it.localRepositoryPath}</localRepositoryPath>
-              <mavenOpts>${invokerArgLine}</mavenOpts>
-              <scriptVariables>
-                <itResourcesDir>${it.resources.dest}</itResourcesDir>
-                <itCommonPrebuild>${it.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
-                <extensionVersion>${project.version}</extensionVersion>
-              </scriptVariables>
-              <settingsFile>${it.settings.xml}</settingsFile>
-            </configuration>
-          </execution>
           <!-- Executes sanity tests on the libext-classified artifact. -->
           <execution>
             <id>libext-integration-test</id>
@@ -342,6 +319,30 @@
               </scriptVariables>
               <settingsFile>${it.settings.xml}</settingsFile>
               <streamLogs>true</streamLogs>
+            </configuration>
+          </execution>
+          <!-- Executes the actual integration tests. -->
+          <execution>
+            <id>integration-test</id>
+            <!-- phase integration-test -->
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <cloneClean>true</cloneClean>
+              <cloneProjectsTo>${it.dir}</cloneProjectsTo>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+              <localRepositoryPath>${it.localRepositoryPath}</localRepositoryPath>
+              <mavenHome>${maven.home}</mavenHome>
+              <mavenOpts>${invokerArgLine}</mavenOpts>
+              <scriptVariables>
+                <itResourcesDir>${it.resources.dest}</itResourcesDir>
+                <itCommonPrebuild>${it.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
+                <extensionVersion>${project.version}</extensionVersion>
+              </scriptVariables>
+              <settingsFile>${it.settings.xml}</settingsFile>
             </configuration>
           </execution>
         </executions>
