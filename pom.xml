@@ -327,6 +327,8 @@
               <cloneClean>true</cloneClean>
               <cloneProjectsTo>${libextIt.dir}</cloneProjectsTo>
               <goals>
+                <goal>-X</goal>
+                <goal>-e</goal>
                 <goal>clean</goal>
               </goals>
               <localRepositoryPath>${libextIt.localRepositoryPath}</localRepositoryPath>
