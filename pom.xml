@@ -256,55 +256,6 @@
               </resources>
             </configuration>
           </execution>
-          <!-- Copies the prep ITs. -->
-          <!--execution>
-            <id>copy-prep-its</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${prepIt.dest}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${prepIt.src}</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution-->
-          <!-- Copies the main ITs. -->
-          <!--execution>
-            <id>copy-main-its</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${mainIt.dest}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${mainIt.src}</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution-->
-          <!-- Copies the libext ITs. -->
-          <!--execution>
-            <id>copy-libext-its</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${libextIt.dest}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${libextIt.src}</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution-->
         </executions>
       </plugin>
       <!-- Generates the initial settings.xml for Maven Invoker. -->
