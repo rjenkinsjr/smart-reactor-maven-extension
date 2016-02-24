@@ -16,7 +16,7 @@ def buildLog = new java.io.File(basedir, 'build.log').readLines('UTF-8')
 if (!buildLog.contains('[INFO] Assembling smart reactor...')) {
   throw new IllegalStateException('Extension was not executed.')
 }
-def topLevelRegex = ~/\[ERROR\] Top-level project MavenProject: test:single-release:0\.1\.0 @ .+ is not a SNAPSHOT\./
+def topLevelRegex = ~/\[ERROR\] Top-level project MavenProject: it:single-release:0\.1\.0 @ .+ is not a SNAPSHOT\./
 def topLevelNonSnapshotWasPermitted = true
 buildLog.each {
   if (topLevelNonSnapshotWasPermitted) {

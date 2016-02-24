@@ -22,7 +22,7 @@ if (!buildLog.contains('[INFO] Converting reactor projects to releases...')) {
 if (!buildLog.contains('[INFO] Building release 0.1.0')) {
   throw new IllegalStateException('Project was not transformed correctly.')
 }
-if (!(new java.io.File(localRepositoryPath, 'test/release/0.1.0/release-0.1.0.jar').exists())) {
+if (!(new java.io.File(localRepositoryPath, 'it/release/0.1.0/release-0.1.0.jar').exists())) {
   throw new IllegalStateException('Release artifact was not created or installed.')
 }
 if (new java.io.File(basedir, 'pom.xml.releaseBackup').exists()) {
