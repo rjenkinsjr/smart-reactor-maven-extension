@@ -57,6 +57,7 @@
     <shaded.artifact>${project.build.directory}/${project.artifactId}-${project.version}-${shaded.classifier}.jar</shaded.artifact>
     <prepIt.src>${project.basedir}/src/prep-it</prepIt.src>
     <prepIt.dest>${project.build.directory}/prep-it</prepIt.dest>
+    <prepId.reportsDirectory>${project.build.directory}/prep-invoker-reports</prepId.reportsDirectory>
     <mainIt.src>${project.basedir}/src/it</mainIt.src>
     <mainIt.dest>${project.build.directory}/it</mainIt.dest>
     <mainIt.resources.src>${project.basedir}/src/it/resources</mainIt.resources.src>
@@ -64,6 +65,7 @@
     <mainIt.mavenDir>${project.build.directory}/it-maven</mainIt.mavenDir>
     <libextIt.src>${project.basedir}/src/it</libextIt.src>
     <libextIt.dest>${project.build.directory}/libext-it</libextIt.dest>
+    <libextIt.reportsDirectory>${project.build.directory}/libext-invoker-reports</libextIt.reportsDirectory>
     <libextIt.resources.src>${project.basedir}/src/libext-it/resources</libextIt.resources.src>
     <libextIt.resources.dest>${project.basedir}/src/libext-it/resources</libextIt.resources.dest>
     <libextIt.mavenDir>${project.build.directory}/libext-it-maven</libextIt.mavenDir>
@@ -331,8 +333,9 @@
               <cloneClean>true</cloneClean>
               <cloneProjectsTo>${prepIt.dest}</cloneProjectsTo>
               <mavenHome>${mainIt.mavenDir}</mavenHome>
-              <!-- No mavenOpts; JaCoCo isn't needed for these ITs. -->
+              <!-- No JaCoCo for prep ITs. -->
               <projectsDirectory>${prepIt.src}</projectsDirectory>
+              <reportsDirectory>${prepIt.reportsDirectory}</reportsDirectory>
             </configuration>
           </execution>
           <!-- Executes the main integration tests. -->
@@ -365,8 +368,9 @@
               <cloneClean>true</cloneClean>
               <cloneProjectsTo>${libextIt.dest}</cloneProjectsTo>
               <mavenHome>${libextIt.mavenDir}</mavenHome>
-              <mavenOpts>${invokerArgLine}</mavenOpts>
+              <!-- No JaCoCo for libext ITs. -->
               <projectsDirectory>${libextIt.src}</projectsDirectory>
+              <reportsDirectory>${libextIt.reportsDirectory}</reportsDirectory>
               <scriptVariables>
                 <itResourcesDir>${libextIt.resources.dest}</itResourcesDir>
                 <itCommonPrebuild>${libextIt.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
