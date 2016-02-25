@@ -79,16 +79,19 @@
     <site.src>${project.basedir}/src/site</site.src>
     <site.dest>${project.basedir}/target/site-src</site.dest>
   </properties>
+  <!-- Project dependencies. -->
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>3.3.1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-annotations</artifactId>
       <version>${plexus.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.release</groupId>
@@ -129,6 +132,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <!-- Build configuration. -->
   <build>
     <defaultGoal>clean install</defaultGoal>
     <resources>
@@ -195,11 +199,14 @@
                   <include>org.apache.maven.scm:maven-scm-provider-clearcase</include>
                   <include>org.apache.maven.scm:maven-scm-provider-cvsexe</include>
                   <include>org.apache.maven.scm:maven-scm-provider-cvsjava</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-cvs-commons</include>
                   <include>org.apache.maven.scm:maven-scm-provider-gitexe</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-git-commons</include>
                   <include>org.apache.maven.scm:maven-scm-provider-hg</include>
                   <include>org.apache.maven.scm:maven-scm-provider-perforce</include>
                   <include>org.apache.maven.scm:maven-scm-provider-starteam</include>
                   <include>org.apache.maven.scm:maven-scm-provider-svnexe</include>
+                  <include>org.apache.maven.scm:maven-scm-provider-svn-commons</include>
                   <include>org.apache.maven.scm:maven-scm-provider-synergy</include>
                   <include>org.apache.maven.scm:maven-scm-provider-vss</include>
                   <include>org.apache.maven.scm:maven-scm-provider-tfs</include>
@@ -207,6 +214,8 @@
                   <include>org.apache.maven.scm:maven-scm-provider-jazz</include>
                   <include>org.apache.maven.scm:maven-scm-api</include>
                   <include>org.apache.maven.scm:maven-scm-manager-plexus</include>
+                  <include>org.codehaus.plexus:plexus-interactivity-api</include>
+                  <include>org.jdom:jdom</include>
                 </includes>
               </artifactSet>
               <createDependencyReducedPom>false</createDependencyReducedPom>
