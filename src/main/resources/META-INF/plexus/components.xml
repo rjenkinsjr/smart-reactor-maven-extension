@@ -42,6 +42,9 @@
       </configuration>
     </component>
     <!-- Smart Reactor release steps. -->
+    <!-- validate-eligibility is declared via annotation -->
+    <!-- build-smart-reactor is declared via annotation -->
+    <!-- sanity-checks is declared via annotation -->
     <component>
       <role>info.ronjenkins.maven.rtr.steps.SmartReactorStep
       </role>
@@ -66,6 +69,8 @@
         </rollbackPhases>
       </configuration>
     </component>
+    <!-- rebuild-release-reactor is declared via annotation -->
+    <!-- rebuild-graph is declared via annotation -->
     <component>
       <role>info.ronjenkins.maven.rtr.steps.SmartReactorStep
       </role>
@@ -131,6 +136,7 @@
       <implementation>org.apache.maven.shared.release.phase.CreateBackupPomsPhase
       </implementation>
     </component>
+    <!-- indicate-presence-of-backup-poms is declared via annotation -->
     <component>
       <role>org.apache.maven.shared.release.phase.ReleasePhase
       </role>
@@ -215,6 +221,7 @@
         </requirement>
       </requirements>
     </component>
+    <!-- remove-backup-poms is declared via annotation -->
     <!-- Transient dependencies required by the maven-release-manager classes. -->
     <component>
       <role>org.apache.maven.artifact.factory.ArtifactFactory
@@ -351,6 +358,7 @@
       <implementation>org.apache.maven.shared.release.policies.DefaultVersionPolicy
       </implementation>
     </component>
+    <!-- SCM manager and providers. -->
     <component>
       <role>org.apache.maven.scm.manager.ScmManager
       </role>
@@ -364,21 +372,17 @@
         </requirement>
       </requirements>
     </component>
-    <!-- SCM providers. -->
     <component>
       <role>org.apache.maven.scm.provider.ScmProvider</role>
       <role-hint>accurev</role-hint>
       <implementation>org.apache.maven.scm.provider.accurev.AccuRevScmProvider
       </implementation>
-      <description>Implementation of Accurev integration with Maven SCM
-      </description>
     </component>
     <component>
       <role>org.apache.maven.scm.provider.ScmProvider</role>
       <role-hint>bazaar</role-hint>
       <implementation>org.apache.maven.scm.provider.bazaar.BazaarScmProvider
       </implementation>
-      <description>Bazaar NG http://bazaar-vcs.</description>
     </component>
     <component>
       <role>org.apache.maven.scm.provider.ScmProvider</role>
@@ -391,9 +395,6 @@
       <role-hint>hg</role-hint>
       <implementation>org.apache.maven.scm.provider.hg.HgScmProvider
       </implementation>
-      <description>Mercurial (HG) is a decentralized revision control
-        system.
-      </description>
     </component>
     <component>
       <role>org.apache.maven.scm.provider.ScmProvider</role>
@@ -448,9 +449,6 @@
       <role-hint>jazz</role-hint>
       <implementation>org.apache.maven.scm.provider.jazz.JazzScmProvider
       </implementation>
-      <description>A Maven SCM Provider for IBM Jazz SCM
-        (http://jazz.net/).
-      </description>
     </component>
     <!-- SCM translators. -->
     <component>
