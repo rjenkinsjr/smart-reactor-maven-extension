@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>info.ronjenkins</groupId>
   <artifactId>smart-reactor-maven-extension</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1-SNAPSHOT</version>
   <name>Smart Reactor Maven Extension</name>
   <description>The Maven reactor, reimagined!</description>
   <url>http://rjenkinsjr.github.io/smart-reactor-maven-extension</url>
