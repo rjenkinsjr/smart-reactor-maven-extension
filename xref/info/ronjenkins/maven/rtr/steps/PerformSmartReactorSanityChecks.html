@@ -39,24 +39,22 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Component(role = SmartReactorStep.<strong class="jxr_keyword">class</strong>, hint = <span class="jxr_string">"sanity-checks"</span>)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../info/ronjenkins/maven/rtr/steps/PerformSmartReactorSanityChecks.html">PerformSmartReactorSanityChecks</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../info/ronjenkins/maven/rtr/steps/AbstractSmartReactorStep.html">AbstractSmartReactorStep</a> {
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @Override
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute(<strong class="jxr_keyword">final</strong> MavenSession session, <strong class="jxr_keyword">final</strong> <a href="../../../../../info/ronjenkins/maven/rtr/RTRComponents.html">RTRComponents</a> components)
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>        <strong class="jxr_keyword">throws</strong> MavenExecutionException {
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <em class="jxr_comment">// Check for a single POM-only reactor, assuming this is prohibited.</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">if</strong> (session.getProjects().size() == 1) {
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>        <strong class="jxr_keyword">final</strong> MavenProject executionRoot = session.getTopLevelProject();
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        <strong class="jxr_keyword">if</strong> (executionRoot.getArtifact().getType().equals(<span class="jxr_string">"pom"</span>)
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>            &amp;&amp; !RTRConfig.isSinglePomReactorAllowed(session, executionRoot)) {
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">this</strong>.logger.error(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../info/ronjenkins/maven/rtr/exceptions/SmartReactorSanityCheckException.html">SmartReactorSanityCheckException</a>(
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>              <span class="jxr_string">"Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \&quot;"</span>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>                  + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED + <span class="jxr_string">"\&quot; to true."</span>);
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>        }
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      }
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    }
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Override
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute(<strong class="jxr_keyword">final</strong> MavenSession session, <strong class="jxr_keyword">final</strong> <a href="../../../../../info/ronjenkins/maven/rtr/RTRComponents.html">RTRComponents</a> components)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>        <strong class="jxr_keyword">throws</strong> MavenExecutionException {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <em class="jxr_comment">// Check for a single POM-only reactor, assuming this is prohibited.</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">if</strong> (session.getProjects().size() == 1) {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>        <strong class="jxr_keyword">final</strong> MavenProject executionRoot = session.getTopLevelProject();
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>        <strong class="jxr_keyword">if</strong> (executionRoot.getArtifact().getType().equals(<span class="jxr_string">"pom"</span>)
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>            &amp;&amp; !RTRConfig.isSinglePomReactorAllowed(session, executionRoot)) {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">this</strong>.logger.error(<span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../info/ronjenkins/maven/rtr/exceptions/SmartReactorSanityCheckException.html">SmartReactorSanityCheckException</a>(
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>              <span class="jxr_string">"Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \&quot;"</span>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>                  + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED + <span class="jxr_string">"\&quot; to true."</span>);
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016. All rights reserved.</div>

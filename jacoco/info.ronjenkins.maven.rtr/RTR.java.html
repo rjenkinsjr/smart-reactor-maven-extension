@@ -15,14 +15,17 @@
  */
 package info.ronjenkins.maven.rtr;
 
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.graph.DefaultProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.codehaus.plexus.component.annotations.Component;
@@ -35,25 +38,30 @@ import org.codehaus.plexus.logging.Logger;
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
-<span class="fc" id="L38">public class RTR extends AbstractMavenLifecycleParticipant {</span>
-
+<span class="fc" id="L41">public class RTR extends AbstractMavenLifecycleParticipant {</span>
+  private static void checkForRequiredClasses() {
+    try {
+<span class="fc" id="L44">      new DefaultProjectDependencyGraph(new ArrayList&lt;MavenProject&gt;());</span>
+    }
+<span class="nc" id="L46">    catch (final Exception e) {</span>
+      // Irrelevant.
+<span class="fc" id="L48">    }</span>
+<span class="fc" id="L49">  }</span>
+  
   @Requirement
-  private Logger logger;
+  private Logger                          logger;
   @Requirement
-  private ProjectBuilder builder;
-
-  protected List&lt;String&gt; startSteps;
-  protected List&lt;String&gt; endSuccessSteps;
-  protected List&lt;String&gt; endFailureSteps;
-
+  private ProjectBuilder                  builder;
+  protected List&lt;String&gt;                  startSteps;
+  protected List&lt;String&gt;                  endSuccessSteps;
+  protected List&lt;String&gt;                  endFailureSteps;
   @Requirement(role = SmartReactorStep.class)
   protected Map&lt;String, SmartReactorStep&gt; availableSteps;
-
-  private RTRComponents components;
-  private boolean disabled;
-  private boolean release;
-  private boolean backupPomsCreated;
-  private boolean externalSnapshotsAllowed;
+  private RTRComponents                   components;
+  private boolean                         disabled;
+  private boolean                         release;
+  private boolean                         backupPomsCreated;
+  private boolean                         externalSnapshotsAllowed;
 
   /**
    * RTR entry point.
@@ -64,47 +72,56 @@ import org.codehaus.plexus.logging.Logger;
   @Override
   public void afterProjectsRead(final MavenSession session)
       throws MavenExecutionException {
-    // Don't do anything if the Smart Reactor is disabled.
-<span class="fc" id="L68">    final MavenProject executionRoot = session.getTopLevelProject();</span>
-<span class="fc" id="L69">    this.disabled = RTRConfig.isDisabled(session, executionRoot);</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (this.disabled) {</span>
-<span class="fc" id="L71">      return;</span>
+    // Don't allow this extension to be loaded as a build extension.
+    try {
+<span class="fc" id="L77">      RTR.checkForRequiredClasses();</span>
     }
-<span class="fc" id="L73">    this.release = RTRConfig.isRelease(session, executionRoot);</span>
-<span class="fc" id="L74">    this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(</span>
+<span class="fc" id="L79">    catch (final NoClassDefFoundError e) {</span>
+<span class="fc" id="L80">      throw new SmartReactorSanityCheckException(</span>
+          &quot;This extension must be loaded as a core extension, not as a build extension.&quot;);
+<span class="fc" id="L82">    }</span>
+    // Don't do anything if the Smart Reactor is disabled.
+<span class="fc" id="L84">    final MavenProject executionRoot = session.getTopLevelProject();</span>
+<span class="fc" id="L85">    this.disabled = RTRConfig.isDisabled(session, executionRoot);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (this.disabled) {</span>
+<span class="fc" id="L87">      return;</span>
+    }
+<span class="fc" id="L89">    this.release = RTRConfig.isRelease(session, executionRoot);</span>
+<span class="fc" id="L90">    this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(</span>
         session, executionRoot);
-<span class="fc" id="L76">    this.logger.info(&quot;Assembling smart reactor...&quot;);</span>
-<span class="fc" id="L77">    this.components = new RTRComponents(this.builder);</span>
-<span class="fc" id="L78">    this.executeSteps(this.startSteps, session, this.components);</span>
+<span class="fc" id="L92">    this.logger.info(&quot;Assembling smart reactor...&quot;);</span>
+<span class="fc" id="L93">    this.components = new RTRComponents(this.builder);</span>
+<span class="fc" id="L94">    this.executeSteps(this.startSteps, session, this.components);</span>
     // Done. Maven build will proceed from here, none the wiser. ;)
-<span class="fc" id="L80">  }</span>
+<span class="fc" id="L96">  }</span>
 
   @Override
   public void afterSessionEnd(final MavenSession session)
       throws MavenExecutionException {
-<span class="fc bfc" id="L85" title="All 2 branches covered.">    if (this.disabled) {</span>
-<span class="fc" id="L86">      return;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (this.disabled) {</span>
+<span class="fc" id="L102">      return;</span>
     }
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (session.getResult().hasExceptions()) {</span>
-<span class="fc" id="L89">      this.executeSteps(this.endFailureSteps, session, this.components);</span>
-    } else {
-<span class="fc" id="L91">      this.executeSteps(this.endSuccessSteps, session, this.components);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (session.getResult().hasExceptions()) {</span>
+<span class="fc" id="L105">      this.executeSteps(this.endFailureSteps, session, this.components);</span>
     }
-<span class="fc" id="L93">  }</span>
+    else {
+<span class="fc" id="L108">      this.executeSteps(this.endSuccessSteps, session, this.components);</span>
+    }
+<span class="fc" id="L110">  }</span>
 
   private void executeSteps(final List&lt;String&gt; steps,
       final MavenSession session, final RTRComponents components)
           throws MavenExecutionException {
     SmartReactorStep step;
-<span class="fc bfc" id="L99" title="All 2 branches covered.">    for (final String name : steps) {</span>
-<span class="fc" id="L100">      step = this.availableSteps.get(name);</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">      if (step == null) {</span>
-<span class="fc" id="L102">        throw new MavenExecutionException(&quot;Unable to find step '&quot; + name</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">    for (final String name : steps) {</span>
+<span class="fc" id="L117">      step = this.availableSteps.get(name);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">      if (step == null) {</span>
+<span class="fc" id="L119">        throw new MavenExecutionException(&quot;Unable to find step '&quot; + name</span>
             + &quot;' to execute&quot;, new IllegalStateException());
       }
-<span class="fc" id="L105">      step.execute(session, components);</span>
-<span class="fc" id="L106">    }</span>
-<span class="fc" id="L107">  }</span>
+<span class="fc" id="L122">      step.execute(session, components);</span>
+<span class="fc" id="L123">    }</span>
+<span class="fc" id="L124">  }</span>
 
   /**
    * Indicates whether or not backup POMs were created by the release process.
@@ -113,7 +130,7 @@ import org.codehaus.plexus.logging.Logger;
    *         otherwise.
    */
   public boolean isBackupPomsCreated() {
-<span class="fc" id="L116">    return this.backupPomsCreated;</span>
+<span class="fc" id="L133">    return this.backupPomsCreated;</span>
   }
 
   /**
@@ -123,7 +140,7 @@ import org.codehaus.plexus.logging.Logger;
    * @return true if allowed, false if prohibited.
    */
   public boolean isExternalSnapshotsAllowed() {
-<span class="fc" id="L126">    return this.externalSnapshotsAllowed;</span>
+<span class="fc" id="L143">    return this.externalSnapshotsAllowed;</span>
   }
 
   /**
@@ -132,7 +149,7 @@ import org.codehaus.plexus.logging.Logger;
    * @return true if a release was requested, false otherwise.
    */
   public boolean isRelease() {
-<span class="fc" id="L135">    return this.release;</span>
+<span class="fc" id="L152">    return this.release;</span>
   }
 
   /**
@@ -143,8 +160,7 @@ import org.codehaus.plexus.logging.Logger;
    *          true if backup POMs have been created, false otherwise.
    */
   public void setBackupPomsCreated(final boolean backupPomsCreated) {
-<span class="fc" id="L146">    this.backupPomsCreated = backupPomsCreated;</span>
-<span class="fc" id="L147">  }</span>
-
+<span class="fc" id="L163">    this.backupPomsCreated = backupPomsCreated;</span>
+<span class="fc" id="L164">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

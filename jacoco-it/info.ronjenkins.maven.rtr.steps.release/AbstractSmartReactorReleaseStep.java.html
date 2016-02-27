@@ -42,19 +42,15 @@ import org.codehaus.plexus.component.annotations.Requirement;
  * @author Ronald Jack Jenkins Jr.
  */
 <span class="fc" id="L44">public abstract class AbstractSmartReactorReleaseStep extends</span>
-AbstractSmartReactorStep {
-
+    AbstractSmartReactorStep {
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
-  protected RTR rtr;
-
+  protected RTR                       rtr;
   @Requirement(role = ReleasePhase.class)
   protected Map&lt;String, ReleasePhase&gt; availablePhases;
-
   @Requirement(hint = &quot;rtr-rd&quot;)
-  protected ReleaseDescriptor releaseDescriptor;
-
+  protected ReleaseDescriptor         releaseDescriptor;
   @Requirement(hint = &quot;rtr-re&quot;)
-  protected ReleaseEnvironment releaseEnvironment;
+  protected ReleaseEnvironment        releaseEnvironment;
 
   /**
    * Subclasses can override this method to configure the release descriptor
@@ -66,18 +62,17 @@ AbstractSmartReactorStep {
    *          that this step may need. May be null.
    */
   protected void configureReleaseDescriptor(final MavenSession session,
-      final RTRComponents components) {
-<span class="fc" id="L70">  }</span>
+<span class="fc" id="L65">      final RTRComponents components) {}</span>
 
   @Override
   public final void execute(final MavenSession session,
       final RTRComponents components) throws MavenExecutionException {
-<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (this.rtr.isRelease()) {</span>
-<span class="fc" id="L76">      this.logger.info(this.getAnnouncement());</span>
-<span class="fc" id="L77">      this.configureReleaseDescriptor(session, components);</span>
-<span class="fc" id="L78">      this.releaseExecute(session, components);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (this.rtr.isRelease()) {</span>
+<span class="fc" id="L71">      this.logger.info(this.getAnnouncement());</span>
+<span class="fc" id="L72">      this.configureReleaseDescriptor(session, components);</span>
+<span class="fc" id="L73">      this.releaseExecute(session, components);</span>
     }
-<span class="fc" id="L80">  }</span>
+<span class="fc" id="L75">  }</span>
 
   /**
    * Returns the announcement that is logged when this release step begins
@@ -119,25 +114,27 @@ AbstractSmartReactorStep {
    */
   protected void releaseExecute(final MavenSession session,
       final RTRComponents components) throws MavenExecutionException {
-<span class="fc" id="L122">    this.releaseEnvironment.setSettings(session.getSettings());</span>
-<span class="fc" id="L123">    final List&lt;MavenProject&gt; reactor = session.getProjects();</span>
+<span class="fc" id="L117">    this.releaseEnvironment.setSettings(session.getSettings());</span>
+<span class="fc" id="L118">    final List&lt;MavenProject&gt; reactor = session.getProjects();</span>
     // Execute the release steps.
     try {
-<span class="fc" id="L126">      this.runPhases(reactor, this.getReleasePhases());</span>
-<span class="fc" id="L127">    } catch (final MavenExecutionException | RuntimeException e) {</span>
+<span class="fc" id="L121">      this.runPhases(reactor, this.getReleasePhases());</span>
+    }
+<span class="fc" id="L123">    catch (final MavenExecutionException | RuntimeException e) {</span>
       // Rollback if ANY exception occurred, then rethrow.
-<span class="fc" id="L129">      this.logger.error(&quot;Rolling back release due to error...&quot;);</span>
+<span class="fc" id="L125">      this.logger.error(&quot;Rolling back release due to error...&quot;);</span>
       try {
-<span class="fc" id="L131">        this.runPhases(reactor, this.getRollbackPhases());</span>
-<span class="nc" id="L132">      } catch (final MavenExecutionException | RuntimeException e2) {</span>
+<span class="fc" id="L127">        this.runPhases(reactor, this.getRollbackPhases());</span>
+      }
+<span class="nc" id="L129">      catch (final MavenExecutionException | RuntimeException e2) {</span>
         // Suppress this exception.
-<span class="nc" id="L134">        e.addSuppressed(e2);</span>
-<span class="nc" id="L135">        this.logger</span>
-<span class="nc" id="L136">        .error(&quot;Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.&quot;);</span>
-<span class="fc" id="L137">      }</span>
-<span class="fc" id="L138">      throw e;</span>
-<span class="fc" id="L139">    }</span>
-<span class="fc" id="L140">  }</span>
+<span class="nc" id="L131">        e.addSuppressed(e2);</span>
+<span class="nc" id="L132">        this.logger</span>
+            .error(&quot;Rollback unsuccessful. Check project filesystem for POM backups and other resources that must be rolled back manually.&quot;);
+<span class="fc" id="L134">      }</span>
+<span class="fc" id="L135">      throw e;</span>
+<span class="fc" id="L136">    }</span>
+<span class="fc" id="L137">  }</span>
 
   // Derived from DefaultReleaseManager.java in maven-release-manager, see
   // THIRDPARTY file for further legal information.
@@ -145,23 +142,23 @@ AbstractSmartReactorStep {
       final List&lt;String&gt; phases) throws MavenExecutionException {
     ReleasePhase phase;
     ReleaseResult result;
-<span class="fc bfc" id="L148" title="All 2 branches covered.">    for (final String name : phases) {</span>
-<span class="fc" id="L149">      phase = this.availablePhases.get(name);</span>
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">      if (phase == null) {</span>
-<span class="nc" id="L151">        throw new SmartReactorReleaseException(&quot;Unable to find phase '&quot; + name</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    for (final String name : phases) {</span>
+<span class="fc" id="L146">      phase = this.availablePhases.get(name);</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">      if (phase == null) {</span>
+<span class="nc" id="L148">        throw new SmartReactorReleaseException(&quot;Unable to find phase '&quot; + name</span>
             + &quot;' to execute&quot;);
       }
       try {
-<span class="fc" id="L155">        result = phase.execute(this.releaseDescriptor, this.releaseEnvironment,</span>
+<span class="fc" id="L152">        result = phase.execute(this.releaseDescriptor, this.releaseEnvironment,</span>
             reactor);
-<span class="fc" id="L157">      } catch (final ReleaseExecutionException | ReleaseFailureException e) {</span>
-<span class="fc" id="L158">        throw new SmartReactorReleaseException(e);</span>
-<span class="fc" id="L159">      }</span>
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">      if (result.getResultCode() == ReleaseResult.ERROR) {</span>
-<span class="nc" id="L161">        throw new SmartReactorReleaseException(result.getOutput());</span>
       }
-<span class="fc" id="L163">    }</span>
-<span class="fc" id="L164">  }</span>
-
+<span class="fc" id="L155">      catch (final ReleaseExecutionException | ReleaseFailureException e) {</span>
+<span class="fc" id="L156">        throw new SmartReactorReleaseException(e);</span>
+<span class="fc" id="L157">      }</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">      if (result.getResultCode() == ReleaseResult.ERROR) {</span>
+<span class="nc" id="L159">        throw new SmartReactorReleaseException(result.getOutput());</span>
+      }
+<span class="fc" id="L161">    }</span>
+<span class="fc" id="L162">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

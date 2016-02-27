@@ -26,7 +26,6 @@ import org.apache.maven.project.ProjectBuilder;
  */
 // TODO: work on eliminating this class if possible.
 public final class RTRComponents {
-
   private final ProjectBuilder projectBuilder;
 
   /**
@@ -35,10 +34,10 @@ public final class RTRComponents {
    * @param projectBuilder
    *          not null.
    */
-<span class="fc" id="L38">  public RTRComponents(final ProjectBuilder projectBuilder) {</span>
-<span class="fc" id="L39">    Validate.notNull(projectBuilder, &quot;Project builder is null&quot;);</span>
-<span class="fc" id="L40">    this.projectBuilder = projectBuilder;</span>
-<span class="fc" id="L41">  }</span>
+<span class="fc" id="L37">  public RTRComponents(final ProjectBuilder projectBuilder) {</span>
+<span class="fc" id="L38">    Validate.notNull(projectBuilder, &quot;Project builder is null&quot;);</span>
+<span class="fc" id="L39">    this.projectBuilder = projectBuilder;</span>
+<span class="fc" id="L40">  }</span>
 
   /**
    * Returns the shared project builder.
@@ -46,8 +45,7 @@ public final class RTRComponents {
    * @return never null.
    */
   public ProjectBuilder getProjectBuilder() {
-<span class="fc" id="L49">    return this.projectBuilder;</span>
+<span class="fc" id="L48">    return this.projectBuilder;</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

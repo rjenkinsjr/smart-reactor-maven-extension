@@ -50,29 +50,29 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> util.TestUtils;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../info/ronjenkins/maven/rtr/releasephases/ConditionalCheckDependencySnapshotsPhaseTest.html">ConditionalCheckDependencySnapshotsPhaseTest</a> {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    @Injectable
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>    MavenProject root;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>    @Injectable
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    RTR rtr;
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    @Test
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> allowedMeansNoop() {
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">final</strong> ConditionalCheckDependencySnapshotsPhase phase = <strong class="jxr_keyword">new</strong> ConditionalCheckDependencySnapshotsPhase();
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">final</strong> <a href="../../../../../util/TestLogger.html">TestLogger</a> logger = TestUtils.addLogger(phase);
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      Deencapsulation.setField(phase, <span class="jxr_string">"rtr"</span>, <strong class="jxr_keyword">this</strong>.rtr);
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">new</strong> Expectations() {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>        {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>          ConditionalCheckDependencySnapshotsPhaseTest.<strong class="jxr_keyword">this</strong>.rtr
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>              .isExternalSnapshotsAllowed();
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">this</strong>.result = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>        }
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      };
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>        <strong class="jxr_keyword">final</strong> ReleaseResult result = phase.execute((ReleaseDescriptor) <strong class="jxr_keyword">null</strong>,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>            (ReleaseEnvironment) <strong class="jxr_keyword">null</strong>, (List&lt;MavenProject&gt;) <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    @Injectable
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    MavenProject root;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    @Injectable
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    RTR          rtr;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    @Test
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> allowedMeansNoop() {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">final</strong> ConditionalCheckDependencySnapshotsPhase phase = <strong class="jxr_keyword">new</strong> ConditionalCheckDependencySnapshotsPhase();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">final</strong> <a href="../../../../../util/TestLogger.html">TestLogger</a> logger = TestUtils.addLogger(phase);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      Deencapsulation.setField(phase, <span class="jxr_string">"rtr"</span>, <strong class="jxr_keyword">this</strong>.rtr);
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">new</strong> Expectations() {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>        {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          ConditionalCheckDependencySnapshotsPhaseTest.<strong class="jxr_keyword">this</strong>.rtr
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          .isExternalSnapshotsAllowed();
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">this</strong>.result = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        }
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      };
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        <strong class="jxr_keyword">final</strong> ReleaseResult result = phase.execute((ReleaseDescriptor) <strong class="jxr_keyword">null</strong>,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>            (ReleaseEnvironment) <strong class="jxr_keyword">null</strong>, (List&lt;MavenProject&gt;) <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>        Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>        e.printStackTrace();
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>        Assert.fail();
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
@@ -86,7 +86,7 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>        @Mock
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>        ReleaseResult execute(<strong class="jxr_keyword">final</strong> Invocation inv, <strong class="jxr_keyword">final</strong> ReleaseDescriptor rd,
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>            <strong class="jxr_keyword">final</strong> ReleaseEnvironment re, <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; projects)
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>                <strong class="jxr_keyword">throws</strong> Throwable {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>            <strong class="jxr_keyword">throws</strong> Throwable {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          <strong class="jxr_keyword">return</strong> (ReleaseResult) inv.proceed();
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>        }
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }.getMockInstance();
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">new</strong> Expectations() {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>        {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          ConditionalCheckDependencySnapshotsPhaseTest.<strong class="jxr_keyword">this</strong>.rtr
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>              .isExternalSnapshotsAllowed();
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          .isExternalSnapshotsAllowed();
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          <strong class="jxr_keyword">this</strong>.result = false;
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>        }
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      };
@@ -102,32 +102,33 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">final</strong> ReleaseResult result = phase.execute((ReleaseDescriptor) <strong class="jxr_keyword">null</strong>,
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>            (ReleaseEnvironment) <strong class="jxr_keyword">null</strong>, Arrays.asList(<strong class="jxr_keyword">this</strong>.root));
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>        Assert.assertEquals(ReleaseResult.SUCCESS, result.getResultCode());
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ReleaseExecutionException | ReleaseFailureException e) {
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>        e.printStackTrace();
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>        Assert.fail();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>     }
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   @Test
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> simulateEqualsExecute() {
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">final</strong> ConditionalCheckDependencySnapshotsPhase phase = <strong class="jxr_keyword">new</strong> MockUp&lt;ConditionalCheckDependencySnapshotsPhase&gt;() {
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>       @Mock
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>       ReleaseResult execute(<strong class="jxr_keyword">final</strong> ReleaseDescriptor rd,
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>           <strong class="jxr_keyword">final</strong> ReleaseEnvironment re, <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; projects)
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>               <strong class="jxr_keyword">throws</strong> Throwable {
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReleaseResult();
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>       }
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>     }.getMockInstance();
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>       <strong class="jxr_keyword">final</strong> ReleaseResult result = phase.simulate((ReleaseDescriptor) <strong class="jxr_keyword">null</strong>,
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>           (ReleaseEnvironment) <strong class="jxr_keyword">null</strong>, (List&lt;MavenProject&gt;) <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>       Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ReleaseExecutionException | ReleaseFailureException e) {
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>       Assert.fail();
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>     }
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>   }
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
-<a class="jxr_linenumber" name="L122" href="#L122">122</a> }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ReleaseExecutionException | ReleaseFailureException e) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>        e.printStackTrace();
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>       Assert.fail();
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>   }
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>   @Test
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> simulateEqualsExecute() {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">final</strong> ConditionalCheckDependencySnapshotsPhase phase = <strong class="jxr_keyword">new</strong> MockUp&lt;ConditionalCheckDependencySnapshotsPhase&gt;() {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>       @Mock
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>       ReleaseResult execute(<strong class="jxr_keyword">final</strong> ReleaseDescriptor rd,
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>           <strong class="jxr_keyword">final</strong> ReleaseEnvironment re, <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; projects)
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>           <strong class="jxr_keyword">throws</strong> Throwable {
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ReleaseResult();
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>       }
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>     }.getMockInstance();
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>       <strong class="jxr_keyword">final</strong> ReleaseResult result = phase.simulate((ReleaseDescriptor) <strong class="jxr_keyword">null</strong>,
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>           (ReleaseEnvironment) <strong class="jxr_keyword">null</strong>, (List&lt;MavenProject&gt;) <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>       Assert.assertEquals(ReleaseResult.UNDEFINED, result.getResultCode());
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ReleaseExecutionException | ReleaseFailureException e) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>       Assert.fail();
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>   }
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016. All rights reserved.</div>

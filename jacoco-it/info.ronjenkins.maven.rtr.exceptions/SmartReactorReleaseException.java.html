@@ -24,7 +24,6 @@ import org.apache.maven.MavenExecutionException;
  * @author Ronald Jack Jenkins Jr.
  */
 public class SmartReactorReleaseException extends MavenExecutionException {
-
   private static final long serialVersionUID = -4704891299848581663L;
 
   /**
@@ -35,9 +34,9 @@ public class SmartReactorReleaseException extends MavenExecutionException {
    *          Null or empty is coerced to a default message.
    */
   public SmartReactorReleaseException(final String message) {
-<span class="nc" id="L38">    super(&quot;Smart Reactor release failure:&quot;, new IllegalStateException(</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        StringUtils.isEmpty(message) ? &quot;no further information.&quot; : message));</span>
-<span class="nc" id="L40">  }</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">    super(&quot;Smart Reactor release failure:&quot;, new IllegalStateException(</span>
+        StringUtils.isEmpty(message) ? &quot;no further information.&quot; : message));
+<span class="nc" id="L39">  }</span>
 
   /**
    * Super constructor with root cause.
@@ -46,8 +45,7 @@ public class SmartReactorReleaseException extends MavenExecutionException {
    *          not null.
    */
   public SmartReactorReleaseException(final Throwable cause) {
-<span class="fc" id="L49">    super(&quot;Smart Reactor release failure:&quot;, cause);</span>
-<span class="fc" id="L50">  }</span>
-
+<span class="fc" id="L48">    super(&quot;Smart Reactor release failure:&quot;, cause);</span>
+<span class="fc" id="L49">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

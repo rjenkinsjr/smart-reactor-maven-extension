@@ -42,7 +42,6 @@ import org.codehaus.plexus.component.annotations.Requirement;
 // THIRDPARTY file for further legal information.
 @Component(role = ReleasePhase.class, hint = &quot;remove-backup-poms&quot;)
 <span class="fc" id="L44">public class RemoveBackupPomsPhase extends AbstractBackupPomsPhase {</span>
-
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
   private RTR rtr;
 
@@ -64,15 +63,15 @@ import org.codehaus.plexus.component.annotations.Requirement;
   @Override
   public ReleaseResult execute(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
-<span class="fc" id="L68">    final ReleaseResult result = new ReleaseResult();</span>
-<span class="fc bfc" id="L69" title="All 2 branches covered.">    if (this.rtr.isBackupPomsCreated()) {</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">      for (final MavenProject project : projects) {</span>
-<span class="fc" id="L71">        this.deletePomBackup(project);</span>
-<span class="fc" id="L72">      }</span>
+      throws ReleaseExecutionException, ReleaseFailureException {
+<span class="fc" id="L67">    final ReleaseResult result = new ReleaseResult();</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    if (this.rtr.isBackupPomsCreated()) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">      for (final MavenProject project : projects) {</span>
+<span class="fc" id="L70">        this.deletePomBackup(project);</span>
+<span class="fc" id="L71">      }</span>
     }
-<span class="fc" id="L74">    result.setResultCode(ReleaseResult.SUCCESS);</span>
-<span class="fc" id="L75">    return result;</span>
+<span class="fc" id="L73">    result.setResultCode(ReleaseResult.SUCCESS);</span>
+<span class="fc" id="L74">    return result;</span>
   }
 
   /**
@@ -94,8 +93,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
   @Override
   public ReleaseResult simulate(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
-<span class="fc" id="L98">    return this.execute(rd, re, projects);</span>
+      throws ReleaseExecutionException, ReleaseFailureException {
+<span class="fc" id="L97">    return this.execute(rd, re, projects);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

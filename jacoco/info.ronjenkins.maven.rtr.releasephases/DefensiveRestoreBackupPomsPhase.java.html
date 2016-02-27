@@ -40,7 +40,6 @@ import org.codehaus.plexus.component.annotations.Requirement;
  */
 @Component(role = ReleasePhase.class, hint = &quot;defensive-restore-backup-poms&quot;)
 <span class="fc" id="L42">public class DefensiveRestoreBackupPomsPhase extends RestoreBackupPomsPhase {</span>
-
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
   private RTR rtr;
 
@@ -62,11 +61,12 @@ import org.codehaus.plexus.component.annotations.Requirement;
   @Override
   public ReleaseResult execute(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
     final ReleaseResult result;
-<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (this.rtr.isBackupPomsCreated()) {</span>
-<span class="fc" id="L68">      result = super.execute(rd, re, projects);</span>
-    } else {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (this.rtr.isBackupPomsCreated()) {</span>
+<span class="fc" id="L67">      result = super.execute(rd, re, projects);</span>
+    }
+    else {
 <span class="fc" id="L70">      result = new ReleaseResult();</span>
 <span class="fc" id="L71">      result.setResultCode(ReleaseResult.SUCCESS);</span>
     }
@@ -92,9 +92,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
   @Override
   public ReleaseResult simulate(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
+      throws ReleaseExecutionException, ReleaseFailureException {
 <span class="fc" id="L96">    return this.execute(rd, re, projects);</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

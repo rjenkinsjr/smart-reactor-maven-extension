@@ -35,34 +35,32 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.junit.Test;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../info/ronjenkins/maven/rtr/steps/BuildSmartReactorTest.html">BuildSmartReactorTest</a> {
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>    @Injectable
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    MavenSession session;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Test
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onlySnapshotsRemain(@Injectable <strong class="jxr_keyword">final</strong> MavenProject snapshot,
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>        @Injectable <strong class="jxr_keyword">final</strong> MavenProject release) {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">final</strong> BuildSmartReactor step = <strong class="jxr_keyword">new</strong> BuildSmartReactor();
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; projects = <strong class="jxr_keyword">new</strong> ArrayList&lt;MavenProject&gt;();
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      projects.add(snapshot);
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      projects.add(release);
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">new</strong> Expectations() {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>        {
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>          BuildSmartReactorTest.<strong class="jxr_keyword">this</strong>.session.getProjects();
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">this</strong>.result = projects;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          snapshot.getArtifact().isSnapshot();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          <strong class="jxr_keyword">this</strong>.result = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>          release.getArtifact().isSnapshot();
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">this</strong>.result = false;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>        }
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      };
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      step.execute(<strong class="jxr_keyword">this</strong>.session, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      Assert.assertEquals(projects, <strong class="jxr_keyword">this</strong>.session.getProjects());
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      Assert.assertEquals(1, <strong class="jxr_keyword">this</strong>.session.getProjects().size());
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      Assert.assertEquals(snapshot, <strong class="jxr_keyword">this</strong>.session.getProjects().get(0));
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  }
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    @Injectable
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>    MavenSession session;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    @Test
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onlySnapshotsRemain(@Injectable <strong class="jxr_keyword">final</strong> MavenProject snapshot,
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>        @Injectable <strong class="jxr_keyword">final</strong> MavenProject release) {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">final</strong> BuildSmartReactor step = <strong class="jxr_keyword">new</strong> BuildSmartReactor();
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; projects = <strong class="jxr_keyword">new</strong> ArrayList&lt;MavenProject&gt;();
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      projects.add(snapshot);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      projects.add(release);
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">new</strong> Expectations() {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          BuildSmartReactorTest.<strong class="jxr_keyword">this</strong>.session.getProjects();
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">this</strong>.result = projects;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          snapshot.getArtifact().isSnapshot();
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          <strong class="jxr_keyword">this</strong>.result = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          release.getArtifact().isSnapshot();
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">this</strong>.result = false;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      };
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      step.execute(<strong class="jxr_keyword">this</strong>.session, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      Assert.assertEquals(projects, <strong class="jxr_keyword">this</strong>.session.getProjects());
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      Assert.assertEquals(1, <strong class="jxr_keyword">this</strong>.session.getProjects().size());
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      Assert.assertEquals(snapshot, <strong class="jxr_keyword">this</strong>.session.getProjects().get(0));
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016. All rights reserved.</div>

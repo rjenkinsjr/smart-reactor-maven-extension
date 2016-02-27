@@ -38,33 +38,33 @@
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> util.TestUtils;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../info/ronjenkins/maven/rtr/steps/RebuildProjectDependencyGraphTest.html">RebuildProjectDependencyGraphTest</a> {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Injectable
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>    MavenSession session;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @Injectable
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    MavenProject root;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    @Test
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exceptionsGetTranslated() {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">final</strong> RebuildProjectDependencyGraph step = <strong class="jxr_keyword">new</strong> RebuildProjectDependencyGraph();
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">final</strong> <a href="../../../../../util/TestLogger.html">TestLogger</a> logger = TestUtils.addLogger(step);
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">new</strong> Expectations() {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>        {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.session.getProjects();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          <strong class="jxr_keyword">this</strong>.result = Arrays.asList(
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>              RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root,
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>              RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root);
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root.getGroupId();
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <strong class="jxr_keyword">this</strong>.result = <span class="jxr_string">"test"</span>;
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root.getArtifactId();
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <strong class="jxr_keyword">this</strong>.result = <span class="jxr_string">"root"</span>;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root.getVersion();
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">this</strong>.result = <span class="jxr_string">"1"</span>;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      };
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>        step.execute(<strong class="jxr_keyword">this</strong>.session, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> MavenExecutionException e) {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    @Injectable
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    MavenSession session;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @Injectable
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    MavenProject root;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    @Test
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exceptionsGetTranslated() {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">final</strong> RebuildProjectDependencyGraph step = <strong class="jxr_keyword">new</strong> RebuildProjectDependencyGraph();
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">final</strong> <a href="../../../../../util/TestLogger.html">TestLogger</a> logger = TestUtils.addLogger(step);
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">new</strong> Expectations() {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>        {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.session.getProjects();
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          <strong class="jxr_keyword">this</strong>.result = Arrays.asList(
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>              RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root,
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>              RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root.getGroupId();
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">this</strong>.result = <span class="jxr_string">"test"</span>;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root.getArtifactId();
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">this</strong>.result = <span class="jxr_string">"root"</span>;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          RebuildProjectDependencyGraphTest.<strong class="jxr_keyword">this</strong>.root.getVersion();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">this</strong>.result = <span class="jxr_string">"1"</span>;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>        }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      };
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        step.execute(<strong class="jxr_keyword">this</strong>.session, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> MavenExecutionException e) {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>        Assert.assertTrue(e instanceof MavenExecutionException);
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>        Assert.assertNotNull(e.getCause());
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      }
@@ -91,16 +91,17 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      };
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>        step.execute(<strong class="jxr_keyword">this</strong>.session, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> MavenExecutionException e) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        Assert.fail();
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>        e.printStackTrace();
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        Assert.fail();
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      }
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      Assert.assertTrue(logger.getErrorLog().isEmpty());
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  }
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      }
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> MavenExecutionException e) {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>        Assert.fail();
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>        e.printStackTrace();
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        Assert.fail();
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      Assert.assertTrue(logger.getErrorLog().isEmpty());
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016. All rights reserved.</div>

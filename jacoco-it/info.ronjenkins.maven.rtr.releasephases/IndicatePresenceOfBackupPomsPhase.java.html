@@ -41,7 +41,6 @@ import org.codehaus.plexus.component.annotations.Requirement;
  */
 @Component(role = ReleasePhase.class, hint = &quot;indicate-presence-of-backup-poms&quot;)
 <span class="fc" id="L43">public class IndicatePresenceOfBackupPomsPhase extends AbstractReleasePhase {</span>
-
   @Requirement(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
   private RTR rtr;
 
@@ -64,11 +63,11 @@ import org.codehaus.plexus.component.annotations.Requirement;
   @Override
   public ReleaseResult execute(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
-<span class="fc" id="L68">    this.rtr.setBackupPomsCreated(true);</span>
-<span class="fc" id="L69">    final ReleaseResult result = new ReleaseResult();</span>
-<span class="fc" id="L70">    result.setResultCode(ReleaseResult.SUCCESS);</span>
-<span class="fc" id="L71">    return result;</span>
+      throws ReleaseExecutionException, ReleaseFailureException {
+<span class="fc" id="L67">    this.rtr.setBackupPomsCreated(true);</span>
+<span class="fc" id="L68">    final ReleaseResult result = new ReleaseResult();</span>
+<span class="fc" id="L69">    result.setResultCode(ReleaseResult.SUCCESS);</span>
+<span class="fc" id="L70">    return result;</span>
   }
 
   /**
@@ -90,9 +89,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
   @Override
   public ReleaseResult simulate(final ReleaseDescriptor rd,
       final ReleaseEnvironment re, final List&lt;MavenProject&gt; projects)
-          throws ReleaseExecutionException, ReleaseFailureException {
-<span class="nc" id="L94">    return this.execute(rd, re, projects);</span>
+      throws ReleaseExecutionException, ReleaseFailureException {
+<span class="nc" id="L93">    return this.execute(rd, re, projects);</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

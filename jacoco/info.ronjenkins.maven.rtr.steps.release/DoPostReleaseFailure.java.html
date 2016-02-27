@@ -28,24 +28,22 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = &quot;post-release-failure&quot;)
 <span class="fc" id="L30">public class DoPostReleaseFailure extends AbstractSmartReactorReleaseStep {</span>
-
   private List&lt;String&gt; releasePhases;
   private List&lt;String&gt; rollbackPhases;
 
   @Override
   public String getAnnouncement() {
-<span class="fc" id="L37">    return &quot;Performing cleanup of failed release...&quot;;</span>
+<span class="fc" id="L36">    return &quot;Performing cleanup of failed release...&quot;;</span>
   }
 
   @Override
   protected List&lt;String&gt; getReleasePhases() {
-<span class="fc" id="L42">    return this.releasePhases;</span>
+<span class="fc" id="L41">    return this.releasePhases;</span>
   }
 
   @Override
   protected List&lt;String&gt; getRollbackPhases() {
-<span class="fc" id="L47">    return this.rollbackPhases;</span>
+<span class="fc" id="L46">    return this.rollbackPhases;</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

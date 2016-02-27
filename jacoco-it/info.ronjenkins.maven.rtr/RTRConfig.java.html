@@ -26,32 +26,40 @@ import org.apache.maven.project.MavenProject;
  * @author Ronald Jack Jenkins Jr.
  */
 public final class RTRConfig {
-
-  public static final String PROP_DISABLED = &quot;rtr.disabled&quot;;
-  public static final boolean DEFAULT_DISABLED = false;
-  public static final String PROP_SINGLE_POM_REACTOR_ALLOWED = &quot;rtr.allowSinglePomReactor&quot;;
+  public static final String  PROP_DISABLED                      = &quot;rtr.disabled&quot;;
+  public static final boolean DEFAULT_DISABLED                   = false;
+  public static final String  PROP_SINGLE_POM_REACTOR_ALLOWED    = &quot;rtr.allowSinglePomReactor&quot;;
   public static final boolean DEFAULT_SINGLE_POM_REACTOR_ALLOWED = false;
-  public static final String PROP_EXTERNAL_SNAPSHOTS_ALLOWED = &quot;rtr.allowExternalSnapshots&quot;;
+  public static final String  PROP_EXTERNAL_SNAPSHOTS_ALLOWED    = &quot;rtr.allowExternalSnapshots&quot;;
   public static final boolean DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED = false;
-  public static final String PROP_RELEASE = &quot;rtr.release&quot;;
-  public static final boolean DEFAULT_RELEASE = false;
+  public static final String  PROP_RELEASE                       = &quot;rtr.release&quot;;
+  public static final boolean DEFAULT_RELEASE                    = false;
+  public static final String  PROP_ADDSCHEMA                     = &quot;addSchema&quot;;
+  public static final boolean DEFAULT_ADDSCHEMA                  = true;
+  public static final String  PROP_ALLOWTIMESTAMPEDSNAPSHOTS     = &quot;allowTimestampedSnapshots&quot;;
+  public static final boolean DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS  = false;
+  public static final String  PROP_AUTOVERSIONSUBMODULES         = &quot;autoVersionSubmodules&quot;;
+  public static final boolean DEFAULT_AUTOVERSIONSUBMODULES      = false;
+  public static final String  PROP_PROJECTVERSIONPOLICYID        = &quot;projectVersionPolicyId&quot;;
+  public static final String  DEFAULT_PROJECTVERSIONPOLICYID     = &quot;default&quot;;
+  public static final String  PROP_RELEASEVERSION                = &quot;releaseVersion&quot;;
+  public static final String  PROP_TAG                           = &quot;tag&quot;;
+  public static final String  PROP_TAGBASE                       = &quot;tagBase&quot;;
+  public static final String  PROP_TAGNAMEFORMAT                 = &quot;tagNameFormat&quot;;
 
-  public static final String PROP_ADDSCHEMA = &quot;addSchema&quot;;
-  public static final boolean DEFAULT_ADDSCHEMA = true;
-  public static final String PROP_ALLOWTIMESTAMPEDSNAPSHOTS = &quot;allowTimestampedSnapshots&quot;;
-  public static final boolean DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS = false;
-  public static final String PROP_AUTOVERSIONSUBMODULES = &quot;autoVersionSubmodules&quot;;
-  public static final boolean DEFAULT_AUTOVERSIONSUBMODULES = false;
-  public static final String PROP_PROJECTVERSIONPOLICYID = &quot;projectVersionPolicyId&quot;;
-  public static final String DEFAULT_PROJECTVERSIONPOLICYID = &quot;default&quot;;
-  public static final String PROP_RELEASEVERSION = &quot;releaseVersion&quot;;
-  public static final String PROP_TAG = &quot;tag&quot;;
-  public static final String PROP_TAGBASE = &quot;tagBase&quot;;
-  public static final String PROP_TAGNAMEFORMAT = &quot;tagNameFormat&quot;;
+  private static void checkParameters(final MavenSession session,
+      final MavenProject project) {
+<span class="pc bpc" id="L52" title="3 of 4 branches missed.">    if (session == null &amp;&amp; project == null) {</span>
+<span class="nc" id="L53">      throw new NullPointerException(&quot;session and project cannot both be null&quot;);</span>
+    }
+<span class="fc" id="L55">  }</span>
 
-  /* This class is not instantiable. */
-<span class="nc" id="L53">  private RTRConfig() {</span>
-<span class="nc" id="L54">  }</span>
+  private static boolean getFlag(final String prop, final boolean defaultValue,
+      final MavenSession session, final MavenProject project) {
+<span class="fc" id="L59">    final String rawValue = RTRConfig.getProperty(prop, session, project);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,</span>
+        &quot;true&quot;, &quot;false&quot;);
+  }
 
   /**
    * Returns the &quot;projectVersionPolicyId&quot; property.
@@ -64,10 +72,25 @@ public final class RTRConfig {
    */
   public static String getProjectVersionPolicyId(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L67">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L68">    return StringUtils.defaultString(RTRConfig.getProperty(</span>
+<span class="fc" id="L75">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L76">    return StringUtils.defaultString(RTRConfig.getProperty(</span>
         RTRConfig.PROP_PROJECTVERSIONPOLICYID, session, project),
         RTRConfig.DEFAULT_PROJECTVERSIONPOLICYID);
+  }
+
+  private static String getProperty(final String prop,
+      final MavenSession session, final MavenProject project) {
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">    if (session == null) {</span>
+<span class="nc" id="L84">      return project.getProperties().getProperty(prop);</span>
+    }
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">    else if (project == null) {</span>
+<span class="nc" id="L87">      return session.getUserProperties().getProperty(prop);</span>
+    }
+    else {
+<span class="fc" id="L90">      return StringUtils.defaultString(</span>
+          session.getUserProperties().getProperty(prop), project
+          .getProperties().getProperty(prop));
+    }
   }
 
   /**
@@ -81,8 +104,8 @@ public final class RTRConfig {
    */
   public static String getReleaseVersion(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L84">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L85">    return RTRConfig.getProperty(RTRConfig.PROP_RELEASEVERSION, session,</span>
+<span class="fc" id="L107">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L108">    return RTRConfig.getProperty(RTRConfig.PROP_RELEASEVERSION, session,</span>
         project);
   }
 
@@ -97,8 +120,8 @@ public final class RTRConfig {
    */
   public static String getTag(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L100">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L101">    return RTRConfig.getProperty(RTRConfig.PROP_TAG, session, project);</span>
+<span class="fc" id="L123">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L124">    return RTRConfig.getProperty(RTRConfig.PROP_TAG, session, project);</span>
   }
 
   /**
@@ -112,8 +135,8 @@ public final class RTRConfig {
    */
   public static String getTagBase(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L115">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L116">    return RTRConfig.getProperty(RTRConfig.PROP_TAGBASE, session, project);</span>
+<span class="fc" id="L138">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L139">    return RTRConfig.getProperty(RTRConfig.PROP_TAGBASE, session, project);</span>
   }
 
   /**
@@ -127,9 +150,9 @@ public final class RTRConfig {
    */
   public static String getTagNameFormat(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L130">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L131">    return RTRConfig</span>
-<span class="fc" id="L132">        .getProperty(RTRConfig.PROP_TAGNAMEFORMAT, session, project);</span>
+<span class="fc" id="L153">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L154">    return RTRConfig</span>
+        .getProperty(RTRConfig.PROP_TAGNAMEFORMAT, session, project);
   }
 
   /**
@@ -143,8 +166,8 @@ public final class RTRConfig {
    */
   public static boolean isAddSchema(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L146">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L147">    return RTRConfig.getFlag(RTRConfig.PROP_ADDSCHEMA,</span>
+<span class="fc" id="L169">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L170">    return RTRConfig.getFlag(RTRConfig.PROP_ADDSCHEMA,</span>
         RTRConfig.DEFAULT_ADDSCHEMA, session, project);
   }
 
@@ -159,8 +182,8 @@ public final class RTRConfig {
    */
   public static boolean isAllowTimestampedSnapshots(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L162">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L163">    return RTRConfig.getFlag(RTRConfig.PROP_ALLOWTIMESTAMPEDSNAPSHOTS,</span>
+<span class="fc" id="L185">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L186">    return RTRConfig.getFlag(RTRConfig.PROP_ALLOWTIMESTAMPEDSNAPSHOTS,</span>
         RTRConfig.DEFAULT_ALLOWTIMESTAMPEDSNAPSHOTS, session, project);
   }
 
@@ -175,8 +198,8 @@ public final class RTRConfig {
    */
   public static boolean isAutoVersionSubmodules(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L178">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L179">    return RTRConfig.getFlag(RTRConfig.PROP_AUTOVERSIONSUBMODULES,</span>
+<span class="fc" id="L201">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L202">    return RTRConfig.getFlag(RTRConfig.PROP_AUTOVERSIONSUBMODULES,</span>
         RTRConfig.DEFAULT_AUTOVERSIONSUBMODULES, session, project);
   }
 
@@ -191,8 +214,8 @@ public final class RTRConfig {
    */
   public static boolean isDisabled(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L194">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L195">    return RTRConfig.getFlag(RTRConfig.PROP_DISABLED,</span>
+<span class="fc" id="L217">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L218">    return RTRConfig.getFlag(RTRConfig.PROP_DISABLED,</span>
         RTRConfig.DEFAULT_DISABLED, session, project);
   }
 
@@ -208,11 +231,14 @@ public final class RTRConfig {
    */
   public static boolean isExternalSnapshotsAllowed(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L211">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L212">    return RTRConfig.getFlag(RTRConfig.PROP_EXTERNAL_SNAPSHOTS_ALLOWED,</span>
+<span class="fc" id="L234">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L235">    return RTRConfig.getFlag(RTRConfig.PROP_EXTERNAL_SNAPSHOTS_ALLOWED,</span>
         RTRConfig.DEFAULT_EXTERNAL_SNAPSHOTS_ALLOWED, session, project);
   }
 
+  /*
+   * Private utility methods.
+   */
   /**
    * Indicates whether or not a release was requested.
    *
@@ -224,8 +250,8 @@ public final class RTRConfig {
    */
   public static boolean isRelease(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L227">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L228">    return RTRConfig.getFlag(RTRConfig.PROP_RELEASE, RTRConfig.DEFAULT_RELEASE,</span>
+<span class="fc" id="L253">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L254">    return RTRConfig.getFlag(RTRConfig.PROP_RELEASE, RTRConfig.DEFAULT_RELEASE,</span>
         session, project);
   }
 
@@ -241,41 +267,12 @@ public final class RTRConfig {
    */
   public static boolean isSinglePomReactorAllowed(final MavenSession session,
       final MavenProject project) {
-<span class="fc" id="L244">    RTRConfig.checkParameters(session, project);</span>
-<span class="fc" id="L245">    return RTRConfig.getFlag(RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED,</span>
+<span class="fc" id="L270">    RTRConfig.checkParameters(session, project);</span>
+<span class="fc" id="L271">    return RTRConfig.getFlag(RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED,</span>
         RTRConfig.DEFAULT_SINGLE_POM_REACTOR_ALLOWED, session, project);
   }
 
-  /*
-   * Private utility methods.
-   */
-
-  private static void checkParameters(final MavenSession session,
-      final MavenProject project) {
-<span class="pc bpc" id="L255" title="3 of 4 branches missed.">    if (session == null &amp;&amp; project == null) {</span>
-<span class="nc" id="L256">      throw new NullPointerException(&quot;session and project cannot both be null&quot;);</span>
-    }
-<span class="fc" id="L258">  }</span>
-
-  private static boolean getFlag(final String prop, final boolean defaultValue,
-      final MavenSession session, final MavenProject project) {
-<span class="fc" id="L262">    final String rawValue = RTRConfig.getProperty(prop, session, project);</span>
-<span class="fc bfc" id="L263" title="All 2 branches covered.">    return rawValue == null ? defaultValue : BooleanUtils.toBoolean(rawValue,</span>
-        &quot;true&quot;, &quot;false&quot;);
-  }
-
-  private static String getProperty(final String prop,
-      final MavenSession session, final MavenProject project) {
-<span class="pc bpc" id="L269" title="1 of 2 branches missed.">    if (session == null) {</span>
-<span class="nc" id="L270">      return project.getProperties().getProperty(prop);</span>
-<span class="pc bpc" id="L271" title="1 of 2 branches missed.">    } else if (project == null) {</span>
-<span class="nc" id="L272">      return session.getUserProperties().getProperty(prop);</span>
-    } else {
-<span class="fc" id="L274">      return StringUtils.defaultString(</span>
-<span class="fc" id="L275">          session.getUserProperties().getProperty(prop), project</span>
-<span class="fc" id="L276">              .getProperties().getProperty(prop));</span>
-    }
-  }
-
+  /* This class is not instantiable. */
+<span class="nc" id="L276">  private RTRConfig() {}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -30,21 +30,19 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = &quot;build-smart-reactor&quot;)
 <span class="fc" id="L32">public class BuildSmartReactor extends AbstractSmartReactorStep {</span>
-
   @Override
   public void execute(final MavenSession session, final RTRComponents components) {
     // The reactor is a mutable list whose type is unknown, so rather than
     // reassign it via sessions.setProjects(), we will manipulate the live
     // list instead.
-<span class="fc" id="L39">    final Iterator&lt;MavenProject&gt; iterator = session.getProjects().iterator();</span>
+<span class="fc" id="L38">    final Iterator&lt;MavenProject&gt; iterator = session.getProjects().iterator();</span>
     MavenProject project;
-<span class="fc bfc" id="L41" title="All 2 branches covered.">    while (iterator.hasNext()) {</span>
-<span class="fc" id="L42">      project = iterator.next();</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">      if (!project.getArtifact().isSnapshot()) {</span>
-<span class="fc" id="L44">        iterator.remove();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">    while (iterator.hasNext()) {</span>
+<span class="fc" id="L41">      project = iterator.next();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">      if (!project.getArtifact().isSnapshot()) {</span>
+<span class="fc" id="L43">        iterator.remove();</span>
       }
     }
-<span class="fc" id="L47">  }</span>
-
+<span class="fc" id="L46">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

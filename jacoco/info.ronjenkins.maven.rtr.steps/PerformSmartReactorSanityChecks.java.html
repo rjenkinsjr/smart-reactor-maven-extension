@@ -31,22 +31,20 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component(role = SmartReactorStep.class, hint = &quot;sanity-checks&quot;)
 <span class="fc" id="L33">public class PerformSmartReactorSanityChecks extends AbstractSmartReactorStep {</span>
-
   @Override
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException {
     // Check for a single POM-only reactor, assuming this is prohibited.
-<span class="fc bfc" id="L39" title="All 2 branches covered.">    if (session.getProjects().size() == 1) {</span>
-<span class="fc" id="L40">      final MavenProject executionRoot = session.getTopLevelProject();</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">      if (executionRoot.getArtifact().getType().equals(&quot;pom&quot;)</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">          &amp;&amp; !RTRConfig.isSinglePomReactorAllowed(session, executionRoot)) {</span>
-<span class="fc" id="L43">        this.logger.error(&quot;&quot;);</span>
-<span class="fc" id="L44">        throw new SmartReactorSanityCheckException(</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    if (session.getProjects().size() == 1) {</span>
+<span class="fc" id="L39">      final MavenProject executionRoot = session.getTopLevelProject();</span>
+<span class="fc bfc" id="L40" title="All 4 branches covered.">      if (executionRoot.getArtifact().getType().equals(&quot;pom&quot;)</span>
+          &amp;&amp; !RTRConfig.isSinglePomReactorAllowed(session, executionRoot)) {
+<span class="fc" id="L42">        this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L43">        throw new SmartReactorSanityCheckException(</span>
             &quot;Reactor contains a single POM-packaging project, which is not allowed. If this is intended, set property \&quot;&quot;
                 + RTRConfig.PROP_SINGLE_POM_REACTOR_ALLOWED + &quot;\&quot; to true.&quot;);
       }
     }
-<span class="fc" id="L49">  }</span>
-
+<span class="fc" id="L48">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
