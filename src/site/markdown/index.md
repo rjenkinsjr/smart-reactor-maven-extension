@@ -22,7 +22,7 @@ ${project.description}
 
 Want better Maven builds and releases? Just do one of the following:
 
-+ Download the extension into your `$M2_HOME/lib/ext` directory.
++ [Download the extension](${libext.download.url}) into your `$M2_HOME/lib/ext` directory.
 + Create the file `.mvn/extensions.xml` parallel to your project's top-level POM, with the following content.
 
 ```xml
@@ -62,7 +62,7 @@ The extension requires Maven 3.3.1 or higher; any Maven project compatible with 
 Installation and Usage
 ---
 
-Either drop the extension JAR file into your Maven installation's `lib/ext` directory, or declare it in your project's `.mvn/extensions.xml` file. **Do not declare the extension in your POM; it won't work correctly.**
+Either drop the [extension JAR file](${libext.download.url}) into your Maven installation's `lib/ext` directory, or declare it in your project's `.mvn/extensions.xml` file. **Do not declare the extension in your POM; it won't work correctly.**
 
 The Smart Reactor is enabled by default. To disable it, enable the property [rtr.disabled](param.html#rtr.disabled). 
 
