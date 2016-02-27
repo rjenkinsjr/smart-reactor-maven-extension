@@ -33,7 +33,7 @@
         <ribbonOrientation>right</ribbonOrientation>
         <ribbonColor>black</ribbonColor>
       </gitHub>
-      <profile>pre-release</profile>
+      <profile>${site.profile}</profile>
     </fluidoSkin>
   </custom>
   <body>
