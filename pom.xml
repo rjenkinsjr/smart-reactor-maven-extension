@@ -83,6 +83,7 @@
     <site.src>${project.basedir}/src/site</site.src>
     <site.dest>${project.basedir}/target/site-src</site.dest>
     <site.profile>pre-release</site.profile>
+    <github.site.dir>${project.basedir}/src/github</github.site.dir>
     <libext.download.urlPrefix>http://repo1.maven.org/maven2</libext.download.urlPrefix>
   </properties>
   <!-- Project dependencies. -->
@@ -288,6 +289,27 @@
                   <filtering>true</filtering>
                 </resource>
               </resources>
+            </configuration>
+          </execution>
+          <!-- Generate GitHub README.md. -->
+          <execution>
+            <id>generate-github-readme</id>
+            <phase>site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${github.site.dir}</directory>
+                  <includes>
+                    <include>README.md</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
         </executions>
