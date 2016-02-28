@@ -47,7 +47,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
       // Irrelevant.
     }
   }
-  
+
   @Requirement
   private Logger                          logger;
   @Requirement
@@ -111,7 +111,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
 
   private void executeSteps(final List<String> steps,
       final MavenSession session, final RTRComponents components)
-          throws MavenExecutionException {
+      throws MavenExecutionException {
     SmartReactorStep step;
     for (final String name : steps) {
       step = this.availableSteps.get(name);

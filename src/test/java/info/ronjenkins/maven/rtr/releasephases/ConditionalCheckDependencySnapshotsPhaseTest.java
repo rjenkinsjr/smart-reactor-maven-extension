@@ -55,7 +55,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
     new Expectations() {
       {
         ConditionalCheckDependencySnapshotsPhaseTest.this.rtr
-        .isExternalSnapshotsAllowed();
+            .isExternalSnapshotsAllowed();
         this.result = true;
       }
     };
@@ -86,7 +86,7 @@ public final class ConditionalCheckDependencySnapshotsPhaseTest {
     new Expectations() {
       {
         ConditionalCheckDependencySnapshotsPhaseTest.this.rtr
-        .isExternalSnapshotsAllowed();
+            .isExternalSnapshotsAllowed();
         this.result = false;
       }
     };

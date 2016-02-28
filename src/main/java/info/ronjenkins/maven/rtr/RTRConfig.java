@@ -89,7 +89,7 @@ public final class RTRConfig {
     else {
       return StringUtils.defaultString(
           session.getUserProperties().getProperty(prop), project
-          .getProperties().getProperty(prop));
+              .getProperties().getProperty(prop));
     }
   }
 

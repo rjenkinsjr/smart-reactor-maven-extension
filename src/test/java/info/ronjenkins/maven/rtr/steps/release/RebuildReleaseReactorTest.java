@@ -165,11 +165,11 @@ public final class RebuildReleaseReactorTest {
           this.result = RebuildReleaseReactorTest.this.projectBuilder;
           RebuildReleaseReactorTest.this.projectBuilder.build(rootFile,
               RebuildReleaseReactorTest.this.session
-              .getProjectBuildingRequest());
+                  .getProjectBuildingRequest());
           this.result = rootResult;
           RebuildReleaseReactorTest.this.projectBuilder.build(childFile,
               RebuildReleaseReactorTest.this.session
-              .getProjectBuildingRequest());
+                  .getProjectBuildingRequest());
           this.result = childResult;
           rootResult.getProject();
           this.result = newRoot;
