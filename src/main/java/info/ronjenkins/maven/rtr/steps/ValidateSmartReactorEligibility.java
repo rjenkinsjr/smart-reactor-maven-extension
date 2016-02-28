@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.MavenExecutionException;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
@@ -38,6 +39,35 @@ public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
   @Override
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException {
+    // Ensure that the Maven Release Plugin is not in the list of goals.
+    for (final String goal : session.getGoals()) {
+      if (goal.startsWith("release:")
+          || goal.startsWith("org.apache.maven.plugins:maven-release-plugin:")) {
+        this.logger.error("");
+        throw new SmartReactorSanityCheckException(
+            "A goal from the Maven Release Plugin was specified for execution.");
+      }
+    }
+    // Ensure that the Maven Release Plugin is not declared in the POM.
+    final List<MavenProject> projectsWithMavenReleasePlugin = new ArrayList<>();
+    for (final MavenProject project : session.getProjects()) {
+      for (final Artifact artifact : project.getPluginArtifacts()) {
+        if (artifact.getGroupId().equals("org.apache.maven.plugins")
+            && artifact.getArtifactId().equals("maven-release-plugin")) {
+          projectsWithMavenReleasePlugin.add(project);
+        }
+      }
+    }
+    if (!projectsWithMavenReleasePlugin.isEmpty()) {
+      this.logger.error("");
+      for (final MavenProject project : projectsWithMavenReleasePlugin) {
+        this.logger.error("Project " + project
+            + " contains a reference to the Maven Release Plugin.");
+      }
+      this.logger.error("");
+      throw new SmartReactorSanityCheckException(
+          "Reactor is ineligible to become a Smart Reactor.");
+    }
     // Ensure that the root is a SNAPSHOT.
     final MavenProject root = session.getTopLevelProject();
     if (!root.getArtifact().isSnapshot()) {
@@ -64,7 +94,7 @@ public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {
     if (!badProjects.isEmpty()) {
       this.logger.error("");
       this.logger
-      .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
+          .error("The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:");
       for (final MavenProject badProject : badProjects) {
         this.logger.error("  " + badProject.getArtifact().toString() + " @ "
             + badProject.getFile().getAbsolutePath());

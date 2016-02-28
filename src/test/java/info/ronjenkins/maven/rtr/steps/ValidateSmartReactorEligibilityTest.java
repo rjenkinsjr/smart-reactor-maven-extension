@@ -25,6 +25,7 @@ import mockit.Mocked;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.MavenExecutionException;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
@@ -41,6 +42,152 @@ public final class ValidateSmartReactorEligibilityTest {
   MavenProject root;
 
   @Test
+  public void mavenReleasePluginInGoalsFullyQualifiedIsNotEligible() {
+    final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        ValidateSmartReactorEligibilityTest.this.session.getGoals();
+        this.result = "org.apache.maven.plugins:maven-release-plugin:2.5.3:prepare";
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
+    }
+    Assert.assertFalse(logger.getErrorLog().isEmpty());
+  }
+
+  @Test
+  public void mavenReleasePluginInGoalsIsNotEligible() {
+    final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        ValidateSmartReactorEligibilityTest.this.session.getGoals();
+        this.result = "release:prepare";
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
+    }
+    Assert.assertFalse(logger.getErrorLog().isEmpty());
+  }
+
+  @Test
+  public void mavenReleasePluginInPomIsNotEligible(
+      @Injectable final Artifact mrp) {
+    final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        ValidateSmartReactorEligibilityTest.this.session.getProjects();
+        this.result = ValidateSmartReactorEligibilityTest.this.root;
+        ValidateSmartReactorEligibilityTest.this.root.getPluginArtifacts();
+        this.result = mrp;
+        mrp.getGroupId();
+        this.result = "org.apache.maven.plugins";
+        mrp.getArtifactId();
+        this.result = "maven-release-plugin";
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
+    }
+    Assert.assertFalse(logger.getErrorLog().isEmpty());
+  }
+
+  @Test
+  public void otherApachePluginsInPomIsEligible(@Injectable final Artifact mrp) {
+    final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        ValidateSmartReactorEligibilityTest.this.session.getProjects();
+        this.result = ValidateSmartReactorEligibilityTest.this.root;
+        ValidateSmartReactorEligibilityTest.this.root.getPluginArtifacts();
+        this.result = mrp;
+        mrp.getGroupId();
+        this.result = "org.apache.maven.plugins";
+        mrp.getArtifactId();
+        this.result = "maven-antrun-plugin";
+        ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
+        this.result = ValidateSmartReactorEligibilityTest.this.root;
+        ValidateSmartReactorEligibilityTest.this.root.getArtifact()
+            .isSnapshot();
+        this.result = true;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.fail(ExceptionUtils.getFullStackTrace(e));
+    }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
+
+  @Test
+  public void otherGoalsIsEligible() {
+    final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        ValidateSmartReactorEligibilityTest.this.session.getGoals();
+        this.result = "clean";
+        ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
+        this.result = ValidateSmartReactorEligibilityTest.this.root;
+        ValidateSmartReactorEligibilityTest.this.root.getArtifact()
+            .isSnapshot();
+        this.result = true;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.fail(ExceptionUtils.getFullStackTrace(e));
+    }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
+
+  @Test
+  public void otherGroupIdsInPomIsEligible(@Injectable final Artifact mrp) {
+    final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
+    final TestLogger logger = TestUtils.addLogger(step);
+    new Expectations() {
+      {
+        ValidateSmartReactorEligibilityTest.this.session.getProjects();
+        this.result = ValidateSmartReactorEligibilityTest.this.root;
+        ValidateSmartReactorEligibilityTest.this.root.getPluginArtifacts();
+        this.result = mrp;
+        mrp.getGroupId();
+        this.result = "org.notapache.maven.plugins";
+        ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
+        this.result = ValidateSmartReactorEligibilityTest.this.root;
+        ValidateSmartReactorEligibilityTest.this.root.getArtifact()
+            .isSnapshot();
+        this.result = true;
+      }
+    };
+    try {
+      step.execute(this.session, null);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.fail(ExceptionUtils.getFullStackTrace(e));
+    }
+    Assert.assertTrue(logger.getErrorLog().isEmpty());
+  }
+
+  @Test
   public void parentSnapshotAndChildReleaseIsEligible(
       @Injectable final MavenProject child) {
     final ValidateSmartReactorEligibility step = new ValidateSmartReactorEligibility();
@@ -53,7 +200,7 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child);
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-        .isSnapshot();
+            .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = false;
@@ -82,10 +229,10 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child);
         ValidateSmartReactorEligibilityTest.this.session
-        .getProjectDependencyGraph();
+            .getProjectDependencyGraph();
         this.result = pdg;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-        .isSnapshot();
+            .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = true;
@@ -111,7 +258,7 @@ public final class ValidateSmartReactorEligibilityTest {
         ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
         this.result = ValidateSmartReactorEligibilityTest.this.root;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-        .isSnapshot();
+            .isSnapshot();
         this.result = false;
       }
     };
@@ -133,7 +280,7 @@ public final class ValidateSmartReactorEligibilityTest {
         ValidateSmartReactorEligibilityTest.this.session.getTopLevelProject();
         this.result = ValidateSmartReactorEligibilityTest.this.root;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-        .isSnapshot();
+            .isSnapshot();
         this.result = true;
       }
     };
@@ -161,10 +308,10 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child, grandchild);
         ValidateSmartReactorEligibilityTest.this.session
-        .getProjectDependencyGraph();
+            .getProjectDependencyGraph();
         this.result = pdg;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-        .isSnapshot();
+            .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = true;
@@ -201,10 +348,10 @@ public final class ValidateSmartReactorEligibilityTest {
         this.result = Arrays.asList(
             ValidateSmartReactorEligibilityTest.this.root, child, grandchild);
         ValidateSmartReactorEligibilityTest.this.session
-        .getProjectDependencyGraph();
+            .getProjectDependencyGraph();
         this.result = pdg;
         ValidateSmartReactorEligibilityTest.this.root.getArtifact()
-        .isSnapshot();
+            .isSnapshot();
         this.result = true;
         child.getArtifact().isSnapshot();
         this.result = false;
