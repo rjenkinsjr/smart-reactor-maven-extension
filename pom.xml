@@ -85,6 +85,7 @@
     <site.profile>pre-release</site.profile>
     <github.site.dir>${project.basedir}/src/github</github.site.dir>
     <libext.download.urlPrefix>http://repo1.maven.org/maven2</libext.download.urlPrefix>
+    <tagNameFormat>${project.version}</tagNameFormat>
   </properties>
   <!-- Project dependencies. -->
   <dependencies>
