@@ -14,12 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>info.ronjenkins</groupId>
   <artifactId>smart-reactor-maven-extension</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1</version>
   <name>Smart Reactor Maven Extension</name>
   <description>The Maven reactor, reimagined!</description>
   <url>http://rjenkinsjr.github.io/smart-reactor-maven-extension</url>
@@ -41,7 +40,7 @@
     <connection>scm:git:git://github.com/rjenkinsjr/smart-reactor-maven-extension.git</connection>
     <developerConnection>scm:git:git@github.com:rjenkinsjr/smart-reactor-maven-extension.git</developerConnection>
     <url>https://github.com/rjenkinsjr/smart-reactor-maven-extension</url>
-    <tag>smart-reactor-maven-extension-0.1.0</tag>
+    <tag>0.1.1</tag>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -518,8 +517,7 @@
             <configuration>
               <exportAntProperties>true</exportAntProperties>
               <target>
-                <property name="libext.download.url"
-                  value="${libext.download.urlPrefix}/${groupId.path}/${project.artifactId}/${project.version}/${shaded.filename}" />
+                <property name="libext.download.url" value="${libext.download.urlPrefix}/${groupId.path}/${project.artifactId}/${project.version}/${shaded.filename}" />
               </target>
             </configuration>
           </execution>
@@ -532,12 +530,9 @@
             </goals>
             <configuration>
               <target>
-                <property name="main.artifact"
-                  location="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+                <property name="main.artifact" location="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
                 <move file="${main.artifact}" tofile="${shaded.artifact}" />
-                <move
-                  file="${project.build.directory}/original-${project.artifactId}-${project.version}.jar"
-                  tofile="${main.artifact}" />
+                <move file="${project.build.directory}/original-${project.artifactId}-${project.version}.jar" tofile="${main.artifact}" />
               </target>
             </configuration>
           </execution>
@@ -551,11 +546,8 @@
             <configuration>
               <target>
                 <!-- Download Maven. -->
-                <property name="maven.zip"
-                  location="${project.build.directory}/maven.zip" />
-                <get
-                  src="http://www.us.apache.org/dist/maven/maven-3/${maven.version}/binaries/apache-maven-${maven.version}-bin.zip"
-                  dest="${maven.zip}" />
+                <property name="maven.zip" location="${project.build.directory}/maven.zip" />
+                <get src="http://www.us.apache.org/dist/maven/maven-3/${maven.version}/binaries/apache-maven-${maven.version}-bin.zip" dest="${maven.zip}" />
                 <!-- Unzip Maven. -->
                 <unzip src="${maven.zip}" dest="${mainIt.mavenDir}">
                   <mapper>
@@ -571,10 +563,8 @@
                 <!-- Install the libext extension. -->
                 <copy file="${shaded.artifact}" todir="${libextIt.mavenDir}/lib/ext" />
                 <!-- Chmod the Maven installations for execution. -->
-                <chmod dir="${mainIt.mavenDir}" perm="+rx"
-                  includes="**/*" />
-                <chmod dir="${libextIt.mavenDir}" perm="+rx"
-                  includes="**/*" />
+                <chmod dir="${mainIt.mavenDir}" perm="+rx" includes="**/*" />
+                <chmod dir="${libextIt.mavenDir}" perm="+rx" includes="**/*" />
               </target>
             </configuration>
           </execution>
@@ -588,8 +578,7 @@
             <configuration>
               <target>
                 <property name="itSettingsXmlDest" location="${it.settings.xml}" />
-                <property name="itSettingsXmlSrc"
-                  location="${mainIt.resources.src}/settings.xml" />
+                <property name="itSettingsXmlSrc" location="${mainIt.resources.src}/settings.xml" />
                 <script language="groovy"><![CDATA[
 // 1. Read src settings.xml, get ids of all repos and plugin repos.
 // 2. Read dest settings.xml, add src settings.xml ids as mirror exclusions.
