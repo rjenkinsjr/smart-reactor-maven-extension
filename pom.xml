@@ -65,12 +65,13 @@
     <mainIt.resources.src>${project.basedir}/src/it/resources</mainIt.resources.src>
     <mainIt.resources.dest>${project.build.directory}/it-resources</mainIt.resources.dest>
     <mainIt.mavenDir>${project.build.directory}/it-maven</mainIt.mavenDir>
-    <libextIt.src>${project.basedir}/src/it</libextIt.src>
     <libextIt.dest>${project.build.directory}/libext-it</libextIt.dest>
     <libextIt.reportsDirectory>${project.build.directory}/libext-invoker-reports</libextIt.reportsDirectory>
     <libextIt.resources.src>${project.basedir}/src/libext-it/resources</libextIt.resources.src>
-    <libextIt.resources.dest>${project.basedir}/src/libext-it/resources</libextIt.resources.dest>
+    <libextIt.resources.dest>${project.build.directory}/libext-it-resources</libextIt.resources.dest>
     <libextIt.mavenDir>${project.build.directory}/libext-it-maven</libextIt.mavenDir>
+    <doubleIt.dest>${project.build.directory}/double-it</doubleIt.dest>
+    <doubleIt.reportsDirectory>${project.build.directory}/double-invoker-reports</doubleIt.reportsDirectory>
     <it.localRepositoryPath>${project.build.directory}/it-repo</it.localRepositoryPath>
     <it.settings.xml>${mainIt.resources.dest}/settings.xml</it.settings.xml>
     <jacoco.ut.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.file>
@@ -415,11 +416,31 @@
               <cloneProjectsTo>${libextIt.dest}</cloneProjectsTo>
               <mavenHome>${libextIt.mavenDir}</mavenHome>
               <!-- No JaCoCo for libext ITs. -->
-              <projectsDirectory>${libextIt.src}</projectsDirectory>
+              <projectsDirectory>${mainIt.src}</projectsDirectory>
               <reportsDirectory>${libextIt.reportsDirectory}</reportsDirectory>
               <scriptVariables>
                 <itResourcesDir>${libextIt.resources.dest}</itResourcesDir>
                 <itCommonPrebuild>${libextIt.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
+              </scriptVariables>
+            </configuration>
+          </execution>
+          <!-- Executes the double integration tests. -->
+          <execution>
+            <id>double-integration-tests</id>
+            <!-- phase integration-test -->
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <cloneClean>true</cloneClean>
+              <cloneProjectsTo>${doubleIt.dest}</cloneProjectsTo>
+              <mavenHome>${libextIt.mavenDir}</mavenHome>
+              <!-- No JaCoCo for libext ITs. -->
+              <projectsDirectory>${mainIt.src}</projectsDirectory>
+              <reportsDirectory>${doubleIt.reportsDirectory}</reportsDirectory>
+              <scriptVariables>
+                <itResourcesDir>${mainIt.resources.dest}</itResourcesDir>
+                <itCommonPrebuild>${mainIt.resources.dest}/prebuild-common.groovy</itCommonPrebuild>
               </scriptVariables>
             </configuration>
           </execution>

@@ -15,8 +15,10 @@
  */
 package info.ronjenkins.maven.rtr;
 
+import info.ronjenkins.maven.rtr.exceptions.SmartReactorSanityCheckException;
 import info.ronjenkins.maven.rtr.steps.SmartReactorStep;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,10 +32,13 @@ import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
 
+import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,23 +47,32 @@ import util.TestUtils;
 
 public final class RTRTest {
   @Injectable
-  MavenSession   session;
+  MavenSession    session;
   @Mocked
-  RTRConfig      config;
+  RTRConfig       config;
   @Injectable
-  ProjectBuilder builder;
+  PlexusContainer container;
   @Injectable
-  MavenProject   root;
+  ProjectBuilder  builder;
+  @Injectable
+  MavenProject    root;
 
   @Test
   public void booleanMethodTests() {
     final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) {
+        return Collections.emptyList();
+      }
+
       @Mock
       boolean isRelease(final Invocation inv) throws Throwable {
         return (boolean) inv.proceed();
       }
     }.getMockInstance();
     TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
     Deencapsulation.setField(rtr, "builder", this.builder);
     Deencapsulation.setField(rtr, "startSteps", Collections.emptyList());
     new Expectations() {
@@ -112,8 +126,15 @@ public final class RTRTest {
           final RTRComponents components) {
         throw new IllegalStateException("Should not reach here!");
       }
+
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) {
+        return Collections.emptyList();
+      }
     }.getMockInstance();
     final TestLogger logger = TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
     new Expectations() {
       {
         RTRTest.this.session.getTopLevelProject();
@@ -133,10 +154,63 @@ public final class RTRTest {
   }
 
   @Test
+  public void doubleDetectionComponentLookupException(
+      @Injectable final Map<String, SmartReactorStep> availableSteps) {
+    final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) throws ComponentLookupException {
+        throw new ComponentLookupException("test", "test", "test");
+      }
+    }.getMockInstance();
+    final TestLogger logger = TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
+    try {
+      rtr.afterProjectsRead(this.session);
+    }
+    catch (final MavenExecutionException e) {
+      Assert.assertTrue(e instanceof SmartReactorSanityCheckException);
+    }
+    Assert.assertTrue(logger.getInfoLog().isEmpty());
+  }
+
+  @Test
+  public void doubleLoadMeansNoExecution() {
+    final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) {
+        final List<AbstractMavenLifecycleParticipant> extensions = new ArrayList<>();
+        extensions.add(new RTR());
+        extensions.add(new RTR());
+        return extensions;
+      }
+    }.getMockInstance();
+    final TestLogger logger = TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
+    try {
+      rtr.afterProjectsRead(this.session);
+      rtr.afterSessionEnd(this.session);
+    }
+    catch (final MavenExecutionException e) {
+      e.printStackTrace();
+      Assert.fail();
+    }
+    Assert.assertTrue(logger.getInfoLog().isEmpty());
+  }
+
+  @Test
   public void failedExecution(
       @Injectable final Map<String, SmartReactorStep> availableSteps) {
-    final RTR rtr = new MockUp<RTR>() {}.getMockInstance();
+    final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) {
+        return Collections.emptyList();
+      }
+    }.getMockInstance();
     final TestLogger logger = TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
     Deencapsulation.setField(rtr, "builder", this.builder);
     Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
     Deencapsulation.setField(rtr, "endFailureSteps", Arrays.asList("step2"));
@@ -164,8 +238,27 @@ public final class RTRTest {
 
   @Test(expected = MavenExecutionException.class)
   public void nullStepCausesException() throws MavenExecutionException {
-    final RTR rtr = new RTR();
+    final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      void afterProjectsRead(final Invocation inv, final MavenSession session) {
+        inv.proceed(session);
+      }
+
+      @Mock
+      void executeSteps(final Invocation inv, final List<String> steps,
+          final MavenSession session, final RTRComponents components)
+          throws MavenExecutionException {
+        inv.proceed(steps, session, components);
+      }
+
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) {
+        return Collections.emptyList();
+      }
+    }.getMockInstance();
     TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
     Deencapsulation.setField(rtr, "builder", this.builder);
     Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
     Deencapsulation.setField(rtr, "availableSteps", Collections.emptyMap());
@@ -183,8 +276,18 @@ public final class RTRTest {
   @Test
   public void successfulExecution(
       @Injectable final Map<String, SmartReactorStep> availableSteps) {
-    final RTR rtr = new MockUp<RTR>() {}.getMockInstance();
+    final RTR rtr = new MockUp<RTR>() {
+      @Mock
+      List<AbstractMavenLifecycleParticipant> getExtensions(
+          final MavenSession session) {
+        final List<AbstractMavenLifecycleParticipant> extensions = new ArrayList<>();
+        extensions.add(new RTR());
+        extensions.add(new AbstractMavenLifecycleParticipant() {});
+        return extensions;
+      }
+    }.getMockInstance();
     final TestLogger logger = TestUtils.addLogger(rtr);
+    Deencapsulation.setField(rtr, "container", this.container);
     Deencapsulation.setField(rtr, "builder", this.builder);
     Deencapsulation.setField(rtr, "startSteps", Arrays.asList("step1"));
     Deencapsulation.setField(rtr, "endSuccessSteps", Arrays.asList("step2"));

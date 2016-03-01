@@ -22,14 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.graph.DefaultProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
 /**
@@ -42,12 +45,15 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   private static void checkForRequiredClasses() {
     try {
       new DefaultProjectDependencyGraph(new ArrayList<MavenProject>());
+      throw new Exception();
     }
     catch (final Exception e) {
       // Irrelevant.
     }
   }
 
+  @Requirement
+  private PlexusContainer                 container;
   @Requirement
   private Logger                          logger;
   @Requirement
@@ -58,6 +64,7 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   @Requirement(role = SmartReactorStep.class)
   protected Map<String, SmartReactorStep> availableSteps;
   private RTRComponents                   components;
+  private boolean                         disabledDueToDoubleLoad;
   private boolean                         disabled;
   private boolean                         release;
   private boolean                         backupPomsCreated;
@@ -80,6 +87,11 @@ public class RTR extends AbstractMavenLifecycleParticipant {
       throw new SmartReactorSanityCheckException(
           "This extension must be loaded as a core extension, not as a build extension.");
     }
+    // Don't allow double-execution due to double-classloading.
+    this.detectDoubleExecution(session);
+    if (this.disabledDueToDoubleLoad) {
+      return;
+    }
     // Don't do anything if the Smart Reactor is disabled.
     final MavenProject executionRoot = session.getTopLevelProject();
     this.disabled = RTRConfig.isDisabled(session, executionRoot);
@@ -98,6 +110,10 @@ public class RTR extends AbstractMavenLifecycleParticipant {
   @Override
   public void afterSessionEnd(final MavenSession session)
       throws MavenExecutionException {
+    // Don't allow double-execution due to double-classloading.
+    if (this.disabledDueToDoubleLoad) {
+      return;
+    }
     if (this.disabled) {
       return;
     }
@@ -106,6 +122,37 @@ public class RTR extends AbstractMavenLifecycleParticipant {
     }
     else {
       this.executeSteps(this.endSuccessSteps, session, this.components);
+    }
+  }
+
+  private void detectDoubleExecution(final MavenSession session)
+      throws SmartReactorSanityCheckException {
+    // Get the list of core extensions.
+    final List<AbstractMavenLifecycleParticipant> extensions;
+    try {
+      extensions = this.getExtensions(session);
+    }
+    catch (final ComponentLookupException e) {
+      this.logger.error(ExceptionUtils.getFullStackTrace(e));
+      throw new SmartReactorSanityCheckException(
+          "Error while checking extension classloaders. Please report this as a bug.");
+    }
+    // If we find this FQCN more than once, "this" is a double-loaded instance
+    // of the libext extension. Disable it so it doesn't cause a failure.
+    final String thisFqcn = this.getClass().getName();
+    boolean found = false;
+    for (final AbstractMavenLifecycleParticipant extension : extensions) {
+      if (extension.getClass().getName().equals(thisFqcn)) {
+        if (found) {
+          // Found twice. Stop searching.
+          this.disabledDueToDoubleLoad = true;
+          break;
+        }
+        else {
+          // Found once.
+          found = true;
+        }
+      }
     }
   }
 
@@ -121,6 +168,40 @@ public class RTR extends AbstractMavenLifecycleParticipant {
       }
       step.execute(session, components);
     }
+  }
+
+  // Factored into a separate method for mocking purposes, since JMockit can't
+  // mock ClassLoader.
+  private List<AbstractMavenLifecycleParticipant> getExtensions(
+      final MavenSession session) throws ComponentLookupException {
+    final List<AbstractMavenLifecycleParticipant> mvnExtensionsXml = new ArrayList<>();
+    // Save the original classloader.
+    final ClassLoader originalClassLoader = Thread.currentThread()
+        .getContextClassLoader();
+    try {
+      // Get the libext extensions.
+      ClassLoader plexusCore = this.getClass().getClassLoader();
+      while (plexusCore.getParent() != null) {
+        plexusCore = plexusCore.getParent();
+      }
+      Thread.currentThread().setContextClassLoader(plexusCore);
+      mvnExtensionsXml.addAll(this.container
+          .lookupList(AbstractMavenLifecycleParticipant.class));
+      // Get the .mvn/extensions.xml extensions.
+      for (final MavenProject project : session.getProjects()) {
+        final ClassLoader projectRealm = project.getClassRealm();
+        if (projectRealm != null) {
+          Thread.currentThread().setContextClassLoader(projectRealm);
+          mvnExtensionsXml.addAll(this.container
+              .lookupList(AbstractMavenLifecycleParticipant.class));
+        }
+      }
+    }
+    finally {
+      // Restore the original classloader.
+      Thread.currentThread().setContextClassLoader(originalClassLoader);
+    }
+    return mvnExtensionsXml;
   }
 
   /**
