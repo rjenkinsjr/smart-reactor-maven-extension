@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps,RebuildProjectDependencyGraph,11,12,0,0,3,4,0,2,0,2
-Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps,ValidateSmartReactorEligibility,0,132,0,14,0,25,0,9,0,2
+Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps,ValidateSmartReactorEligibility,0,243,1,31,0,44,1,17,0,2
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps,BuildSmartReactor,0,22,0,4,0,7,0,4,0,2
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps,AbstractSmartReactorStep,0,3,0,0,0,1,0,1,0,1
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps,PerformSmartReactorSanityChecks,0,31,0,6,0,7,0,5,0,2
@@ -12,7 +12,7 @@ Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps.release,DoPostRele
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps.release,DoPostReleaseSuccess,3,8,0,0,1,3,1,3,1,3
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.steps.release,TransformProjectsIntoReleases,0,79,0,8,0,22,0,9,0,5
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr,RTRComponents,0,12,0,0,0,5,0,2,0,2
-Smart Reactor Maven Extension,info.ronjenkins.maven.rtr,RTR,24,116,1,9,4,33,1,13,0,9
+Smart Reactor Maven Extension,info.ronjenkins.maven.rtr,RTR,60,209,7,19,13,60,7,17,0,11
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr,RTRConfig,20,136,5,5,4,31,5,16,1,15
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.releasephases,ConditionalCheckDependencySnapshotsPhase,6,27,0,2,1,7,1,3,1,2
 Smart Reactor Maven Extension,info.ronjenkins.maven.rtr.releasephases,DefensiveRestoreBackupPomsPhase,6,23,0,2,1,6,1,3,1,2

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.MavenExecutionException;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
@@ -34,45 +35,74 @@ import org.codehaus.plexus.component.annotations.Component;
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = SmartReactorStep.class, hint = &quot;validate-eligibility&quot;)
-<span class="fc" id="L37">public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {</span>
+<span class="fc" id="L38">public class ValidateSmartReactorEligibility extends AbstractSmartReactorStep {</span>
   @Override
   public void execute(final MavenSession session, final RTRComponents components)
       throws MavenExecutionException {
+    // Ensure that the Maven Release Plugin is not in the list of goals.
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    for (final String goal : session.getGoals()) {</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">      if (goal.startsWith(&quot;release:&quot;)</span>
+          || goal.startsWith(&quot;org.apache.maven.plugins:maven-release-plugin:&quot;)) {
+<span class="fc" id="L46">        this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L47">        throw new SmartReactorSanityCheckException(</span>
+            &quot;A goal from the Maven Release Plugin was specified for execution.&quot;);
+      }
+<span class="fc" id="L50">    }</span>
+    // Ensure that the Maven Release Plugin is not declared in the POM.
+<span class="fc" id="L52">    final List&lt;MavenProject&gt; projectsWithMavenReleasePlugin = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    for (final MavenProject project : session.getProjects()) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">      for (final Artifact artifact : project.getPluginArtifacts()) {</span>
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        if (artifact.getGroupId().equals(&quot;org.apache.maven.plugins&quot;)</span>
+            &amp;&amp; artifact.getArtifactId().equals(&quot;maven-release-plugin&quot;)) {
+<span class="fc" id="L57">          projectsWithMavenReleasePlugin.add(project);</span>
+        }
+<span class="fc" id="L59">      }</span>
+<span class="fc" id="L60">    }</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (!projectsWithMavenReleasePlugin.isEmpty()) {</span>
+<span class="fc" id="L62">      this.logger.error(&quot;&quot;);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      for (final MavenProject project : projectsWithMavenReleasePlugin) {</span>
+<span class="fc" id="L64">        this.logger.error(&quot;Project &quot; + project</span>
+            + &quot; contains a reference to the Maven Release Plugin.&quot;);
+<span class="fc" id="L66">      }</span>
+<span class="fc" id="L67">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L68">      throw new SmartReactorSanityCheckException(</span>
+          &quot;Reactor is ineligible to become a Smart Reactor.&quot;);
+    }
     // Ensure that the root is a SNAPSHOT.
-<span class="fc" id="L42">    final MavenProject root = session.getTopLevelProject();</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (!root.getArtifact().isSnapshot()) {</span>
-<span class="fc" id="L44">      this.logger.error(&quot;&quot;);</span>
-<span class="fc" id="L45">      this.logger.error(&quot;Top-level project &quot; + root + &quot; is not a SNAPSHOT.&quot;);</span>
-<span class="fc" id="L46">      this.logger.error(&quot;&quot;);</span>
-<span class="fc" id="L47">      throw new SmartReactorSanityCheckException(</span>
+<span class="fc" id="L72">    final MavenProject root = session.getTopLevelProject();</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (!root.getArtifact().isSnapshot()) {</span>
+<span class="fc" id="L74">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L75">      this.logger.error(&quot;Top-level project &quot; + root + &quot; is not a SNAPSHOT.&quot;);</span>
+<span class="fc" id="L76">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L77">      throw new SmartReactorSanityCheckException(</span>
           &quot;Reactor is ineligible to become a Smart Reactor.&quot;);
     }
     // Ensure that the ancestors of every SNAPSHOT are also SNAPSHOTs.
-<span class="fc" id="L51">    final ProjectDependencyGraph pdg = session.getProjectDependencyGraph();</span>
-<span class="fc" id="L52">    final List&lt;MavenProject&gt; badProjects = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">    for (final MavenProject project : session.getProjects()) {</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">      if (project.getArtifact().isSnapshot()) {</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (final MavenProject ancestor : pdg.getUpstreamProjects(project,</span>
+<span class="fc" id="L81">    final ProjectDependencyGraph pdg = session.getProjectDependencyGraph();</span>
+<span class="fc" id="L82">    final List&lt;MavenProject&gt; badProjects = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    for (final MavenProject project : session.getProjects()) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">      if (project.getArtifact().isSnapshot()) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        for (final MavenProject ancestor : pdg.getUpstreamProjects(project,</span>
             true)) {
-<span class="fc bfc" id="L57" title="All 2 branches covered.">          if (!ancestor.getArtifact().isSnapshot()) {</span>
-<span class="fc" id="L58">            badProjects.add(ancestor);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">          if (!ancestor.getArtifact().isSnapshot()) {</span>
+<span class="fc" id="L88">            badProjects.add(ancestor);</span>
           }
-<span class="fc" id="L60">        }</span>
+<span class="fc" id="L90">        }</span>
       }
-<span class="fc" id="L62">    }</span>
+<span class="fc" id="L92">    }</span>
     // Fail if necessary.
-<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (!badProjects.isEmpty()) {</span>
-<span class="fc" id="L65">      this.logger.error(&quot;&quot;);</span>
-<span class="fc" id="L66">      this.logger</span>
-      .error(&quot;The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:&quot;);
-<span class="fc bfc" id="L68" title="All 2 branches covered.">      for (final MavenProject badProject : badProjects) {</span>
-<span class="fc" id="L69">        this.logger.error(&quot;  &quot; + badProject.getArtifact().toString() + &quot; @ &quot;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">    if (!badProjects.isEmpty()) {</span>
+<span class="fc" id="L95">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L96">      this.logger</span>
+          .error(&quot;The following release projects in the reactor have SNAPSHOT dependencies in the reactor, which is not allowed:&quot;);
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      for (final MavenProject badProject : badProjects) {</span>
+<span class="fc" id="L99">        this.logger.error(&quot;  &quot; + badProject.getArtifact().toString() + &quot; @ &quot;</span>
             + badProject.getFile().getAbsolutePath());
-<span class="fc" id="L71">      }</span>
-<span class="fc" id="L72">      this.logger.error(&quot;&quot;);</span>
-<span class="fc" id="L73">      throw new SmartReactorSanityCheckException(</span>
+<span class="fc" id="L101">      }</span>
+<span class="fc" id="L102">      this.logger.error(&quot;&quot;);</span>
+<span class="fc" id="L103">      throw new SmartReactorSanityCheckException(</span>
           &quot;Reactor is ineligible to become a Smart Reactor.&quot;);
     }
-<span class="fc" id="L76">  }</span>
+<span class="fc" id="L106">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

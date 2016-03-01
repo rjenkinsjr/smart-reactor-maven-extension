@@ -22,14 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.graph.DefaultProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
 /**
@@ -38,16 +41,19 @@ import org.codehaus.plexus.logging.Logger;
  * @author Ronald Jack Jenkins Jr.
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = &quot;rtr&quot;)
-<span class="fc" id="L41">public class RTR extends AbstractMavenLifecycleParticipant {</span>
+<span class="fc" id="L44">public class RTR extends AbstractMavenLifecycleParticipant {</span>
   private static void checkForRequiredClasses() {
     try {
-<span class="fc" id="L44">      new DefaultProjectDependencyGraph(new ArrayList&lt;MavenProject&gt;());</span>
+<span class="fc" id="L47">      new DefaultProjectDependencyGraph(new ArrayList&lt;MavenProject&gt;());</span>
+<span class="fc" id="L48">      throw new Exception();</span>
     }
-<span class="nc" id="L46">    catch (final Exception e) {</span>
+<span class="fc" id="L50">    catch (final Exception e) {</span>
       // Irrelevant.
-<span class="fc" id="L48">    }</span>
-<span class="fc" id="L49">  }</span>
-  
+    }
+<span class="fc" id="L53">  }</span>
+
+  @Requirement
+  private PlexusContainer                 container;
   @Requirement
   private Logger                          logger;
   @Requirement
@@ -58,6 +64,7 @@ import org.codehaus.plexus.logging.Logger;
   @Requirement(role = SmartReactorStep.class)
   protected Map&lt;String, SmartReactorStep&gt; availableSteps;
   private RTRComponents                   components;
+  private boolean                         disabledDueToDoubleLoad;
   private boolean                         disabled;
   private boolean                         release;
   private boolean                         backupPomsCreated;
@@ -74,54 +81,128 @@ import org.codehaus.plexus.logging.Logger;
       throws MavenExecutionException {
     // Don't allow this extension to be loaded as a build extension.
     try {
-<span class="fc" id="L77">      RTR.checkForRequiredClasses();</span>
+<span class="fc" id="L84">      RTR.checkForRequiredClasses();</span>
     }
-<span class="nc" id="L79">    catch (final NoClassDefFoundError e) {</span>
-<span class="nc" id="L80">      throw new SmartReactorSanityCheckException(</span>
+<span class="nc" id="L86">    catch (final NoClassDefFoundError e) {</span>
+<span class="nc" id="L87">      throw new SmartReactorSanityCheckException(</span>
           &quot;This extension must be loaded as a core extension, not as a build extension.&quot;);
-<span class="fc" id="L82">    }</span>
-    // Don't do anything if the Smart Reactor is disabled.
-<span class="fc" id="L84">    final MavenProject executionRoot = session.getTopLevelProject();</span>
-<span class="fc" id="L85">    this.disabled = RTRConfig.isDisabled(session, executionRoot);</span>
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (this.disabled) {</span>
-<span class="fc" id="L87">      return;</span>
+<span class="fc" id="L89">    }</span>
+    // Don't allow double-execution due to double-classloading.
+<span class="fc" id="L91">    this.detectDoubleExecution(session);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">    if (this.disabledDueToDoubleLoad) {</span>
+<span class="nc" id="L93">      return;</span>
     }
-<span class="fc" id="L89">    this.release = RTRConfig.isRelease(session, executionRoot);</span>
-<span class="fc" id="L90">    this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(</span>
+    // Don't do anything if the Smart Reactor is disabled.
+<span class="fc" id="L96">    final MavenProject executionRoot = session.getTopLevelProject();</span>
+<span class="fc" id="L97">    this.disabled = RTRConfig.isDisabled(session, executionRoot);</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    if (this.disabled) {</span>
+<span class="fc" id="L99">      return;</span>
+    }
+<span class="fc" id="L101">    this.release = RTRConfig.isRelease(session, executionRoot);</span>
+<span class="fc" id="L102">    this.externalSnapshotsAllowed = RTRConfig.isExternalSnapshotsAllowed(</span>
         session, executionRoot);
-<span class="fc" id="L92">    this.logger.info(&quot;Assembling smart reactor...&quot;);</span>
-<span class="fc" id="L93">    this.components = new RTRComponents(this.builder);</span>
-<span class="fc" id="L94">    this.executeSteps(this.startSteps, session, this.components);</span>
+<span class="fc" id="L104">    this.logger.info(&quot;Assembling smart reactor...&quot;);</span>
+<span class="fc" id="L105">    this.components = new RTRComponents(this.builder);</span>
+<span class="fc" id="L106">    this.executeSteps(this.startSteps, session, this.components);</span>
     // Done. Maven build will proceed from here, none the wiser. ;)
-<span class="fc" id="L96">  }</span>
+<span class="fc" id="L108">  }</span>
 
   @Override
   public void afterSessionEnd(final MavenSession session)
       throws MavenExecutionException {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (this.disabled) {</span>
-<span class="fc" id="L102">      return;</span>
+    // Don't allow double-execution due to double-classloading.
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    if (this.disabledDueToDoubleLoad) {</span>
+<span class="nc" id="L115">      return;</span>
     }
-<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (session.getResult().hasExceptions()) {</span>
-<span class="fc" id="L105">      this.executeSteps(this.endFailureSteps, session, this.components);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (this.disabled) {</span>
+<span class="fc" id="L118">      return;</span>
+    }
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (session.getResult().hasExceptions()) {</span>
+<span class="fc" id="L121">      this.executeSteps(this.endFailureSteps, session, this.components);</span>
     }
     else {
-<span class="fc" id="L108">      this.executeSteps(this.endSuccessSteps, session, this.components);</span>
+<span class="fc" id="L124">      this.executeSteps(this.endSuccessSteps, session, this.components);</span>
     }
-<span class="fc" id="L110">  }</span>
+<span class="fc" id="L126">  }</span>
+
+  private void detectDoubleExecution(final MavenSession session)
+      throws SmartReactorSanityCheckException {
+    // Get the list of core extensions.
+    final List&lt;AbstractMavenLifecycleParticipant&gt; extensions;
+    try {
+<span class="fc" id="L133">      extensions = this.getExtensions(session);</span>
+    }
+<span class="nc" id="L135">    catch (final ComponentLookupException e) {</span>
+<span class="nc" id="L136">      this.logger.error(ExceptionUtils.getFullStackTrace(e));</span>
+<span class="nc" id="L137">      throw new SmartReactorSanityCheckException(</span>
+          &quot;Error while checking extension classloaders. Please report this as a bug.&quot;);
+<span class="fc" id="L139">    }</span>
+    // If we find this FQCN more than once, &quot;this&quot; is a double-loaded instance
+    // of the libext extension. Disable it so it doesn't cause a failure.
+<span class="fc" id="L142">    final String thisFqcn = this.getClass().getName();</span>
+<span class="fc" id="L143">    boolean found = false;</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">    for (final AbstractMavenLifecycleParticipant extension : extensions) {</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">      if (extension.getClass().getName().equals(thisFqcn)) {</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (found) {</span>
+          // Found twice. Stop searching.
+<span class="nc" id="L148">          this.disabledDueToDoubleLoad = true;</span>
+<span class="nc" id="L149">          break;</span>
+        }
+        else {
+          // Found once.
+<span class="fc" id="L153">          found = true;</span>
+        }
+      }
+<span class="fc" id="L156">    }</span>
+<span class="fc" id="L157">  }</span>
 
   private void executeSteps(final List&lt;String&gt; steps,
       final MavenSession session, final RTRComponents components)
-          throws MavenExecutionException {
+      throws MavenExecutionException {
     SmartReactorStep step;
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    for (final String name : steps) {</span>
-<span class="fc" id="L117">      step = this.availableSteps.get(name);</span>
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">      if (step == null) {</span>
-<span class="nc" id="L119">        throw new MavenExecutionException(&quot;Unable to find step '&quot; + name</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">    for (final String name : steps) {</span>
+<span class="fc" id="L164">      step = this.availableSteps.get(name);</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">      if (step == null) {</span>
+<span class="nc" id="L166">        throw new MavenExecutionException(&quot;Unable to find step '&quot; + name</span>
             + &quot;' to execute&quot;, new IllegalStateException());
       }
-<span class="fc" id="L122">      step.execute(session, components);</span>
-<span class="fc" id="L123">    }</span>
-<span class="fc" id="L124">  }</span>
+<span class="fc" id="L169">      step.execute(session, components);</span>
+<span class="fc" id="L170">    }</span>
+<span class="fc" id="L171">  }</span>
+
+  // Factored into a separate method for mocking purposes, since JMockit can't
+  // mock ClassLoader.
+  private List&lt;AbstractMavenLifecycleParticipant&gt; getExtensions(
+      final MavenSession session) throws ComponentLookupException {
+<span class="fc" id="L177">    final List&lt;AbstractMavenLifecycleParticipant&gt; mvnExtensionsXml = new ArrayList&lt;&gt;();</span>
+    // Save the original classloader.
+<span class="fc" id="L179">    final ClassLoader originalClassLoader = Thread.currentThread()</span>
+        .getContextClassLoader();
+    try {
+      // Get the libext extensions.
+<span class="fc" id="L183">      ClassLoader plexusCore = this.getClass().getClassLoader();</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">      while (plexusCore.getParent() != null) {</span>
+<span class="nc" id="L185">        plexusCore = plexusCore.getParent();</span>
+      }
+<span class="fc" id="L187">      Thread.currentThread().setContextClassLoader(plexusCore);</span>
+<span class="fc" id="L188">      mvnExtensionsXml.addAll(this.container</span>
+          .lookupList(AbstractMavenLifecycleParticipant.class));
+      // Get the .mvn/extensions.xml extensions.
+<span class="fc bfc" id="L191" title="All 2 branches covered.">      for (final MavenProject project : session.getProjects()) {</span>
+<span class="fc" id="L192">        final ClassLoader projectRealm = project.getClassRealm();</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">        if (projectRealm != null) {</span>
+<span class="nc" id="L194">          Thread.currentThread().setContextClassLoader(projectRealm);</span>
+<span class="nc" id="L195">          mvnExtensionsXml.addAll(this.container</span>
+              .lookupList(AbstractMavenLifecycleParticipant.class));
+        }
+<span class="fc" id="L198">      }</span>
+    }
+    finally {
+      // Restore the original classloader.
+<span class="pc" id="L202">      Thread.currentThread().setContextClassLoader(originalClassLoader);</span>
+<span class="fc" id="L203">    }</span>
+<span class="fc" id="L204">    return mvnExtensionsXml;</span>
+  }
 
   /**
    * Indicates whether or not backup POMs were created by the release process.
@@ -130,7 +211,7 @@ import org.codehaus.plexus.logging.Logger;
    *         otherwise.
    */
   public boolean isBackupPomsCreated() {
-<span class="fc" id="L133">    return this.backupPomsCreated;</span>
+<span class="fc" id="L214">    return this.backupPomsCreated;</span>
   }
 
   /**
@@ -140,7 +221,7 @@ import org.codehaus.plexus.logging.Logger;
    * @return true if allowed, false if prohibited.
    */
   public boolean isExternalSnapshotsAllowed() {
-<span class="fc" id="L143">    return this.externalSnapshotsAllowed;</span>
+<span class="fc" id="L224">    return this.externalSnapshotsAllowed;</span>
   }
 
   /**
@@ -149,7 +230,7 @@ import org.codehaus.plexus.logging.Logger;
    * @return true if a release was requested, false otherwise.
    */
   public boolean isRelease() {
-<span class="fc" id="L152">    return this.release;</span>
+<span class="fc" id="L233">    return this.release;</span>
   }
 
   /**
@@ -160,7 +241,7 @@ import org.codehaus.plexus.logging.Logger;
    *          true if backup POMs have been created, false otherwise.
    */
   public void setBackupPomsCreated(final boolean backupPomsCreated) {
-<span class="fc" id="L163">    this.backupPomsCreated = backupPomsCreated;</span>
-<span class="fc" id="L164">  }</span>
+<span class="fc" id="L244">    this.backupPomsCreated = backupPomsCreated;</span>
+<span class="fc" id="L245">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
