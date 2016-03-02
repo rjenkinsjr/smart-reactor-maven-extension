@@ -52,7 +52,7 @@ $h3 Perform *atomic* releases on *your* terms!
 $h3 Encourage better versioning habits!
 
 + After performing a Smart Reactor release and committing the subsequent changes back to SCM, all of your module POMs will be non-SNAPSHOTs. The Smart Reactor won't build a project unless it can find a valid collection of SNAPSHOT modules in the reactor. **Never accidentally re-release a version again!**
-+ The Smart Reactor will build any SNAPSHOT module, regardless of what its version number actually is. This lets you control the version numbers of your modules at whatever granularity level you choose, because setting version numbers isn't part of the release process anymore. You can use manual POM edits, `mvn release:update-versions`, `mvn versions:set` or whatever works for you. **Gain complete control over your module versions!**
++ The Smart Reactor will build any SNAPSHOT module, regardless of what its version number actually is. This lets you control the version numbers of your modules at whatever granularity level you choose, because setting version numbers isn't part of the release process anymore. You can use manual POM edits, `mvn versions:set` or whatever works for you. **Gain complete control over your module versions!**
 
 Requirements
 ---
