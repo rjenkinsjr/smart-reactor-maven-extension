@@ -189,6 +189,10 @@ public class RTR extends AbstractMavenLifecycleParticipant {
           .lookupList(AbstractMavenLifecycleParticipant.class));
       // Get the .mvn/extensions.xml extensions.
       for (final MavenProject project : session.getProjects()) {
+        // getClassRealm() is not considered part of Maven's public API for
+        // plugins, but no mention is made of extensions. It's the only reliable
+        // way to see which extensions are loaded for each project, so we'll use
+        // it as long as we can get away with it.
         final ClassLoader projectRealm = project.getClassRealm();
         if (projectRealm != null) {
           Thread.currentThread().setContextClassLoader(projectRealm);
