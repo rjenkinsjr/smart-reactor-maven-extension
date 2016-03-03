@@ -18,6 +18,6 @@
   <extension>
     <groupId>info.ronjenkins</groupId>
     <artifactId>smart-reactor-maven-extension</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
   </extension>
 </extensions>
