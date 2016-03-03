@@ -23,7 +23,7 @@ ${project.description}
 ---
 Want better Maven builds and releases? Just do one of the following:
 
-+ [Download the extension](${libext.download.url}) into your `$M2_HOME/lib/ext` directory.
++ [Download the extension](${libext.download.url}) into your `M2_HOME/lib/ext` directory.
 + Create the file `.mvn/extensions.xml` parallel to your project's top-level POM, with the following content.
 
 ```xml
