@@ -189,19 +189,23 @@ import org.codehaus.plexus.logging.Logger;
           .lookupList(AbstractMavenLifecycleParticipant.class));
       // Get the .mvn/extensions.xml extensions.
 <span class="nc bnc" id="L191" title="All 2 branches missed.">      for (final MavenProject project : session.getProjects()) {</span>
-<span class="nc" id="L192">        final ClassLoader projectRealm = project.getClassRealm();</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (projectRealm != null) {</span>
-<span class="nc" id="L194">          Thread.currentThread().setContextClassLoader(projectRealm);</span>
-<span class="nc" id="L195">          mvnExtensionsXml.addAll(this.container</span>
+        // getClassRealm() is not considered part of Maven's public API for
+        // plugins, but no mention is made of extensions. It's the only reliable
+        // way to see which extensions are loaded for each project, so we'll use
+        // it as long as we can get away with it.
+<span class="nc" id="L196">        final ClassLoader projectRealm = project.getClassRealm();</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (projectRealm != null) {</span>
+<span class="nc" id="L198">          Thread.currentThread().setContextClassLoader(projectRealm);</span>
+<span class="nc" id="L199">          mvnExtensionsXml.addAll(this.container</span>
               .lookupList(AbstractMavenLifecycleParticipant.class));
         }
-<span class="nc" id="L198">      }</span>
+<span class="nc" id="L202">      }</span>
     }
     finally {
       // Restore the original classloader.
-<span class="nc" id="L202">      Thread.currentThread().setContextClassLoader(originalClassLoader);</span>
-<span class="nc" id="L203">    }</span>
-<span class="nc" id="L204">    return mvnExtensionsXml;</span>
+<span class="nc" id="L206">      Thread.currentThread().setContextClassLoader(originalClassLoader);</span>
+<span class="nc" id="L207">    }</span>
+<span class="nc" id="L208">    return mvnExtensionsXml;</span>
   }
 
   /**
@@ -211,7 +215,7 @@ import org.codehaus.plexus.logging.Logger;
    *         otherwise.
    */
   public boolean isBackupPomsCreated() {
-<span class="fc" id="L214">    return this.backupPomsCreated;</span>
+<span class="fc" id="L218">    return this.backupPomsCreated;</span>
   }
 
   /**
@@ -221,7 +225,7 @@ import org.codehaus.plexus.logging.Logger;
    * @return true if allowed, false if prohibited.
    */
   public boolean isExternalSnapshotsAllowed() {
-<span class="fc" id="L224">    return this.externalSnapshotsAllowed;</span>
+<span class="fc" id="L228">    return this.externalSnapshotsAllowed;</span>
   }
 
   /**
@@ -230,7 +234,7 @@ import org.codehaus.plexus.logging.Logger;
    * @return true if a release was requested, false otherwise.
    */
   public boolean isRelease() {
-<span class="fc" id="L233">    return this.release;</span>
+<span class="fc" id="L237">    return this.release;</span>
   }
 
   /**
@@ -241,7 +245,7 @@ import org.codehaus.plexus.logging.Logger;
    *          true if backup POMs have been created, false otherwise.
    */
   public void setBackupPomsCreated(final boolean backupPomsCreated) {
-<span class="fc" id="L244">    this.backupPomsCreated = backupPomsCreated;</span>
-<span class="fc" id="L245">  }</span>
+<span class="fc" id="L248">    this.backupPomsCreated = backupPomsCreated;</span>
+<span class="fc" id="L249">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
