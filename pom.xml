@@ -907,32 +907,6 @@ destFile.deleteOnExit()
               </execution>
             </executions>
           </plugin>
-          <!-- Generate GitHub README.md. -->
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-github-readme</id>
-                <phase>site</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.basedir}</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>${github.site.dir}</directory>
-                      <includes>
-                        <include>README.md</include>
-                      </includes>
-                      <filtering>true</filtering>
-                    </resource>
-                  </resources>
-                  <overwrite>true</overwrite>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <!-- Generate source JAR. -->
           <plugin>
             <artifactId>maven-source-plugin</artifactId>
@@ -1011,6 +985,32 @@ destFile.deleteOnExit()
                   <serverId>ossrh</serverId><!-- settings.xml -->
                   <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                   <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Generate GitHub README.md. -->
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-github-readme</id>
+                <phase>site</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.basedir}</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${github.site.dir}</directory>
+                      <includes>
+                        <include>README.md</include>
+                      </includes>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                  <overwrite>true</overwrite>
                 </configuration>
               </execution>
             </executions>
