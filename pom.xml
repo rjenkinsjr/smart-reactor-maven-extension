@@ -499,21 +499,6 @@
               </target>
             </configuration>
           </execution>
-          <!-- Write POM version to properties file. -->
-          <execution>
-            <id>write-properties-file</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <propertyfile file="${project.basedir}/version.properties">
-                  <entry key="RELEASE_POM_VERSION" value="${project.version}" />
-                </propertyfile>
-              </target>
-            </configuration>
-          </execution>
           <!-- Swap shaded and original artifacts, for integration testing. -->
           <execution>
             <id>swap-shaded-and-original-artifacts</id>
@@ -902,6 +887,26 @@ destFile.deleteOnExit()
       <build>
         <defaultGoal>clean deploy site-deploy</defaultGoal>
         <plugins>
+          <!-- Write POM version to properties file. -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>write-properties-file</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <propertyfile file="${project.basedir}/version.properties">
+                      <entry key="RELEASE_POM_VERSION" value="${project.version}" />
+                    </propertyfile>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!-- Generate GitHub README.md. -->
           <plugin>
             <artifactId>maven-resources-plugin</artifactId>
