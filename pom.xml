@@ -511,7 +511,7 @@
             <configuration>
               <target>
                 <propertyfile file="${project.basedir}/version.properties">
-                  <entry key="POM_VERSION" value="${project.version}"/>
+                  <entry key="RELEASE_POM_VERSION" value="${project.version}"/>
                 </propertyfile>
               </target>
             </configuration>
