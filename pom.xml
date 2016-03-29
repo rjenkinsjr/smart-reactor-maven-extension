@@ -1031,7 +1031,6 @@ destFile.deleteOnExit()
                   <server>github</server><!-- settings.xml -->
                   <message>Publishing site for version
                     ${project.version}</message>
-                  <merge>true</merge>
                 </configuration>
               </execution>
             </executions>
