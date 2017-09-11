@@ -1,0 +1,14 @@
+publish to maven central
+jdk 7u80
+settings.xml during release
+mvn -Drtr.disabled=true clean during release
+.git/config for github user rjenkinsjr (me@ronjenkins.info) during release
+git add . ; git commit during release
+git push/tag during release
+ssh agent (rjenkinsjr oauth token)
+pgp keys/passphrase
+ossrh user/pass
+gmsp_oauthtoken
+fabricate settings.xml for artifact signing/deployment and for github maven plugin (deployment) during release
+rename pgp keyring files during release
+KEYS USE PASSPHRASE ON PAPER STORED WITH AIRGAP
